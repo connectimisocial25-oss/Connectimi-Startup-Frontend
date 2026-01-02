@@ -15,7 +15,7 @@ const Connectimi_logo = () => {
       }}
     >
       <img
-        src="public/Connectimi_logo.png"
+        src="/Connectimi_logo.png"
         alt="Connectimi Logo"
         style={{
           width: "36px",
