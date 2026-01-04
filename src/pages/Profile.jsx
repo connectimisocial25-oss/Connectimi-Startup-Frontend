@@ -516,14 +516,14 @@ const Profile = () => {
       </div>
 
       <div className="navbar-center">
-        <NavItem icon={<FaHome />} label="Home" active={false} />
-        <NavItem icon={<FaUserFriends />} label="My Network" active={false} />
+        <NavItem icon={<FaHome />} label="Home" path="/home" active={false} />
+        <NavItem icon={<FaUserFriends />} label="My Network" path="/mynetwork" active={false} />
         <div className="nav-item" onClick={() => navigate('/jobs')}>
           <div className="nav-icon"><FaBriefcase /></div>
           <span className="nav-label">Jobs</span>
         </div>
-        <NavItem icon={<FaCommentDots />} label="Messaging" active={false} />
-        <NavItem icon={<FaBell />} label="Notifications" active={false} />
+        <NavItem icon={<FaCommentDots />} label="Messaging" path="/messaging" active={false} />
+        <NavItem icon={<FaBell />} label="Notifications" path="/notifications" active={false} />
 
         {/* Me dropdown */}
         <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
@@ -581,8 +581,8 @@ const Profile = () => {
     </nav>
   );
 
-  const NavItem = ({ icon, label, active }) => (
-    <div className={`nav-item ${active ? 'active' : ''}`} onClick={() => console.log(`Navigate to ${label}`)}>
+  const NavItem = ({ icon, label, path, active }) => (
+    <div className={`nav-item ${active ? 'active' : ''}`} onClick={() => path && navigate(path)}>
       <div className="nav-icon">{icon}</div>
       <span className="nav-label">{label}</span>
     </div>

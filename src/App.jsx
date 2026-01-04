@@ -6,6 +6,8 @@ import Profile from "./pages/Profile";
 import Jobs from "./pages/Jobs";
 import Connectimi_logo from "./components/Connectimi_logo";
 
+import MyNetwork from "./pages/MyNetwork";
+
 function App() {
   return (
     <BrowserRouter>
@@ -16,6 +18,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/jobs" element={<Jobs />} />
+        <Route path="/mynetwork" element={<MyNetwork />} />
       </Routes>
     </BrowserRouter>
   );
