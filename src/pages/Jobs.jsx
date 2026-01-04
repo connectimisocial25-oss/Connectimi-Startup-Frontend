@@ -203,6 +203,11 @@ const Jobs = () => {
                     <span className="nav-label">Home</span>
                 </div>
 
+                <div className="nav-item" onClick={() => navigate('/mynetwork')}>
+                    <div className="nav-icon"><FaUserFriends /></div>
+                    <span className="nav-label">My Network</span>
+                </div>
+
                 <div className="nav-item active" onClick={() => navigate('/jobs')}>
                     <div className="nav-icon"><FaBriefcase /></div>
                     <span className="nav-label">Jobs</span>
