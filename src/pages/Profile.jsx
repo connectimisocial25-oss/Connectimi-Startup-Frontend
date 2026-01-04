@@ -518,7 +518,10 @@ const Profile = () => {
       <div className="navbar-center">
         <NavItem icon={<FaHome />} label="Home" active={false} />
         <NavItem icon={<FaUserFriends />} label="My Network" active={false} />
-        <NavItem icon={<FaBriefcase />} label="Jobs" active={false} />
+        <div className="nav-item" onClick={() => navigate('/jobs')}>
+          <div className="nav-icon"><FaBriefcase /></div>
+          <span className="nav-label">Jobs</span>
+        </div>
         <NavItem icon={<FaCommentDots />} label="Messaging" active={false} />
         <NavItem icon={<FaBell />} label="Notifications" active={false} />
 
