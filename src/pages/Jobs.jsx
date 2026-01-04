@@ -12,6 +12,13 @@ const Jobs = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('fulltime');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filters, setFilters] = useState({
+        salaryRange: 'all',
+        location: 'all',
+        jobType: 'all',
+        experienceLevel: 'all'
+    });
 
     // Mock Data
     const fullTimeJobs = [
@@ -19,7 +26,11 @@ const Jobs = () => {
             id: 1,
             title: 'Senior Frontend Developer',
             company: 'Tech Innovations Ltd',
-            location: 'Bangalore, India (On-site)',
+            location: 'Bangalore, India',
+            locationType: 'on-site',
+            salaryRange: '100k-200k',
+            experienceLevel: 'senior',
+            jobType: 'full-time',
             logo: 'https://loremflickr.com/56/56/technology,code?lock=1',
             posted: '2 hours ago',
             applicants: 48
@@ -29,6 +40,10 @@ const Jobs = () => {
             title: 'React Native Engineer',
             company: 'Mobile First Solutions',
             location: 'Remote',
+            locationType: 'remote',
+            salaryRange: '50k-100k',
+            experienceLevel: 'mid',
+            jobType: 'full-time',
             logo: 'https://loremflickr.com/56/56/mobile,app?lock=2',
             posted: '5 hours ago',
             applicants: 12
@@ -37,7 +52,11 @@ const Jobs = () => {
             id: 3,
             title: 'Full Stack Engineer (MERN)',
             company: 'Startup Hub',
-            location: 'Hyderabad, India (Hybrid)',
+            location: 'Hyderabad, India',
+            locationType: 'hybrid',
+            salaryRange: '200k+',
+            experienceLevel: 'expert',
+            jobType: 'full-time',
             logo: 'https://loremflickr.com/56/56/startup,office?lock=3',
             posted: '1 day ago',
             applicants: 128
@@ -49,7 +68,11 @@ const Jobs = () => {
             id: 101,
             title: 'Web Development Intern',
             company: 'Creative Studio',
-            location: 'Mumbai, India (Remote)',
+            location: 'Mumbai, India',
+            locationType: 'remote',
+            salaryRange: '<50k',
+            experienceLevel: 'entry',
+            jobType: 'internship',
             logo: 'https://loremflickr.com/56/56/creative,design?lock=4',
             posted: '1 hour ago',
             type: 'Paid',
@@ -59,7 +82,11 @@ const Jobs = () => {
             id: 102,
             title: 'Marketing Intern',
             company: 'Growth Hackers',
-            location: 'Delhi, India (On-site)',
+            location: 'Delhi, India',
+            locationType: 'on-site',
+            salaryRange: '<50k',
+            experienceLevel: 'entry',
+            jobType: 'internship',
             logo: 'https://loremflickr.com/56/56/marketing,growth?lock=5',
             posted: '3 hours ago',
             type: 'Unpaid',
@@ -70,6 +97,10 @@ const Jobs = () => {
             title: 'UI/UX Design Intern',
             company: 'Designify',
             location: 'Remote',
+            locationType: 'remote',
+            salaryRange: '<50k',
+            experienceLevel: 'entry',
+            jobType: 'internship',
             logo: 'https://loremflickr.com/56/56/ui,ux?lock=6',
             posted: '4 hours ago',
             type: 'Paid',
@@ -83,6 +114,10 @@ const Jobs = () => {
             title: 'WordPress Theme Customization',
             company: 'Digital Agency',
             location: 'Remote',
+            locationType: 'remote',
+            salaryRange: '50k-100k',
+            experienceLevel: 'junior',
+            jobType: 'freelance',
             logo: 'https://loremflickr.com/56/56/wordpress?lock=7',
             posted: '30 mins ago',
             type: 'Freelance',
@@ -95,6 +130,10 @@ const Jobs = () => {
             title: 'Logo Design Project',
             company: 'StartUp Inc',
             location: 'Remote',
+            locationType: 'remote',
+            salaryRange: '<50k',
+            experienceLevel: 'entry',
+            jobType: 'freelance',
             logo: 'https://loremflickr.com/56/56/design,logo?lock=8',
             posted: '4 hours ago',
             type: 'Freelance',
@@ -107,6 +146,10 @@ const Jobs = () => {
             title: 'React Component Optimization',
             company: 'SaaS Corp',
             location: 'Remote',
+            locationType: 'remote',
+            salaryRange: '100k-200k',
+            experienceLevel: 'mid',
+            jobType: 'freelance',
             logo: 'https://loremflickr.com/56/56/react,code?lock=9',
             posted: '1 day ago',
             type: 'Freelance',
@@ -115,6 +158,28 @@ const Jobs = () => {
             description: 'Optimize existing React components for performance.'
         }
     ];
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const getFilteredJobs = (jobs) => {
+        return jobs.filter(job => {
+            const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                job.company.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            const matchesSalary = filters.salaryRange === 'all' || job.salaryRange === filters.salaryRange;
+            const matchesLocation = filters.location === 'all' || job.locationType === filters.location;
+            const matchesType = filters.jobType === 'all' || job.jobType === filters.jobType;
+            const matchesExperience = filters.experienceLevel === 'all' || job.experienceLevel === filters.experienceLevel;
+
+            return matchesSearch && matchesSalary && matchesLocation && matchesType && matchesExperience;
+        });
+    };
 
     const Navbar = () => (
         <nav className="navbar">
@@ -126,6 +191,8 @@ const Jobs = () => {
                         type="text"
                         placeholder="Search jobs"
                         className="search-input"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
             </div>
@@ -178,6 +245,67 @@ const Jobs = () => {
             <Navbar />
 
             <div className="jobs-content">
+                <aside className="jobs-sidebar">
+                    <div className="filter-card">
+                        <h3 className="filter-title">Filters</h3>
+                        
+                        <div className="filter-group">
+                            <label>Salary Range</label>
+                            <select name="salaryRange" value={filters.salaryRange} onChange={handleFilterChange}>
+                                <option value="all">All Salaries</option>
+                                <option value="<50k">&lt; $50k</option>
+                                <option value="50k-100k">$50k - $100k</option>
+                                <option value="100k-200k">$100k - $200k</option>
+                                <option value="200k+">$200k+</option>
+                            </select>
+                        </div>
+
+                        <div className="filter-group">
+                            <label>Location</label>
+                            <select name="location" value={filters.location} onChange={handleFilterChange}>
+                                <option value="all">Any Location</option>
+                                <option value="remote">Remote</option>
+                                <option value="on-site">On-site</option>
+                                <option value="hybrid">Hybrid</option>
+                            </select>
+                        </div>
+
+                        <div className="filter-group">
+                            <label>Job Type</label>
+                            <select name="jobType" value={filters.jobType} onChange={handleFilterChange}>
+                                <option value="all">Any Type</option>
+                                <option value="full-time">Full-time</option>
+                                <option value="internship">Internship</option>
+                                <option value="freelance">Freelance</option>
+                            </select>
+                        </div>
+
+                        <div className="filter-group">
+                            <label>Experience Level</label>
+                            <select name="experienceLevel" value={filters.experienceLevel} onChange={handleFilterChange}>
+                                <option value="all">Any Level</option>
+                                <option value="entry">Entry Level</option>
+                                <option value="junior">Junior</option>
+                                <option value="mid">Mid Level</option>
+                                <option value="senior">Senior</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </div>
+
+                        <button 
+                            className="reset-filters-btn"
+                            onClick={() => setFilters({
+                                salaryRange: 'all',
+                                location: 'all',
+                                jobType: 'all',
+                                experienceLevel: 'all'
+                            })}
+                        >
+                            Reset Filters
+                        </button>
+                    </div>
+                </aside>
+
                 <div className="jobs-main">
                     <div className="jobs-tabs">
                         <button
@@ -203,67 +331,80 @@ const Jobs = () => {
                     <div className="jobs-list">
                         {activeTab === 'fulltime' && (
                             // Full Time Jobs List
-                            fullTimeJobs.map(job => (
-                                <div key={job.id} className="job-card">
-                                    <img src={job.logo} alt={job.company} className="job-logo" />
-                                    <div className="job-details">
-                                        <div className="job-title">{job.title}</div>
-                                        <div className="job-company">{job.company}</div>
-                                        <div className="job-location">{job.location}</div>
-                                        <div className="job-meta">
-                                            <span className="time-posted">{job.posted}</span>
-                                            <span>• {job.applicants} applicants</span>
+                            getFilteredJobs(fullTimeJobs).length > 0 ? (
+                                getFilteredJobs(fullTimeJobs).map(job => (
+                                    <div key={job.id} className="job-card">
+                                        <img src={job.logo} alt={job.company} className="job-logo" />
+                                        <div className="job-details">
+                                            <div className="job-title">{job.title}</div>
+                                            <div className="job-company">{job.company}</div>
+                                            <div className="job-location">{job.location} ({job.locationType})</div>
+                                            <div className="job-meta">
+                                                <span className="time-posted">{job.posted}</span>
+                                                <span>• {job.applicants} applicants</span>
+                                                <span className="salary-badge">• {job.salaryRange}</span>
+                                            </div>
                                         </div>
+                                        <button className="apply-btn">Apply</button>
                                     </div>
-                                    <button className="apply-btn">Apply</button>
-                                </div>
-                            ))
+                                ))
+                            ) : (
+                                <div className="no-jobs-message">No full-time jobs match your filters.</div>
+                            )
                         )}
 
                         {activeTab === 'internship' && (
                             // Internships List
-                            internships.map(job => (
-                                <div key={job.id} className="job-card">
-                                    <img src={job.logo} alt={job.company} className="job-logo" />
-                                    <div className="job-details">
-                                        <div className="job-title">{job.title}</div>
-                                        <div className="job-company">{job.company}</div>
-                                        <div className="job-location">{job.location}</div>
+                            getFilteredJobs(internships).length > 0 ? (
+                                getFilteredJobs(internships).map(job => (
+                                    <div key={job.id} className="job-card">
+                                        <img src={job.logo} alt={job.company} className="job-logo" />
+                                        <div className="job-details">
+                                            <div className="job-title">{job.title}</div>
+                                            <div className="job-company">{job.company}</div>
+                                            <div className="job-location">{job.location} ({job.locationType})</div>
 
-                                        <div className="job-meta">
-                                            <span className={`badge ${job.type === 'Paid' ? 'badge-paid' : 'badge-unpaid'}`}>
-                                                {job.type}
-                                            </span>
-                                            <span>• {job.duration}</span>
-                                            <span className="time-posted">• {job.posted}</span>
+                                            <div className="job-meta">
+                                                <span className={`badge ${job.type === 'Paid' ? 'badge-paid' : 'badge-unpaid'}`}>
+                                                    {job.type}
+                                                </span>
+                                                <span>• {job.duration}</span>
+                                                <span className="time-posted">• {job.posted}</span>
+                                            </div>
                                         </div>
+                                        <button className="apply-btn">Easy Apply</button>
                                     </div>
-                                    <button className="apply-btn">Easy Apply</button>
-                                </div>
-                            ))
+                                ))
+                            ) : (
+                                <div className="no-jobs-message">No internships match your filters.</div>
+                            )
                         )}
 
                         {activeTab === 'freelancing' && (
                             // Freelancing List
-                            freelancingJobs.map(job => (
-                                <div key={job.id} className="job-card">
-                                    <img src={job.logo} alt={job.company} className="job-logo" />
-                                    <div className="job-details">
-                                        <div className="job-title">{job.title}</div>
-                                        <div className="job-company">{job.company}</div>
-                                        <div className="job-location">{job.location}</div>
-                                        <div className="job-meta">
-                                            <span className="badge badge-paid">{job.budget}</span>
-                                            <span>• {job.duration}</span>
-                                            <span className="time-posted">• {job.posted}</span>
+                            getFilteredJobs(freelancingJobs).length > 0 ? (
+                                getFilteredJobs(freelancingJobs).map(job => (
+                                    <div key={job.id} className="job-card">
+                                        <img src={job.logo} alt={job.company} className="job-logo" />
+                                        <div className="job-details">
+                                            <div className="job-title">{job.title}</div>
+                                            <div className="job-company">{job.company}</div>
+                                            <div className="job-location">{job.location} ({job.locationType})</div>
+                                            <div className="job-meta">
+                                                <span className="badge badge-paid">{job.budget}</span>
+                                                <span>• {job.duration}</span>
+                                                <span className="time-posted">• {job.posted}</span>
+                                            </div>
+                                            <div className="job-description" style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
+                                                {job.description}
+                                            </div>
                                         </div>
-                                        <div className="job-description" style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
-                                            {job.description}
-                                        </div>
+                                        <button className="apply-btn">Apply</button>
                                     </div>
-                                    <button className="apply-btn">Apply</button>
-                                </div>
-                            ))
+                                ))
+                            ) : (
+                                <div className="no-jobs-message">No freelancing jobs match your filters.</div>
+                            )
                         )}
                     </div>
                 </div>
