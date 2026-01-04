@@ -1,0 +1,298 @@
+/* MyNetwork.css */
+
+.network-container {
+    min-height: 100vh;
+    background-color: #0a0a0a;
+    padding-top: 52px;
+    --modern-teal: #5fa093;
+    --dark-card: #141414;
+    --border-color: #222;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+}
+
+.network-content {
+    max-width: 1128px;
+    margin: 24px auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 24px;
+    color: var(--text-primary);
+}
+
+.network-sidebar {
+    width: 300px;
+    flex-shrink: 0;
+}
+
+.network-sidebar-card {
+    background: var(--dark-card);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    position: sticky;
+    top: 76px;
+}
+
+.sidebar-title {
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.sidebar-item:hover {
+    background-color: #f3f3f3;
+    color: #0a66c2;
+}
+
+.sidebar-count {
+    margin-left: auto;
+    color: #666;
+}
+
+.network-main {
+    flex: 1;
+}
+
+/* Invitations Section */
+.invitations-section {
+    background: var(--dark-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.section-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.see-all-btn {
+    background: transparent;
+    border: none;
+    color: var(--modern-teal);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.invitation-card {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.invite-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.invite-role {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.accept-btn,
+.ignore-btn {
+    background: var(--modern-teal);
+    border: none;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.accept-btn:hover,
+.ignore-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Suggestions Section */
+.suggestions-section {
+    background: var(--dark-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    position: relative;
+}
+
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    padding-top: 20px;
+}
+
+.modern-teal-badge {
+    background-color: var(--modern-teal);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 18px;
+    display: inline-block;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+.suggestion-card {
+    background: #0f0f0f;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    padding-bottom: 24px;
+    transition: transform 0.2s;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-4px);
+}
+
+.suggestion-banner {
+    height: 60px;
+    background-color: var(--modern-teal);
+}
+
+.suggestion-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 3px solid #0f0f0f;
+    margin-top: -55px;
+    object-fit: cover;
+    background-color: #eee;
+}
+
+.suggestion-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.suggestion-role {
+    font-size: 13px;
+    color: var(--text-secondary);
+    height: 38px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.connect-btn {
+    width: calc(100% - 32px);
+    margin: 0 16px;
+    background: var(--modern-teal);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.connect-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .network-container {
+        background-color: #121212;
+    }
+
+    .network-sidebar-card,
+    .invitations-section,
+    .suggestions-section {
+        background: #1e1e1e;
+        border-color: #333;
+        box-shadow: 0 0 0 1px #333;
+    }
+
+    .sidebar-title,
+    .section-header {
+        border-bottom-color: #333;
+        color: #e0e0e0;
+    }
+
+    .sidebar-item {
+        color: #aaa;
+    }
+
+    .sidebar-item:hover {
+        background-color: #2d2d2d;
+    }
+
+    .section-header h2,
+    .invite-name,
+    .suggestion-name {
+        color: #e0e0e0;
+    }
+
+    .invitation-card,
+    .suggestion-card {
+        border-color: #333;
+    }
+
+    .invite-role,
+    .suggestion-role {
+        color: #aaa;
+    }
+
+    .accept-btn:hover,
+    .connect-btn:hover {
+        background-color: var(--modern-teal);
+        color: white;
+        border-color: var(--modern-teal);
+    }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .network-content {
+        flex-direction: column;
+    }
+
+    .network-sidebar {
+        width: 100%;
+    }
+
+    .network-sidebar-card {
+        position: static;
+        margin-bottom: 24px;
+    }
+}
