@@ -421,7 +421,8 @@ body {
 
 .btn-connect,
 .btn-message,
-.btn-more {
+.btn-more,
+.btn-cv {
   padding: 8px 24px;
   border-radius: 16px;
   font-size: 16px;
@@ -459,6 +460,18 @@ body {
   border-width: 2px;
   padding: 7px 23px;
   transform: translateY(-2px);
+}
+
+.btn-cv {
+  background-color: #059669;
+  color: white;
+  min-width: 100px;
+}
+
+.btn-cv:hover {
+  background-color: #047857;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.2);
 }
 
 .btn-more {
@@ -516,6 +529,16 @@ body {
   padding-left: 20px;
 }
 
+.more-dropdown-item svg {
+  color: #666;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.more-dropdown-item:hover svg {
+  color: #0a66c2;
+}
+
 .more-dropdown-divider {
   height: 1px;
   background-color: #e0e0e0;
@@ -539,19 +562,17 @@ body {
 }
 
 .form-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
 .form-group {
-  flex: 1;
-  min-width: 200px;
   margin-bottom: 16px;
 }
 
 .form-group.full-width {
-  flex: 1 0 100%;
+  grid-column: 1 / -1;
 }
 
 .form-group label {
@@ -571,6 +592,7 @@ body {
   font-size: 14px;
   transition: all 0.3s;
   background: white;
+  box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -582,37 +604,65 @@ body {
 
 .form-group textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 120px;
+  line-height: 1.6;
 }
 
 .form-section {
-  flex: 1 0 100%;
+  grid-column: 1 / -1;
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid #e0e0e0;
 }
 
 .form-section h4 {
-  margin-bottom: 16px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #0a66c2;
   color: #191919;
   font-size: 18px;
   font-weight: 600;
 }
 
-.form-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
+/* FIXED: Experience and Education Section Layout */
+.edit-form .form-section.full-width {
+  overflow-x: auto;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #eaeaea;
+  margin-bottom: 20px;
+}
+
+.edit-form .form-section.full-width .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto;
+  gap: 10px;
   align-items: center;
+  min-width: 900px;
+  margin-bottom: 10px;
+}
+
+/* Experience specific grid */
+.edit-form .experience-section .form-row {
+  grid-template-columns: 1.5fr 1.5fr 1fr 1fr 1.5fr auto;
+}
+
+/* Education specific grid */
+.edit-form .education-section .form-row {
+  grid-template-columns: 2fr 1.5fr 1.5fr 1fr 1fr auto;
 }
 
 .form-row input {
-  flex: 1;
-  padding: 10px;
+  padding: 10px 12px;
   border: 1px solid #d0d0d0;
   border-radius: 4px;
   font-size: 14px;
   background: white;
+  transition: all 0.3s;
+  min-width: 100px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .form-row input:focus {
@@ -632,9 +682,12 @@ body {
   font-size: 14px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   transition: background 0.2s;
   white-space: nowrap;
+  min-width: 60px;
+  height: 40px;
 }
 
 .btn-add:hover,
@@ -668,8 +721,12 @@ body {
 .skills-edit {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #eaeaea;
 }
 
 .skill-tag {
@@ -677,9 +734,11 @@ body {
   align-items: center;
   gap: 8px;
   background: #eef3f8;
-  padding: 8px 12px;
-  border-radius: 16px;
+  padding: 8px 16px;
+  border-radius: 20px;
   font-size: 14px;
+  color: #0a66c2;
+  font-weight: 500;
 }
 
 .skill-remove {
@@ -725,6 +784,7 @@ body {
   margin-top: 24px;
   padding-top: 24px;
   border-top: 1px solid #e0e0e0;
+  grid-column: 1 / -1;
 }
 
 .btn-save,
@@ -1277,25 +1337,6 @@ body {
   margin-top: 12px;
 }
 
-.skill-tag {
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #eef3f8, #e0e7ff);
-  border-radius: 20px;
-  font-size: 14px;
-  color: #0a66c2;
-  font-weight: 500;
-  transition: all 0.3s;
-  cursor: pointer;
-  border: 1px solid transparent;
-}
-
-.skill-tag:hover {
-  background: linear-gradient(135deg, #e0e7ff, #d0d7f0);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(10, 102, 194, 0.1);
-  border-color: #0a66c2;
-}
-
 /* Profile Right Column */
 .profile-right {
   display: flex;
@@ -1435,7 +1476,62 @@ body {
   border-bottom: none;
 }
 
+/* Scrollbar styling for the form sections */
+.edit-form .form-section.full-width::-webkit-scrollbar {
+  height: 8px;
+}
+
+.edit-form .form-section.full-width::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.edit-form .form-section.full-width::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.edit-form .form-section.full-width::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .edit-form .form-section.full-width .form-row {
+    grid-template-columns: 1fr 1fr 1fr;
+    min-width: 600px;
+  }
+  
+  .edit-form .experience-section .form-row {
+    grid-template-columns: 1.5fr 1.5fr 1fr;
+  }
+  
+  .edit-form .education-section .form-row {
+    grid-template-columns: 2fr 1.5fr 1fr;
+  }
+  
+  /* Hide some columns on smaller screens */
+  .edit-form .form-row input:nth-child(4),
+  .edit-form .form-row input:nth-child(5) {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .profile-main {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-info {
+    padding: 48px 16px 16px;
+  }
+  
+  .profile-image {
+    width: 120px;
+    height: 120px;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar-center {
     gap: 15px;
@@ -1450,17 +1546,17 @@ body {
     width: 200px;
   }
 
-  .profile-main {
-    grid-template-columns: 1fr;
+  .profile-content {
+    padding: 16px;
+  }
+
+  .profile-banner {
+    height: 150px;
   }
 
   .profile-image {
-    width: 120px;
-    height: 120px;
-  }
-
-  .profile-info {
-    padding: 48px 16px 16px;
+    width: 100px;
+    height: 100px;
   }
 
   .profile-name {
@@ -1488,8 +1584,22 @@ body {
   .speed-option {
     flex: 0 0 calc(33.333% - 8px);
   }
+  
+  .edit-form .form-section.full-width .form-row {
+    grid-template-columns: 1fr 1fr;
+    min-width: 400px;
+    gap: 8px;
+  }
+  
+  .edit-form .experience-section .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .edit-form .education-section .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
 
-  .form-row {
+  .form-actions {
     flex-direction: column;
   }
 
@@ -1500,8 +1610,10 @@ body {
 
   .btn-connect,
   .btn-message,
-  .btn-more {
+  .btn-more,
+  .btn-cv {
     width: 100%;
+    margin-bottom: 8px;
   }
 }
 
@@ -1519,16 +1631,16 @@ body {
   }
 
   .profile-content {
-    padding: 16px;
+    padding: 12px;
   }
 
   .profile-banner {
-    height: 150px;
+    height: 120px;
   }
 
   .profile-image {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
 
   .dropdown-menu {
@@ -1542,7 +1654,7 @@ body {
   }
 
   .speech-controls {
-    padding: 20px;
+    padding: 16px;
   }
 
   .speech-header h4 {
@@ -1551,9 +1663,28 @@ body {
 
   .btn-connect,
   .btn-message,
-  .btn-more {
+  .btn-more,
+  .btn-cv {
     min-width: auto;
     flex: 1;
+    font-size: 14px;
+    padding: 6px 16px;
+  }
+  
+  .edit-form .form-section.full-width .form-row {
+    grid-template-columns: 1fr;
+    min-width: 300px;
+  }
+  
+  .edit-form .experience-section .form-row,
+  .edit-form .education-section .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row .btn-add,
+  .form-row .btn-remove {
+    min-width: 100%;
+    margin-top: 5px;
   }
 }
 
@@ -1813,21 +1944,10 @@ body {
   }
 }
 
+/* CV Button Styles */
 .btn-cv {
-  padding: 8px 24px;
-  border-radius: 16px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
   background-color: #059669;
   color: white;
-  min-width: 100px;
 }
 
 .btn-cv:hover {
@@ -1836,13 +1956,115 @@ body {
   box-shadow: 0 4px 8px rgba(5, 150, 105, 0.2);
 }
 
-
-.more-dropdown-item svg {
-  color: #666;
-  font-size: 18px;
-  transition: color 0.2s;
+/* Experience and Education Edit Form Fixes */
+.experience-section .form-row input,
+.education-section .form-row input {
+  width: 100%;
 }
 
-.more-dropdown-item:hover svg {
-  color: #0a66c2;
+/* Placeholder text styling */
+::placeholder {
+  color: #999;
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  color: #999;
+}
+
+::-ms-input-placeholder {
+  color: #999;
+}
+
+/* Field validation styles */
+input:invalid,
+textarea:invalid {
+  border-color: #ff4444;
+}
+
+input:valid,
+textarea:valid {
+  border-color: #00cc66;
+}
+
+/* Required field indicator */
+.required::after {
+  content: " *";
+  color: #ff4444;
+}
+
+/* Tooltip styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Form field descriptions */
+.field-description {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+/* Success message */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #c3e6cb;
+  margin-top: 16px;
+}
+
+/* Error message */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+  margin-top: 16px;
+}
+
+/* Warning message */
+.warning-message {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ffeaa7;
+  margin-top: 16px;
+}
+
+/* Info message */
+.info-message {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #bee5eb;
+  margin-top: 16px;
 }

@@ -767,7 +767,7 @@ const Profile = () => {
         </div>
 
         {/* Experience Section */}
-        <div className="form-section full-width">
+        <div className="form-section full-width experience-section">
           <h4>Experience</h4>
           {editData.experience.map((exp, index) => (
             <div key={exp.id} className="form-row">
@@ -859,7 +859,7 @@ const Profile = () => {
         </div>
 
         {/* Education Section */}
-        <div className="form-section full-width">
+        <div className="form-section full-width education-section">
           <h4>Education</h4>
           {editData.education.map((edu, index) => (
             <div key={edu.id} className="form-row">
