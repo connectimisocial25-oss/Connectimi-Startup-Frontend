@@ -1133,9 +1133,9 @@ const Profile = () => {
                         <div className="more-dropdown-item" onClick={generateProfileSummary}>
                           <FaRobot /> AI Profile Summary
                         </div>
-                        <div className="more-dropdown-item" onClick={() => window.print()}>
+                        {/* <div className="more-dropdown-item" onClick={() => window.print()}>
                           <FaFilePdf /> Save as PDF
-                        </div>
+                        </div> */}
                         <div className="more-dropdown-item">
                           <FaShareAlt /> Share Profile via...
                         </div>
