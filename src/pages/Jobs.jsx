@@ -171,7 +171,7 @@ const Jobs = () => {
         return jobs.filter(job => {
             const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 job.company.toLowerCase().includes(searchQuery.toLowerCase());
-            
+
             const matchesSalary = filters.salaryRange === 'all' || job.salaryRange === filters.salaryRange;
             const matchesLocation = filters.location === 'all' || job.locationType === filters.location;
             const matchesType = filters.jobType === 'all' || job.jobType === filters.jobType;
@@ -202,10 +202,7 @@ const Jobs = () => {
                     <div className="nav-icon"><FaHome /></div>
                     <span className="nav-label">Home</span>
                 </div>
-                <div className="nav-item" onClick={() => navigate('/mynetwork')}>
-                    <div className="nav-icon"><FaUserFriends /></div>
-                    <span className="nav-label">My Network</span>
-                </div>
+
                 <div className="nav-item active" onClick={() => navigate('/jobs')}>
                     <div className="nav-icon"><FaBriefcase /></div>
                     <span className="nav-label">Jobs</span>
@@ -248,7 +245,7 @@ const Jobs = () => {
                 <aside className="jobs-sidebar">
                     <div className="filter-card">
                         <h3 className="filter-title">Filters</h3>
-                        
+
                         <div className="filter-group">
                             <label>Salary Range</label>
                             <select name="salaryRange" value={filters.salaryRange} onChange={handleFilterChange}>
@@ -292,7 +289,7 @@ const Jobs = () => {
                             </select>
                         </div>
 
-                        <button 
+                        <button
                             className="reset-filters-btn"
                             onClick={() => setFilters({
                                 salaryRange: 'all',
