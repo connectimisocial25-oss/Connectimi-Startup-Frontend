@@ -1,0 +1,546 @@
+/* No change intended yet, need to find the rule first */
+
+.home-container {
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    /* #f3f2ef from index.css */
+    padding-top: 72px;
+    /* Navbar height + spacing */
+}
+
+.home-content-grid {
+    display: grid;
+    grid-template-columns: 225px 555px 300px;
+    /* LinkedIn-like column widths */
+    gap: 24px;
+    max-width: 1128px;
+    margin: 0 auto;
+    padding: 0 24px;
+    justify-content: center;
+}
+
+@media (max-width: 1200px) {
+    .home-content-grid {
+        grid-template-columns: 225px 1fr 300px;
+    }
+}
+
+@media (max-width: 992px) {
+    .home-content-grid {
+        grid-template-columns: 225px 1fr;
+    }
+
+    .right-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-content-grid {
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+
+    .left-sidebar {
+        display: none;
+        /* Mobile view typically hides sidebar or puts it elsewhere */
+    }
+}
+
+/* Card Common Styles */
+.card {
+    background: var(--card-bg, #fff);
+    border-radius: 12px;
+    /* Modern rounded corners */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    margin-bottom: 16px;
+    overflow: hidden;
+    position: relative;
+    border: none;
+    /* Removing default borders if box-shadow handles it */
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 16px 16px 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Left Sidebar Styles */
+.profile-card {
+    background: var(--card-bg) !important;
+}
+
+.card-banner {
+    height: 60px;
+    width: 100%;
+    /* Gradient handled inline or here */
+}
+
+.profile-body {
+    padding: 0 16px 16px;
+    text-align: center;
+    margin-top: -36px;
+    /* Pull avatar up */
+}
+
+.profile-avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.profile-avatar-large {
+    border: 3px solid var(--card-bg);
+    background: var(--card-bg);
+}
+
+.profile-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.profile-name:hover {
+    text-decoration: underline;
+}
+
+.profile-headline {
+    font-size: 14px;
+    color: var(--text-secondary) !important;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.profile-meta {
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+}
+
+/* Stats Card */
+.stats-list {
+    padding: 8px 0;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 16px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.stat-row:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+/* Menu Card */
+.menu-list {
+    list-style: none;
+    padding: 8px 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+}
+
+.menu-badge {
+    background: rgba(0, 0, 0, 0.08);
+    /* Light gray badge */
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+/* Feed Styles */
+.create-post-card {
+    padding: 16px;
+}
+
+.create-post-top {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.create-post-input {
+    flex: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 12px 20px;
+    font-size: 15px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.2s;
+    background: var(--bg-color);
+    /* Adaptive background */
+    display: flex;
+    align-items: center;
+}
+
+.create-post-input:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.create-post-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-left: 0;
+    /* Removed padding to align centered icon */
+    padding-top: 8px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.btn-post {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Post Card Styles */
+.post-card {
+    padding: 16px;
+}
+
+.post-header {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.post-meta {
+    flex: 1;
+}
+
+.post-author-row {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+}
+
+.post-role {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.post-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.post-options {
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+}
+
+.post-content {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    white-space: pre-line;
+    /* Handle newlines from mock */
+}
+
+.post-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 4px;
+}
+
+.reaction-icons {
+    margin-right: 4px;
+}
+
+.post-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.feed-action-btn {
+    flex: 1;
+    /* Stretch to fill */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    padding: 12px 8px;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.feed-action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+}
+
+.bookmark-btn {
+    flex: 0 0 auto;
+    width: 40px;
+}
+
+
+/* Right Sidebar Styles */
+.suggestions-card,
+.jobs-card,
+.trending-card {
+    padding-bottom: 8px;
+}
+
+.suggestion-list,
+.jobs-list,
+.trends-list {
+    padding: 12px 16px;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.suggestion-info {
+    flex: 1;
+}
+
+.suggestion-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.suggestion-role {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.3;
+}
+
+.suggestion-mutual {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.suggestion-avatar {
+    margin-top: 0 !important;
+}
+
+.btn-icon-outline {
+    background: transparent;
+    border: 1px solid var(--text-secondary);
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-icon-outline:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+.job-item {
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+.job-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.job-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    cursor: pointer;
+}
+
+.job-title:hover {
+    text-decoration: underline;
+    color: var(--primary-blue);
+}
+
+.badge-new {
+    background: #dcfce7;
+    /* Light green */
+    color: #166534;
+    /* Dark green */
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.job-company {
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.job-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.btn-text-only {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0 16px 16px;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-text-only:hover {
+    color: var(--primary-blue);
+}
+
+.trend-item {
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.trend-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.trend-posts {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Strength Card */
+.strength-card {
+    padding: 16px;
+}
+
+.strength-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.strength-score {
+    color: var(--primary-blue);
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.progress-track {
+    background: #e0e0e0;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-blue);
+    border-radius: 3px;
+}
+
+.strength-hint {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: center;
+}

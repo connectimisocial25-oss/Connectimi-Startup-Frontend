@@ -4,7 +4,8 @@ import {
   FiSearch, FiHome, FiUsers, FiBriefcase, FiMessageCircle, FiBell, FiChevronDown, FiUser,
   FiEdit, FiPlus, FiAward, FiLink, FiCamera, FiLogOut, FiMoreHorizontal,
   FiVolume2, FiVolumeX, FiPlay, FiPause, FiCpu, FiSend, FiInfo, FiFileText,
-  FiShare2, FiAlertTriangle, FiFile, FiMoon, FiSun, FiHash, FiCalendar
+  FiShare2, FiAlertTriangle, FiFile, FiMoon, FiSun, FiHash, FiCalendar,
+  FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo
 } from 'react-icons/fi';
 
 const iconMap = {
@@ -47,7 +48,13 @@ const iconMap = {
   'sun': FiSun,
   'hashtag': FiHash,
   'calendar-alt': FiCalendar,
-  'newspaper': FiFileText
+  'newspaper': FiFileText,
+  'thumbs-up': FiThumbsUp,
+  'comment': FiMessageSquare,
+  'bookmark': FiBookmark,
+  'image': FiImage,
+  'video': FiVideo,
+  'calendar': FiCalendar
 };
 
 export default function Icon({ name, size = 16, className = '', ...rest }) {
