@@ -11,7 +11,6 @@ const Work = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
-        salaryRange: 'all',
         location: 'all',
         jobType: 'all',
         experienceLevel: 'all'
@@ -27,7 +26,8 @@ const Work = () => {
             locationType: 'on-site',
             salaryRange: '100k-200k',
             experienceLevel: 'senior',
-            jobType: 'full-time',
+            requiredExperience: '5+ Years Experience',
+            jobType: 'Full-time',
             logo: 'https://loremflickr.com/56/56/technology,code?lock=1',
             posted: '2 hours ago',
             applicants: 48
@@ -40,7 +40,8 @@ const Work = () => {
             locationType: 'remote',
             salaryRange: '50k-100k',
             experienceLevel: 'mid',
-            jobType: 'full-time',
+            requiredExperience: '3+ Years Experience',
+            jobType: 'Full-time',
             logo: 'https://loremflickr.com/56/56/mobile,app?lock=2',
             posted: '5 hours ago',
             applicants: 12
@@ -53,7 +54,8 @@ const Work = () => {
             locationType: 'hybrid',
             salaryRange: '200k+',
             experienceLevel: 'expert',
-            jobType: 'full-time',
+            requiredExperience: '7+ Years Experience',
+            jobType: 'Full-time',
             logo: 'https://loremflickr.com/56/56/startup,office?lock=3',
             posted: '1 day ago',
             applicants: 128
@@ -69,7 +71,8 @@ const Work = () => {
             locationType: 'remote',
             salaryRange: '<50k',
             experienceLevel: 'entry',
-            jobType: 'internship',
+            requiredExperience: 'No Experience Required',
+            jobType: 'Internship',
             logo: 'https://loremflickr.com/56/56/creative,design?lock=4',
             posted: '1 hour ago',
             type: 'Paid',
@@ -83,7 +86,8 @@ const Work = () => {
             locationType: 'on-site',
             salaryRange: '<50k',
             experienceLevel: 'entry',
-            jobType: 'internship',
+            requiredExperience: 'No Experience Required',
+            jobType: 'Internship',
             logo: 'https://loremflickr.com/56/56/marketing,growth?lock=5',
             posted: '3 hours ago',
             type: 'Unpaid',
@@ -97,7 +101,8 @@ const Work = () => {
             locationType: 'remote',
             salaryRange: '<50k',
             experienceLevel: 'entry',
-            jobType: 'internship',
+            requiredExperience: 'No Experience Required',
+            jobType: 'Internship',
             logo: 'https://loremflickr.com/56/56/ui,ux?lock=6',
             posted: '4 hours ago',
             type: 'Paid',
@@ -114,7 +119,8 @@ const Work = () => {
             locationType: 'remote',
             salaryRange: '50k-100k',
             experienceLevel: 'junior',
-            jobType: 'freelance',
+            requiredExperience: '1+ Years Experience',
+            jobType: 'Freelance',
             logo: 'https://loremflickr.com/56/56/wordpress?lock=7',
             posted: '30 mins ago',
             type: 'Freelance',
@@ -130,7 +136,8 @@ const Work = () => {
             locationType: 'remote',
             salaryRange: '<50k',
             experienceLevel: 'entry',
-            jobType: 'freelance',
+            requiredExperience: 'No Experience Required',
+            jobType: 'Freelance',
             logo: 'https://loremflickr.com/56/56/design,logo?lock=8',
             posted: '4 hours ago',
             type: 'Freelance',
@@ -146,7 +153,8 @@ const Work = () => {
             locationType: 'remote',
             salaryRange: '100k-200k',
             experienceLevel: 'mid',
-            jobType: 'freelance',
+            requiredExperience: '3+ Years Experience',
+            jobType: 'Freelance',
             logo: 'https://loremflickr.com/56/56/react,code?lock=9',
             posted: '1 day ago',
             type: 'Freelance',
@@ -169,12 +177,11 @@ const Work = () => {
             const matchesSearch = workItem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 workItem.company.toLowerCase().includes(searchQuery.toLowerCase());
 
-            const matchesSalary = filters.salaryRange === 'all' || workItem.salaryRange === filters.salaryRange;
             const matchesLocation = filters.location === 'all' || workItem.locationType === filters.location;
             const matchesType = filters.jobType === 'all' || workItem.jobType === filters.jobType;
             const matchesExperience = filters.experienceLevel === 'all' || workItem.experienceLevel === filters.experienceLevel;
 
-            return matchesSearch && matchesSalary && matchesLocation && matchesType && matchesExperience;
+            return matchesSearch && matchesLocation && matchesType && matchesExperience;
         });
     };
 
@@ -248,16 +255,6 @@ const Work = () => {
                     <div className="filter-card">
                         <h3 className="filter-title">Filters</h3>
 
-                        <div className="filter-group">
-                            <label>Salary Range</label>
-                            <select name="salaryRange" value={filters.salaryRange} onChange={handleFilterChange}>
-                                <option value="all">All Salaries</option>
-                                <option value="<50k">&lt; $50k</option>
-                                <option value="50k-100k">$50k - $100k</option>
-                                <option value="100k-200k">$100k - $200k</option>
-                                <option value="200k+">$200k+</option>
-                            </select>
-                        </div>
 
                         <div className="filter-group">
                             <label>Location</label>
@@ -294,7 +291,6 @@ const Work = () => {
                         <button
                             className="reset-filters-btn"
                             onClick={() => setFilters({
-                                salaryRange: 'all',
                                 location: 'all',
                                 jobType: 'all',
                                 experienceLevel: 'all'
@@ -335,13 +331,14 @@ const Work = () => {
                                     <div key={workItem.id} className="work-card">
                                         <img src={workItem.logo} alt={workItem.company} className="work-logo" />
                                         <div className="work-details">
-                                            <div className="work-title">{workItem.title}</div>
+                                            <div className="work-title">
+                                                {workItem.title} <span className="time-posted">• {workItem.posted}</span>
+                                            </div>
                                             <div className="work-company">{workItem.company}</div>
-                                            <div className="work-location">{workItem.location} ({workItem.locationType})</div>
                                             <div className="work-meta">
-                                                <span className="time-posted">{workItem.posted}</span>
-                                                <span>• {workItem.applicants} applicants</span>
-                                                <span className="salary-badge">• {workItem.salaryRange}</span>
+                                                <span>{workItem.requiredExperience}</span>
+                                                <span>• {workItem.location} ({workItem.locationType})</span>
+                                                <span>• {workItem.jobType}</span>
                                             </div>
                                         </div>
                                         <button className="apply-btn">Apply</button>
@@ -359,16 +356,18 @@ const Work = () => {
                                     <div key={workItem.id} className="work-card">
                                         <img src={workItem.logo} alt={workItem.company} className="work-logo" />
                                         <div className="work-details">
-                                            <div className="work-title">{workItem.title}</div>
+                                            <div className="work-title">
+                                                {workItem.title} <span className="time-posted">• {workItem.posted}</span>
+                                            </div>
                                             <div className="work-company">{workItem.company}</div>
-                                            <div className="work-location">{workItem.location} ({workItem.locationType})</div>
-
                                             <div className="work-meta">
+                                                <span>{workItem.requiredExperience}</span>
+                                                <span>• {workItem.location} ({workItem.locationType})</span>
+                                                <span>• {workItem.jobType}</span>
                                                 <span className={`badge ${workItem.type === 'Paid' ? 'badge-paid' : 'badge-unpaid'}`}>
-                                                    {workItem.type}
+                                                    • {workItem.type}
                                                 </span>
                                                 <span>• {workItem.duration}</span>
-                                                <span className="time-posted">• {workItem.posted}</span>
                                             </div>
                                         </div>
                                         <button className="apply-btn">Easy Apply</button>
@@ -386,13 +385,16 @@ const Work = () => {
                                     <div key={workItem.id} className="work-card">
                                         <img src={workItem.logo} alt={workItem.company} className="work-logo" />
                                         <div className="work-details">
-                                            <div className="work-title">{workItem.title}</div>
+                                            <div className="work-title">
+                                                {workItem.title} <span className="time-posted">• {workItem.posted}</span>
+                                            </div>
                                             <div className="work-company">{workItem.company}</div>
-                                            <div className="work-location">{workItem.location} ({workItem.locationType})</div>
                                             <div className="work-meta">
-                                                <span className="badge badge-paid">{workItem.budget}</span>
+                                                <span>{workItem.requiredExperience}</span>
+                                                <span>• {workItem.location} ({workItem.locationType})</span>
+                                                <span>• {workItem.jobType}</span>
+                                                <span className="badge badge-paid">• {workItem.budget}</span>
                                                 <span>• {workItem.duration}</span>
-                                                <span className="time-posted">• {workItem.posted}</span>
                                             </div>
                                             <div className="work-description" style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
                                                 {workItem.description}

@@ -94,11 +94,6 @@
     font-size: 16px;
 }
 
-.salary-badge {
-    color: var(--primary-blue);
-    font-weight: 500;
-}
-
 /* Tab Navigation */
 .work-tabs {
     background: var(--card-bg);
@@ -177,6 +172,10 @@
     color: var(--primary-blue);
     margin-bottom: 4px;
     line-height: 1.4;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
 .work-company {
@@ -203,6 +202,11 @@
 .time-posted {
     color: #057642;
     font-weight: 600;
+}
+
+.work-title .time-posted {
+    font-size: 14px;
+    font-weight: 500;
 }
 
 /* Badges for Part-time/Internships */
