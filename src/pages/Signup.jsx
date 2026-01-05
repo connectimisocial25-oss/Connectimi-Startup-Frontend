@@ -16,7 +16,6 @@ function Signup() {
 
     const fullName = `${firstName} ${lastName}`;
     // In a real app you'd call your signup API here with split names or full name
-    console.log("Signing up as:", accountType, { fullName, email, password });
 
     navigate("/profile");
   }
@@ -96,7 +95,7 @@ function Signup() {
             />
           </div>
 
-          <p style={{ fontSize: "12px", color: "#666", textAlign: "center", margin: "10px 0" }}>
+          <p style={{ fontSize: "12px", color: "var(--text-secondary)", textAlign: "center", margin: "10px 0" }}>
             By clicking Create Account, you agree to the User Agreement, Privacy Policy, and Cookie Policy.
           </p>
 

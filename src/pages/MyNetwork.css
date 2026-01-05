@@ -1,12 +1,8 @@
 .network-container {
     min-height: 100vh;
-    background-color: #0a0a0a;
+    background-color: var(--bg-color);
     padding-top: 52px;
-    --modern-teal: #5fa093;
-    --dark-card: #141414;
-    --border-color: #222;
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
+    --modern-teal: var(--primary-blue);
 }
 
 .network-content {
@@ -24,9 +20,9 @@
 }
 
 .network-sidebar-card {
-    background: var(--dark-card);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px var(--border-color);
     border: 1px solid var(--border-color);
     overflow: hidden;
     position: sticky;
@@ -54,7 +50,7 @@
 
 .sidebar-item:hover {
     background-color: #f3f3f3;
-    color: #0a66c2;
+    color: var(--primary-blue);
 }
 
 .sidebar-count {
@@ -68,10 +64,11 @@
 
 /* Invitations Section */
 .invitations-section {
-    background: var(--dark-card);
-    border-radius: 12px;
+    background: var(--card-bg);
+    border-radius: 8px;
     border: 1px solid var(--border-color);
     margin-bottom: 24px;
+    box-shadow: 0 0 1px var(--border-color);
 }
 
 .section-header {
@@ -132,12 +129,14 @@
     filter: brightness(1.1);
     transform: translateY(-1px);
 }
+
 .suggestions-section {
-    background: var(--dark-card);
-    border-radius: 12px;
+    background: var(--card-bg);
+    border-radius: 8px;
     border: 1px solid var(--border-color);
     padding: 24px;
     position: relative;
+    box-shadow: 0 0 1px var(--border-color);
 }
 
 .suggestions-grid {
@@ -150,32 +149,35 @@
 .modern-teal-badge {
     background-color: var(--modern-teal);
     color: white;
-    padding: 8px 20px;
-    border-radius: 8px;
+    padding: 10px 24px;
+    border-radius: 4px;
+    /* Flatter more like a header box */
     font-weight: 700;
-    font-size: 18px;
+    font-size: 16px;
     display: inline-block;
-    margin-bottom: 16px;
-    letter-spacing: 1px;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
 }
 
 .suggestion-card {
-    background: #0f0f0f;
+    background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     text-align: center;
     position: relative;
     padding-bottom: 24px;
     transition: transform 0.2s;
+    box-shadow: 0 0 1px var(--border-color);
 }
 
 .suggestion-card:hover {
     transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .suggestion-banner {
-    height: 60px;
+    height: 70px;
     background-color: var(--modern-teal);
 }
 
@@ -183,7 +185,7 @@
     width: 110px;
     height: 110px;
     border-radius: 50%;
-    border: 3px solid #0f0f0f;
+    border: 4px solid #ffffff;
     margin-top: -55px;
     object-fit: cover;
     background-color: #eee;
@@ -206,10 +208,10 @@
 .connect-btn {
     width: calc(100% - 32px);
     margin: 0 16px;
-    background: var(--modern-teal);
-    border: none;
-    color: white;
-    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--modern-teal);
+    color: var(--modern-teal);
+    padding: 8px;
     border-radius: 30px;
     font-weight: 600;
     cursor: pointer;
@@ -221,60 +223,9 @@
 }
 
 .connect-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-}
-
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-    .network-container {
-        background-color: #121212;
-    }
-
-    .network-sidebar-card,
-    .invitations-section,
-    .suggestions-section {
-        background: #1e1e1e;
-        border-color: #333;
-        box-shadow: 0 0 0 1px #333;
-    }
-
-    .sidebar-title,
-    .section-header {
-        border-bottom-color: #333;
-        color: #e0e0e0;
-    }
-
-    .sidebar-item {
-        color: #aaa;
-    }
-
-    .sidebar-item:hover {
-        background-color: #2d2d2d;
-    }
-
-    .section-header h2,
-    .invite-name,
-    .suggestion-name {
-        color: #e0e0e0;
-    }
-
-    .invitation-card,
-    .suggestion-card {
-        border-color: #333;
-    }
-
-    .invite-role,
-    .suggestion-role {
-        color: #aaa;
-    }
-
-    .accept-btn:hover,
-    .connect-btn:hover {
-        background-color: var(--modern-teal);
-        color: white;
-        border-color: var(--modern-teal);
-    }
+    background-color: var(--border-color);
+    border-width: 2px;
+    padding: 7px;
 }
 
 /* Responsive */

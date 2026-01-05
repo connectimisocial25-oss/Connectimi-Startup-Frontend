@@ -12,7 +12,6 @@ function Login() {
     e.preventDefault();
     if (!email || !password) return;
     // In a real app you'd call your auth API here, passing accountType
-    console.log("Logging in as:", accountType, { email, password });
     navigate("/home");
   }
 
@@ -68,7 +67,7 @@ function Login() {
           </div>
 
           <div style={{ textAlign: "left" }}>
-            <Link to="/forgot-password" style={{ color: "#0a66c2", fontWeight: "600", textDecoration: "none", fontSize: "14px" }}>
+            <Link to="/forgot-password" style={{ color: "var(--primary-blue)", fontWeight: "600", textDecoration: "none", fontSize: "14px" }}>
               Forgot password?
             </Link>
           </div>

@@ -1,29 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    FaSearch, FaHome, FaUserFriends, FaBriefcase,
-    FaCommentDots, FaBell, FaCaretDown, FaUserPlus,
-    FaUsers, FaHashtag, FaCalendarAlt, FaNewspaper, FaChevronRight,
-    FaUserCircle
-} from 'react-icons/fa';
+import Icon from '../components/Icon';
 import Connectimi_logo from '../components/Connectimi_logo';
 import './MyNetwork.css';
-import './Profile.css'; 
 const MyNetwork = () => {
     const navigate = useNavigate();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const invitations = [
         {
-            id: 1,
-            name: "Sarah Miller",
-            role: "Software Engineer at TechCorp",
-            avatar: "https://i.pravatar.cc/150?u=sarah"
-        },
-        {
             id: 2,
             name: "Michael Chen",
             role: "Product Manager at InnovateSoft",
             avatar: "https://i.pravatar.cc/150?u=michael"
+        },
+        {
+            id: 1,
+            name: "Sarah Miller",
+            role: "Software Engineer at TechCorp",
+            avatar: "https://i.pravatar.cc/150?u=sarah"
         }
     ];
 
@@ -71,7 +65,7 @@ const MyNetwork = () => {
             <div className="navbar-left">
                 <Connectimi_logo />
                 <div className="search-bar">
-                    <FaSearch className="search-icon" />
+                    <Icon name="search" className="search-icon" />
                     <input
                         type="text"
                         placeholder="Search"
@@ -82,32 +76,32 @@ const MyNetwork = () => {
 
             <div className="navbar-center">
                 <div className="nav-item" onClick={() => navigate('/home')}>
-                    <div className="nav-icon"><FaHome /></div>
+                    <div className="nav-icon"><Icon name="home" /></div>
                     <span className="nav-label">Home</span>
                 </div>
 
                 <div className="nav-item active" onClick={() => navigate('/mynetwork')}>
-                    <div className="nav-icon"><FaUserFriends /></div>
-                    <span className="nav-label">My Network</span>
+                    <div className="nav-icon"><Icon name="user-friends" /></div>
+                    <span className="nav-label">My Connection</span>
                 </div>
 
-                <div className="nav-item" onClick={() => navigate('/jobs')}>
-                    <div className="nav-icon"><FaBriefcase /></div>
-                    <span className="nav-label">Jobs</span>
+                <div className="nav-item" onClick={() => navigate('/work')}>
+                    <div className="nav-icon"><Icon name="briefcase" /></div>
+                    <span className="nav-label">Work</span>
                 </div>
                 <div className="nav-item" onClick={() => navigate('/messaging')}>
-                    <div className="nav-icon"><FaCommentDots /></div>
+                    <div className="nav-icon"><Icon name="comment-dots" /></div>
                     <span className="nav-label">Messaging</span>
                 </div>
                 <div className="nav-item" onClick={() => navigate('/notifications')}>
-                    <div className="nav-icon"><FaBell /></div>
+                    <div className="nav-icon"><Icon name="bell" /></div>
                     <span className="nav-label">Notifications</span>
                 </div>
 
                 <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                     <div className="nav-icon">
                         <img src="https://via.placeholder.com/24" alt="Me" className="nav-profile-img" />
-                        <FaCaretDown size={12} />
+                        <Icon name="caret-down" size={12} />
                     </div>
                     <span className="nav-label">Me</span>
                     {isDropdownOpen && (
@@ -131,33 +125,33 @@ const MyNetwork = () => {
             <div className="network-content">
                 <aside className="network-sidebar">
                     <div className="network-sidebar-card">
-                        <div className="sidebar-title">Manage my network</div>
+                        <div className="sidebar-title">Manage my connections</div>
                         <div className="sidebar-item">
-                            <FaUsers />
+                            <Icon name="users" />
                             <span>Connections</span>
                             <span className="sidebar-count">482</span>
                         </div>
                         <div className="sidebar-item">
-                            <FaUserCircle size={18} />
+                            <Icon name="user-circle" size={18} />
                             <span>Following & followers</span>
                         </div>
                         <div className="sidebar-item">
-                            <FaUsers />
+                            <Icon name="users" />
                             <span>Groups</span>
                             <span className="sidebar-count">12</span>
                         </div>
                         <div className="sidebar-item">
-                            <FaCalendarAlt />
+                            <Icon name="calendar-alt" />
                             <span>Events</span>
                             <span className="sidebar-count">2</span>
                         </div>
                         <div className="sidebar-item">
-                            <FaNewspaper />
+                            <Icon name="newspaper" />
                             <span>Newsletter</span>
                             <span className="sidebar-count">5</span>
                         </div>
                         <div className="sidebar-item">
-                            <FaHashtag />
+                            <Icon name="hashtag" />
                             <span>Hashtags</span>
                             <span className="sidebar-count">24</span>
                         </div>
@@ -197,7 +191,7 @@ const MyNetwork = () => {
                                         <div className="suggestion-role">{person.role}</div>
                                     </div>
                                     <button className="connect-btn">
-                                        <FaUserPlus /> Connect
+                                        <Icon name="user-plus" /> Connect
                                     </button>
                                 </div>
                             ))}

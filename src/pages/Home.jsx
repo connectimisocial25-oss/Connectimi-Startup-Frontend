@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  FaSearch, FaHome, FaUserFriends, FaBriefcase,
-  FaCommentDots, FaBell, FaCaretDown
-} from 'react-icons/fa';
+import Icon from '../components/Icon';
 import Connectimi_logo from '../components/Connectimi_logo';
 import './Profile.css';
 
-const Home = () => {
+function Navbar() {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const Navbar = () => (
+  return (
     <nav className="navbar">
       <div className="navbar-left">
         <Connectimi_logo />
         <div className="search-bar">
-          <FaSearch className="search-icon" />
+          <Icon name="search" className="search-icon" />
           <input
             type="text"
             placeholder="Search"
@@ -27,32 +24,95 @@ const Home = () => {
 
       <div className="navbar-center">
         <div className="nav-item active" onClick={() => navigate('/home')}>
-          <div className="nav-icon"><FaHome /></div>
+          <div className="nav-icon"><Icon name="home" /></div>
           <span className="nav-label">Home</span>
         </div>
 
         <div className="nav-item" onClick={() => navigate('/mynetwork')}>
-          <div className="nav-icon"><FaUserFriends /></div>
-          <span className="nav-label">My Network</span>
+          <div className="nav-icon"><Icon name="user-friends" /></div>
+          <span className="nav-label">My Connection</span>
         </div>
 
-        <div className="nav-item" onClick={() => navigate('/jobs')}>
-          <div className="nav-icon"><FaBriefcase /></div>
-          <span className="nav-label">Jobs</span>
+        <div className="nav-item" onClick={() => navigate('/work')}>
+          <div className="nav-icon"><Icon name="briefcase" /></div>
+          <span className="nav-label">Work</span>
         </div>
         <div className="nav-item" onClick={() => navigate('/messaging')}>
-          <div className="nav-icon"><FaCommentDots /></div>
+          <div className="nav-icon"><Icon name="comment-dots" /></div>
           <span className="nav-label">Messaging</span>
         </div>
         <div className="nav-item" onClick={() => navigate('/notifications')}>
-          <div className="nav-icon"><FaBell /></div>
+          <div className="nav-icon"><Icon name="bell" /></div>
           <span className="nav-label">Notifications</span>
         </div>
 
         <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           <div className="nav-icon">
             <img src="https://via.placeholder.com/24" alt="Me" className="nav-profile-img" />
-            <FaCaretDown size={12} />
+            <Icon name="caret-down" size={12} />
+          </div>
+          <span className="nav-label">Me</span>
+          {isDropdownOpen && (
+            <div className="dropdown-menu">
+              <div className="dropdown-item" onClick={() => navigate('/profile')}>
+                View Profile
+              </div>
+              <div className="dropdown-item signout-item" onClick={() => navigate('/')}>
+                Sign Out
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+const Home = () => {
+  const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const Navbar = () => (
+    <nav className="navbar">
+      <div className="navbar-left">
+        <Connectimi_logo />
+        <div className="search-bar">
+          <Icon name="search" className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search"
+            className="search-input"
+          />
+        </div>
+      </div>
+
+      <div className="navbar-center">
+        <div className="nav-item active" onClick={() => navigate('/home')}>
+          <div className="nav-icon"><Icon name="home" /></div>
+          <span className="nav-label">Home</span>
+        </div>
+
+        <div className="nav-item" onClick={() => navigate('/mynetwork')}>
+          <div className="nav-icon"><Icon name="user-friends" /></div>
+          <span className="nav-label">My Connection</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate('/work')}>
+          <div className="nav-icon"><Icon name="briefcase" /></div>
+          <span className="nav-label">Work</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate('/messaging')}>
+          <div className="nav-icon"><Icon name="comment-dots" /></div>
+          <span className="nav-label">Messaging</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate('/notifications')}>
+          <div className="nav-icon"><Icon name="bell" /></div>
+          <span className="nav-label">Notifications</span>
+        </div>
+
+        <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          <div className="nav-icon">
+            <img src="https://via.placeholder.com/24" alt="Me" className="nav-profile-img" />
+            <Icon name="caret-down" size={12} />
           </div>
           <span className="nav-label">Me</span>
           {isDropdownOpen && (
@@ -79,7 +139,7 @@ const Home = () => {
           <p>This is your professional networking feed. Features for posting and interaction are coming soon.</p>
           <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
             <button className="btn" onClick={() => navigate('/profile')}>View Profile</button>
-            <button className="btn" style={{ background: 'white', color: '#0a66c2', border: '1px solid #0a66c2' }} onClick={() => navigate('/jobs')}>Find Jobs</button>
+            <button className="btn btn-outline-primary" style={{ background: 'white', color: 'var(--primary-blue)', border: '1px solid var(--primary-blue)' }} onClick={() => navigate('/work')}>Find Work</button>
           </div>
         </div>
       </div>

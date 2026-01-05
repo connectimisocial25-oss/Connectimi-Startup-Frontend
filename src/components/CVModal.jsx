@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaPrint, FaTimes, FaEnvelope, FaPhone, FaMapMarkerAlt, FaGlobe, FaLinkedin } from 'react-icons/fa';
+import Icon from './Icon';
 import './CVModal.css';
 
 const CVModal = ({ profileData, onClose }) => {
@@ -16,10 +16,10 @@ const CVModal = ({ profileData, onClose }) => {
           <h2>CV Profile Preview</h2>
           <div className="cv-actions">
             <button className="btn-print" onClick={handlePrint}>
-              <FaPrint /> Print / Save as PDF
+              <Icon name="print" /> Print / Save as PDF
             </button>
             <button className="btn-close" onClick={onClose}>
-              <FaTimes /> Close
+              <Icon name="close" /> Close
             </button>
           </div>
         </div>
@@ -34,22 +34,22 @@ const CVModal = ({ profileData, onClose }) => {
               <div className="cv-contact-info">
                 {profileData.email && (
                   <div className="cv-contact-item">
-                    <FaEnvelope size={12} /> {profileData.email}
+                    <Icon name="envelope" size={12} /> {profileData.email}
                   </div>
                 )}
                 {profileData.phone && (
                   <div className="cv-contact-item">
-                    <FaPhone size={12} /> {profileData.phone}
+                    <Icon name="phone" size={12} /> {profileData.phone}
                   </div>
                 )}
                 {profileData.location && (
                   <div className="cv-contact-item">
-                    <FaMapMarkerAlt size={12} /> {profileData.location}
+                    <Icon name="map-marker" size={12} /> {profileData.location}
                   </div>
                 )}
                 {profileData.website && (
                   <div className="cv-contact-item">
-                    <FaGlobe size={12} /> {profileData.website}
+                    <Icon name="globe" size={12} /> {profileData.website}
                   </div>
                 )}
               </div>

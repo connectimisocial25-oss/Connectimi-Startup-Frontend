@@ -1,24 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  FaSearch, FaHome, FaUserFriends, FaBriefcase,
-  FaCommentDots, FaBell, FaCaretDown, FaUserCircle,
-  FaLinkedin, FaEdit, FaPlus, FaBuilding, FaGraduationCap,
-  FaMapMarkerAlt, FaGlobe, FaLink, FaTimes, FaCamera,
-  FaSignOutAlt, FaEllipsisH, FaVolumeUp, FaVolumeMute,
-  FaPlay, FaPause, FaRobot, FaPaperPlane, FaInfoCircle,
-  FaFilePdf, FaShareAlt, FaExclamationTriangle
-} from 'react-icons/fa';
+import Icon from '../components/Icon';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import './Profile.css';
 
 // IMPORTANT: You need to create or verify this component exists
 // If Connectimi_logo doesn't exist, replace with a logo component or remove
 import Connectimi_logo from '../components/Connectimi_logo';
 import CVModal from '../components/CVModal';
-import { FaFileAlt } from 'react-icons/fa';
+// Icons use wrapper to support swap to updated 2026 icon set
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const speechSynthesisRef = useRef(null);
 
   // State for user profile data
@@ -140,6 +134,21 @@ const Profile = () => {
       }
     } finally {
       setIsSummarizing(false);
+    }
+  };
+
+  // Share profile: use Web Share API when available, otherwise copy link
+  const handleShareProfile = () => {
+    const url = window.location.href;
+    const title = profileData.name ? `${profileData.name} — Profile` : 'Profile';
+    if (navigator.share) {
+      navigator.share({ title, url }).catch(() => { });
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Profile link copied to clipboard');
+      });
+    } else {
+      prompt('Copy this profile link:', url);
     }
   };
 
@@ -397,7 +406,6 @@ const Profile = () => {
       setProfileData({ ...editData });
       setIsEditing(false);
 
-      console.log('Profile saved:', editData);
     } catch (error) {
       console.error('Error saving profile:', error);
     }
@@ -506,7 +514,7 @@ const Profile = () => {
         {/* <div className="logo">Connectimi</div> */}
         <Connectimi_logo />
         <div className="search-bar">
-          <FaSearch className="search-icon" />
+          <Icon name="search" className="search-icon" />
           <input
             type="text"
             placeholder="Search"
@@ -516,19 +524,19 @@ const Profile = () => {
       </div>
 
       <div className="navbar-center">
-        <NavItem icon={<FaHome />} label="Home" path="/home" active={false} />
+        <NavItem icon={<Icon name="home" />} label="Home" path="/home" active={false} />
 
         <div className="nav-item" onClick={() => navigate('/mynetwork')}>
-          <div className="nav-icon"><FaUserFriends /></div>
-          <span className="nav-label">My Network</span>
+          <div className="nav-icon"><Icon name="user-friends" /></div>
+          <span className="nav-label">My Connection</span>
         </div>
 
-        <div className="nav-item" onClick={() => navigate('/jobs')}>
-          <div className="nav-icon"><FaBriefcase /></div>
-          <span className="nav-label">Jobs</span>
+        <div className="nav-item" onClick={() => navigate('/work')}>
+          <div className="nav-icon"><Icon name="briefcase" /></div>
+          <span className="nav-label">Work</span>
         </div>
-        <NavItem icon={<FaCommentDots />} label="Messaging" path="/messaging" active={false} />
-        <NavItem icon={<FaBell />} label="Notifications" path="/notifications" active={false} />
+        <NavItem icon={<Icon name="comment-dots" />} label="Messaging" path="/messaging" active={false} />
+        <NavItem icon={<Icon name="bell" />} label="Notifications" path="/notifications" active={false} />
 
         {/* Me dropdown */}
         <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
@@ -542,7 +550,7 @@ const Profile = () => {
                 e.target.src = "https://via.placeholder.com/32";
               }}
             />
-            <FaCaretDown size={12} />
+            <Icon name="caret-down" size={12} />
           </div>
           <span className="nav-label">Me</span>
 
@@ -574,10 +582,10 @@ const Profile = () => {
                 setIsEditing(true);
                 setIsDropdownOpen(false);
               }}>
-                <FaEdit /> Edit Profile
+                <Icon name="edit" /> Edit Profile
               </div>
               <div className="dropdown-item signout-item" onClick={handleSignOut}>
-                <FaSignOutAlt /> Sign Out
+                <Icon name="sign-out" /> Sign Out
               </div>
             </div>
           )}
@@ -597,7 +605,7 @@ const Profile = () => {
   const SpeechControls = () => (
     <div className="speech-controls">
       <div className="speech-header">
-        <FaRobot className="ai-icon" />
+        <Icon name="robot" className="ai-icon" />
         <h4>Profile Podcast</h4>
         {isSummarizing && <span className="summarizing-badge">Generating...</span>}
       </div>
@@ -613,11 +621,11 @@ const Profile = () => {
         {isSpeaking ? (
           isPaused ? (
             <button className="speech-btn play-btn" onClick={resumeSpeaking}>
-              <FaPlay /> Resume
+              <Icon name="play" /> Resume
             </button>
           ) : (
             <button className="speech-btn pause-btn" onClick={pauseSpeaking}>
-              <FaPause /> Pause
+              <Icon name="pause" /> Pause
             </button>
           )
         ) : (
@@ -626,12 +634,12 @@ const Profile = () => {
             onClick={() => profileSummary ? speakText(profileSummary) : generateProfileSummary()}
             disabled={isSummarizing || !isSpeechSupported}
           >
-            {isSummarizing ? 'Generating...' : <><FaPlay /> Listen to Profile</>}
+            {isSummarizing ? 'Generating...' : <><Icon name="play" /> Listen to Profile</>}
           </button>
         )}
 
         <button className="speech-btn stop-btn" onClick={stopSpeaking} disabled={!isSpeechSupported}>
-          <FaVolumeMute /> Stop
+          <Icon name="volume-mute" /> Stop
         </button>
       </div>
 
@@ -688,7 +696,7 @@ const Profile = () => {
             onClick={generateProfileSummary}
             disabled={isSummarizing || !isSpeechSupported}
           >
-            <FaRobot /> Regenerate Summary
+            <Icon name="robot" /> Regenerate Summary
           </button>
         </div>
       )}
@@ -811,7 +819,7 @@ const Profile = () => {
                 className="btn-remove"
                 onClick={() => removeExperience(index)}
               >
-                <FaTimes />
+                <Icon name="close" />
               </button>
             </div>
           ))}
@@ -858,7 +866,7 @@ const Profile = () => {
               className="btn-add"
               onClick={addExperience}
             >
-              <FaPlus /> Add
+              <Icon name="plus" /> Add
             </button>
           </div>
         </div>
@@ -903,7 +911,7 @@ const Profile = () => {
                 className="btn-remove"
                 onClick={() => removeEducation(index)}
               >
-                <FaTimes />
+                <Icon name="close" />
               </button>
             </div>
           ))}
@@ -959,7 +967,7 @@ const Profile = () => {
               className="btn-add"
               onClick={addEducation}
             >
-              <FaPlus /> Add
+              <Icon name="plus" /> Add
             </button>
           </div>
         </div>
@@ -976,7 +984,7 @@ const Profile = () => {
                   className="skill-remove"
                   onClick={() => removeSkill(index)}
                 >
-                  <FaTimes />
+                  <Icon name="close" />
                 </button>
               </span>
             ))}
@@ -994,7 +1002,7 @@ const Profile = () => {
               className="btn-add-skill"
               onClick={addSkill}
             >
-              <FaPlus /> Add Skill
+              <Icon name="plus" /> Add Skill
             </button>
           </div>
         </div>
@@ -1048,7 +1056,7 @@ const Profile = () => {
                 {isEditing && (
                   <div className="image-upload-container">
                     <label htmlFor="profile-image-upload" className="image-upload-btn">
-                      <FaCamera /> Change Photo
+                      <Icon name="camera" /> Change Photo
                     </label>
                     <input
                       id="profile-image-upload"
@@ -1074,7 +1082,7 @@ const Profile = () => {
                     setIsEditing(true);
                   }}
                 >
-                  <FaEdit /> Edit Profile
+                  <Icon name="edit" /> Edit Profile
                 </button>
               )}
             </div>
@@ -1088,11 +1096,11 @@ const Profile = () => {
                 <h1 className="profile-name">{profileData.name || 'User Name'}</h1>
                 <p className="profile-headline">{profileData.headline || 'Your professional headline'}</p>
                 <div className="profile-location">
-                  <FaMapMarkerAlt /> {profileData.location || 'Location not specified'}
+                  <Icon name="map-marker" /> {profileData.location || 'Location not specified'}
                 </div>
                 {profileData.website && (
                   <div className="profile-website">
-                    <FaLink /> <a href={profileData.website} target="_blank" rel="noopener noreferrer">{profileData.website}</a>
+                    <Icon name="link" /> <a href={profileData.website} target="_blank" rel="noopener noreferrer">{profileData.website}</a>
                   </div>
                 )}
                 <div className="profile-stats">
@@ -1113,7 +1121,10 @@ const Profile = () => {
                   <button className="btn-connect">Connect</button>
                   <button className="btn-message">Message</button>
                   <button className="btn-cv" onClick={() => setShowCV(true)}>
-                    <FaFileAlt /> CV Profile
+                    <Icon name="file-alt" /> CV Profile
+                  </button>
+                  <button className="icon-btn share-btn" onClick={handleShareProfile} title="Share profile">
+                    <Icon name="share" /> Share
                   </button>
 
                   {/* More button with dropdown */}
@@ -1122,29 +1133,30 @@ const Profile = () => {
                       className="btn-more"
                       onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
                     >
-                      <FaEllipsisH /> More
+                      <Icon name="ellipsis-h" /> More
                     </button>
 
                     {isMoreDropdownOpen && (
                       <div className="more-dropdown">
                         <div className="more-dropdown-item">
-                          <FaPaperPlane /> Send profile in a message
+                          <Icon name="paper-plane" /> Send profile in a message
                         </div>
                         <div className="more-dropdown-item" onClick={generateProfileSummary}>
-                          <FaRobot /> AI Profile Summary
+                          <Icon name="robot" /> AI Profile Summary
                         </div>
                         {/* <div className="more-dropdown-item" onClick={() => window.print()}>
-                          <FaFilePdf /> Save as PDF
+                          <Icon name="file-pdf" /> Save as PDF
                         </div> */}
                         <div className="more-dropdown-item">
-                          <FaShareAlt /> Share Profile via...
+                          <Icon name="info-circle" /> About this profile
                         </div>
-                        <div className="more-dropdown-item">
-                          <FaInfoCircle /> About this profile
+                        <div className="more-dropdown-item" onClick={toggleTheme}>
+                          {theme === 'light' ? <Icon name="moon" /> : <Icon name="sun" />}
+                          {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
                         </div>
                         <div className="more-dropdown-divider"></div>
                         <div className="more-dropdown-item">
-                          <FaExclamationTriangle /> Report/Block
+                          <Icon name="exclamation-triangle" /> Report/Block
                         </div>
                       </div>
                     )}
@@ -1175,7 +1187,7 @@ const Profile = () => {
               {/* Experience Section */}
               <div className="profile-section">
                 <div className="section-header">
-                  <h3><FaBuilding /> Experience</h3>
+                  <h3><Icon name="building" /> Experience</h3>
                 </div>
                 {profileData.experience.length > 0 ? (
                   profileData.experience.map((exp, index) => (
@@ -1194,7 +1206,7 @@ const Profile = () => {
               {/* Education Section */}
               <div className="profile-section">
                 <div className="section-header">
-                  <h3><FaGraduationCap /> Education</h3>
+                  <h3><Icon name="graduation-cap" /> Education</h3>
                 </div>
                 {profileData.education.length > 0 ? (
                   profileData.education.map((edu, index) => (
@@ -1249,7 +1261,7 @@ const Profile = () => {
                     onClick={generateProfileSummary}
                     disabled={isSummarizing || !isSpeechSupported}
                   >
-                    <FaRobot /> {isSummarizing ? 'Generating...' : 'Listen to Profile'}
+                    <Icon name="robot" /> {isSummarizing ? 'Generating...' : 'Listen to Profile'}
                   </button>
                   <p className="ai-description">
                     Get an AI-generated podcast-style summary of your profile

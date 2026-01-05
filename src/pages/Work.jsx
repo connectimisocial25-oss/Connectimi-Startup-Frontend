@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    FaSearch, FaHome, FaUserFriends, FaBriefcase,
-    FaCommentDots, FaBell, FaUserCircle, FaCaretDown
-} from 'react-icons/fa';
+import Icon from '../components/Icon';
 import Connectimi_logo from '../components/Connectimi_logo';
-import './Jobs.css';
+import './Work.css';
 import './Profile.css'; // Utilizing Navbar styles from Profile
 
-const Jobs = () => {
+const Work = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('fulltime');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -21,7 +18,7 @@ const Jobs = () => {
     });
 
     // Mock Data
-    const fullTimeJobs = [
+    const fullTimeWork = [
         {
             id: 1,
             title: 'Senior Frontend Developer',
@@ -108,7 +105,7 @@ const Jobs = () => {
         }
     ];
 
-    const freelancingJobs = [
+    const freelancingWork = [
         {
             id: 201,
             title: 'WordPress Theme Customization',
@@ -167,15 +164,15 @@ const Jobs = () => {
         }));
     };
 
-    const getFilteredJobs = (jobs) => {
-        return jobs.filter(job => {
-            const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                job.company.toLowerCase().includes(searchQuery.toLowerCase());
+    const getFilteredWork = (workItems) => {
+        return workItems.filter(workItem => {
+            const matchesSearch = workItem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                workItem.company.toLowerCase().includes(searchQuery.toLowerCase());
 
-            const matchesSalary = filters.salaryRange === 'all' || job.salaryRange === filters.salaryRange;
-            const matchesLocation = filters.location === 'all' || job.locationType === filters.location;
-            const matchesType = filters.jobType === 'all' || job.jobType === filters.jobType;
-            const matchesExperience = filters.experienceLevel === 'all' || job.experienceLevel === filters.experienceLevel;
+            const matchesSalary = filters.salaryRange === 'all' || workItem.salaryRange === filters.salaryRange;
+            const matchesLocation = filters.location === 'all' || workItem.locationType === filters.location;
+            const matchesType = filters.jobType === 'all' || workItem.jobType === filters.jobType;
+            const matchesExperience = filters.experienceLevel === 'all' || workItem.experienceLevel === filters.experienceLevel;
 
             return matchesSearch && matchesSalary && matchesLocation && matchesType && matchesExperience;
         });
@@ -186,10 +183,10 @@ const Jobs = () => {
             <div className="navbar-left">
                 <Connectimi_logo />
                 <div className="search-bar">
-                    <FaSearch className="search-icon" />
+                    <Icon name="search" className="search-icon" />
                     <input
                         type="text"
-                        placeholder="Search jobs"
+                        placeholder="Search work"
                         className="search-input"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -199,32 +196,32 @@ const Jobs = () => {
 
             <div className="navbar-center">
                 <div className="nav-item" onClick={() => navigate('/home')}>
-                    <div className="nav-icon"><FaHome /></div>
+                    <div className="nav-icon"><Icon name="home" /></div>
                     <span className="nav-label">Home</span>
                 </div>
 
                 <div className="nav-item" onClick={() => navigate('/mynetwork')}>
-                    <div className="nav-icon"><FaUserFriends /></div>
-                    <span className="nav-label">My Network</span>
+                    <div className="nav-icon"><Icon name="user-friends" /></div>
+                    <span className="nav-label">My Connection</span>
                 </div>
 
-                <div className="nav-item active" onClick={() => navigate('/jobs')}>
-                    <div className="nav-icon"><FaBriefcase /></div>
-                    <span className="nav-label">Jobs</span>
+                <div className="nav-item active" onClick={() => navigate('/work')}>
+                    <div className="nav-icon"><Icon name="briefcase" /></div>
+                    <span className="nav-label">Work</span>
                 </div>
                 <div className="nav-item" onClick={() => navigate('/messaging')}>
-                    <div className="nav-icon"><FaCommentDots /></div>
+                    <div className="nav-icon"><Icon name="comment-dots" /></div>
                     <span className="nav-label">Messaging</span>
                 </div>
                 <div className="nav-item" onClick={() => navigate('/notifications')}>
-                    <div className="nav-icon"><FaBell /></div>
+                    <div className="nav-icon"><Icon name="bell" /></div>
                     <span className="nav-label">Notifications</span>
                 </div>
 
                 <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                     <div className="nav-icon">
                         <img src="https://via.placeholder.com/24" alt="Me" className="nav-profile-img" />
-                        <FaCaretDown size={12} />
+                        <Icon name="caret-down" size={12} />
                     </div>
                     <span className="nav-label">Me</span>
                     {isDropdownOpen && (
@@ -243,11 +240,11 @@ const Jobs = () => {
     );
 
     return (
-        <div className="jobs-container">
+        <div className="work-container">
             <Navbar />
 
-            <div className="jobs-content">
-                <aside className="jobs-sidebar">
+            <div className="work-content">
+                <aside className="work-sidebar">
                     <div className="filter-card">
                         <h3 className="filter-title">Filters</h3>
 
@@ -273,7 +270,7 @@ const Jobs = () => {
                         </div>
 
                         <div className="filter-group">
-                            <label>Job Type</label>
+                            <label>Work Type</label>
                             <select name="jobType" value={filters.jobType} onChange={handleFilterChange}>
                                 <option value="all">Any Type</option>
                                 <option value="full-time">Full-time</option>
@@ -308,104 +305,104 @@ const Jobs = () => {
                     </div>
                 </aside>
 
-                <div className="jobs-main">
-                    <div className="jobs-tabs">
+                <div className="work-main">
+                    <div className="work-tabs">
                         <button
-                            className={`jobs-tab ${activeTab === 'fulltime' ? 'active' : ''}`}
+                            className={`work-tab ${activeTab === 'fulltime' ? 'active' : ''}`}
                             onClick={() => setActiveTab('fulltime')}
                         >
-                            Full Time Jobs
+                            Full Time Work
                         </button>
                         <button
-                            className={`jobs-tab ${activeTab === 'internship' ? 'active' : ''}`}
+                            className={`work-tab ${activeTab === 'internship' ? 'active' : ''}`}
                             onClick={() => setActiveTab('internship')}
                         >
                             Internships / Part Time
                         </button>
                         <button
-                            className={`jobs-tab ${activeTab === 'freelancing' ? 'active' : ''}`}
+                            className={`work-tab ${activeTab === 'freelancing' ? 'active' : ''}`}
                             onClick={() => setActiveTab('freelancing')}
                         >
                             Freelancing
                         </button>
                     </div>
 
-                    <div className="jobs-list">
+                    <div className="work-list">
                         {activeTab === 'fulltime' && (
-                            // Full Time Jobs List
-                            getFilteredJobs(fullTimeJobs).length > 0 ? (
-                                getFilteredJobs(fullTimeJobs).map(job => (
-                                    <div key={job.id} className="job-card">
-                                        <img src={job.logo} alt={job.company} className="job-logo" />
-                                        <div className="job-details">
-                                            <div className="job-title">{job.title}</div>
-                                            <div className="job-company">{job.company}</div>
-                                            <div className="job-location">{job.location} ({job.locationType})</div>
-                                            <div className="job-meta">
-                                                <span className="time-posted">{job.posted}</span>
-                                                <span>• {job.applicants} applicants</span>
-                                                <span className="salary-badge">• {job.salaryRange}</span>
+                            // Full Time Work List
+                            getFilteredWork(fullTimeWork).length > 0 ? (
+                                getFilteredWork(fullTimeWork).map(workItem => (
+                                    <div key={workItem.id} className="work-card">
+                                        <img src={workItem.logo} alt={workItem.company} className="work-logo" />
+                                        <div className="work-details">
+                                            <div className="work-title">{workItem.title}</div>
+                                            <div className="work-company">{workItem.company}</div>
+                                            <div className="work-location">{workItem.location} ({workItem.locationType})</div>
+                                            <div className="work-meta">
+                                                <span className="time-posted">{workItem.posted}</span>
+                                                <span>• {workItem.applicants} applicants</span>
+                                                <span className="salary-badge">• {workItem.salaryRange}</span>
                                             </div>
                                         </div>
                                         <button className="apply-btn">Apply</button>
                                     </div>
                                 ))
                             ) : (
-                                <div className="no-jobs-message">No full-time jobs match your filters.</div>
+                                <div className="no-work-message">No full-time work matches your filters.</div>
                             )
                         )}
 
                         {activeTab === 'internship' && (
                             // Internships List
-                            getFilteredJobs(internships).length > 0 ? (
-                                getFilteredJobs(internships).map(job => (
-                                    <div key={job.id} className="job-card">
-                                        <img src={job.logo} alt={job.company} className="job-logo" />
-                                        <div className="job-details">
-                                            <div className="job-title">{job.title}</div>
-                                            <div className="job-company">{job.company}</div>
-                                            <div className="job-location">{job.location} ({job.locationType})</div>
+                            getFilteredWork(internships).length > 0 ? (
+                                getFilteredWork(internships).map(workItem => (
+                                    <div key={workItem.id} className="work-card">
+                                        <img src={workItem.logo} alt={workItem.company} className="work-logo" />
+                                        <div className="work-details">
+                                            <div className="work-title">{workItem.title}</div>
+                                            <div className="work-company">{workItem.company}</div>
+                                            <div className="work-location">{workItem.location} ({workItem.locationType})</div>
 
-                                            <div className="job-meta">
-                                                <span className={`badge ${job.type === 'Paid' ? 'badge-paid' : 'badge-unpaid'}`}>
-                                                    {job.type}
+                                            <div className="work-meta">
+                                                <span className={`badge ${workItem.type === 'Paid' ? 'badge-paid' : 'badge-unpaid'}`}>
+                                                    {workItem.type}
                                                 </span>
-                                                <span>• {job.duration}</span>
-                                                <span className="time-posted">• {job.posted}</span>
+                                                <span>• {workItem.duration}</span>
+                                                <span className="time-posted">• {workItem.posted}</span>
                                             </div>
                                         </div>
                                         <button className="apply-btn">Easy Apply</button>
                                     </div>
                                 ))
                             ) : (
-                                <div className="no-jobs-message">No internships match your filters.</div>
+                                <div className="no-work-message">No internships match your filters.</div>
                             )
                         )}
 
                         {activeTab === 'freelancing' && (
                             // Freelancing List
-                            getFilteredJobs(freelancingJobs).length > 0 ? (
-                                getFilteredJobs(freelancingJobs).map(job => (
-                                    <div key={job.id} className="job-card">
-                                        <img src={job.logo} alt={job.company} className="job-logo" />
-                                        <div className="job-details">
-                                            <div className="job-title">{job.title}</div>
-                                            <div className="job-company">{job.company}</div>
-                                            <div className="job-location">{job.location} ({job.locationType})</div>
-                                            <div className="job-meta">
-                                                <span className="badge badge-paid">{job.budget}</span>
-                                                <span>• {job.duration}</span>
-                                                <span className="time-posted">• {job.posted}</span>
+                            getFilteredWork(freelancingWork).length > 0 ? (
+                                getFilteredWork(freelancingWork).map(workItem => (
+                                    <div key={workItem.id} className="work-card">
+                                        <img src={workItem.logo} alt={workItem.company} className="work-logo" />
+                                        <div className="work-details">
+                                            <div className="work-title">{workItem.title}</div>
+                                            <div className="work-company">{workItem.company}</div>
+                                            <div className="work-location">{workItem.location} ({workItem.locationType})</div>
+                                            <div className="work-meta">
+                                                <span className="badge badge-paid">{workItem.budget}</span>
+                                                <span>• {workItem.duration}</span>
+                                                <span className="time-posted">• {workItem.posted}</span>
                                             </div>
-                                            <div className="job-description" style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
-                                                {job.description}
+                                            <div className="work-description" style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
+                                                {workItem.description}
                                             </div>
                                         </div>
                                         <button className="apply-btn">Apply</button>
                                     </div>
                                 ))
                             ) : (
-                                <div className="no-jobs-message">No freelancing jobs match your filters.</div>
+                                <div className="no-work-message">No freelancing work matches your filters.</div>
                             )
                         )}
                     </div>
@@ -415,4 +412,4 @@ const Jobs = () => {
     );
 };
 
-export default Jobs;
+export default Work;

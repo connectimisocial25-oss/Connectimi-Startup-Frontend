@@ -1,13 +1,38 @@
+:root {
+  --bg-color: #f3f2ef;
+  --card-bg: #ffffff;
+  --text-primary: #191919;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --nav-bg: #ffffff;
+  --primary-blue: #355ae0; /* Connectimi official color (2026) */
+  --primary-blue-700: #1d4ed8; /* darker hover */
+  --primary-blue-variant: #378fe9; /* secondary stop for gradients */
+  --on-primary: #ffffff;
+}
+
+.dark {
+  --bg-color: #000000;
+  --card-bg: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #f0f0f0;
+  --border-color: #333333;
+  --nav-bg: #1e1e1e;
+  --primary-blue: #70b5f9;
+  --on-primary: #ffffff;
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  background: #f9fafb;
-  color: #111827;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  transition: background 0.3s, color 0.3s;
 }
 
 .auth-container {
@@ -21,15 +46,59 @@ body {
 .auth-form {
   width: 100%;
   max-width: 420px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   padding: 24px;
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-.auth-form h2 { margin-bottom: 16px; text-align:center;}
-.auth-form label { display:block; margin-bottom:12px; font-size:14px; color:#111827;}
-.auth-form input { width:100%; padding:10px 12px; margin-top:6px; border:1px solid #d1d5db; border-radius:8px; }
-.btn { display:inline-block; margin-top:12px; padding:10px 16px; background:#2563eb; color:#fff; border-radius:8px; text-decoration:none; border:none; cursor:pointer; }
-.auth-form p { margin-top:12px; text-align:center; font-size:14px; }
+.auth-form h2 {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: var(--primary-blue);
+  color: var(--on-primary);
+  border-radius: 8px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Outline variant for buttons */
+.btn-outline-primary {
+  background: transparent;
+  color: var(--primary-blue);
+  border: 1px solid var(--primary-blue);
+}
+
+.btn-outline-primary:hover {
+  background: var(--primary-blue);
+  color: var(--on-primary);
+}
+
+.auth-form p {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+}

@@ -28,7 +28,7 @@ const Connectimi_logo = () => {
         style={{
           fontSize: "20px",
           fontWeight: "700",
-          color: "#355ae0b5", // LinkedIn blue
+          color: "var(--primary-blue)",
           margin: 0,
           letterSpacing: "0.5px",
         }}
