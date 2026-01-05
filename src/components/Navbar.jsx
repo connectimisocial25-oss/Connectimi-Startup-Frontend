@@ -11,7 +11,7 @@ const Navbar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     return (
-        <nav className="navbar" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'var(--nav-bg)', borderBottom: '1px solid var(--border-color)', height: '52px' }}>
+        <nav className="navbar" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'var(--nav-bg)', borderBottom: '1px solid var(--border-color)', height: '60px' }}>
             <div className="navbar-left">
                 <Connectimi_logo />
                 <div className="search-bar">
