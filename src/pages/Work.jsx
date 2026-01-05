@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import Icon from '../components/Icon';
 import Connectimi_logo from '../components/Connectimi_logo';
 import './Work.css';
@@ -7,6 +8,7 @@ import './Profile.css'; // Utilizing Navbar styles from Profile
 
 const Work = () => {
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
     const [activeTab, setActiveTab] = useState('fulltime');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -235,6 +237,10 @@ const Work = () => {
                         <div className="dropdown-menu">
                             <div className="dropdown-item" onClick={() => navigate('/profile')}>
                                 View Profile
+                            </div>
+                            <div className="dropdown-item" onClick={toggleTheme}>
+                                <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
+                                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                             </div>
                             <div className="dropdown-item signout-item" onClick={() => navigate('/')}>
                                 Sign Out

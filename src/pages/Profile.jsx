@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Icon from '../components/Icon';
+import Avatar from '../components/Avatar';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import './Profile.css';
@@ -17,6 +18,7 @@ const Profile = () => {
 
   // State for user profile data
   const [profileData, setProfileData] = useState({
+    role: 'professional', // Default role for testing shapes
     name: '',
     headline: '',
     location: '',
@@ -299,6 +301,7 @@ const Profile = () => {
       // Mock data - replace with actual API call
       const mockData = {
         name: 'Alex Johnson',
+        role: 'professor', // Testing 'professor' (hexagon) or 'company' (square)
         headline: 'Senior Software Engineer at TechCorp',
         location: 'San Francisco, California',
         connections: 543,
@@ -541,14 +544,12 @@ const Profile = () => {
         {/* Me dropdown */}
         <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           <div className="nav-icon">
-            <img
-              src={profileData.profileImage || "https://via.placeholder.com/32"}
+            <Avatar
+              src={profileData.profileImage}
               alt="Profile"
+              role={profileData.role}
+              size={24}
               className="nav-profile-img"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "https://via.placeholder.com/32";
-              }}
             />
             <Icon name="caret-down" size={12} />
           </div>
@@ -557,14 +558,13 @@ const Profile = () => {
           {isDropdownOpen && (
             <div className="dropdown-menu">
               <div className="dropdown-header">
-                <img
-                  src={profileData.profileImage || "https://via.placeholder.com/64"}
+                <Avatar
+                  src={profileData.profileImage}
                   alt="Profile"
+                  role={profileData.role}
+                  size={56}
                   className="dropdown-profile-img"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/64";
-                  }}
+                  style={{ border: '2px solid var(--primary-blue)', margin: 0 }}
                 />
                 <div>
                   <h4>{profileData.name || 'User Name'}</h4>
@@ -583,6 +583,10 @@ const Profile = () => {
                 setIsDropdownOpen(false);
               }}>
                 <Icon name="edit" /> Edit Profile
+              </div>
+              <div className="dropdown-item" onClick={toggleTheme}>
+                <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
+                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
               </div>
               <div className="dropdown-item signout-item" onClick={handleSignOut}>
                 <Icon name="sign-out" /> Sign Out
@@ -1149,10 +1153,6 @@ const Profile = () => {
                         </div> */}
                         <div className="more-dropdown-item">
                           <Icon name="info-circle" /> About this profile
-                        </div>
-                        <div className="more-dropdown-item" onClick={toggleTheme}>
-                          {theme === 'light' ? <Icon name="moon" /> : <Icon name="sun" />}
-                          {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
                         </div>
                         <div className="more-dropdown-divider"></div>
                         <div className="more-dropdown-item">

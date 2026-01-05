@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import Icon from '../components/Icon';
+import Avatar from '../components/Avatar';
 import Connectimi_logo from '../components/Connectimi_logo';
 import './Profile.css';
 
@@ -48,7 +50,13 @@ function Navbar() {
 
         <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           <div className="nav-icon">
-            <img src="https://via.placeholder.com/24" alt="Me" className="nav-profile-img" />
+            <Avatar
+              src="https://via.placeholder.com/24"
+              alt="Me"
+              role="professional"
+              size={24}
+              className="nav-profile-img"
+            />
             <Icon name="caret-down" size={12} />
           </div>
           <span className="nav-label">Me</span>
@@ -70,6 +78,7 @@ function Navbar() {
 
 const Home = () => {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const Navbar = () => (
@@ -111,7 +120,13 @@ const Home = () => {
 
         <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           <div className="nav-icon">
-            <img src="https://via.placeholder.com/24" alt="Me" className="nav-profile-img" />
+            <Avatar
+              src="https://via.placeholder.com/24"
+              alt="Me"
+              role="professional"
+              size={24}
+              className="nav-profile-img"
+            />
             <Icon name="caret-down" size={12} />
           </div>
           <span className="nav-label">Me</span>

@@ -7,7 +7,8 @@ import Profile from "./pages/Profile";
 import Work from "./pages/Work";
 import Connectimi_logo from "./components/Connectimi_logo";
 import MyNetwork from "./pages/MyNetwork";
-
+import Notifications from "./pages/Notifications";
+import Messaging from "./pages/Messaging";
 
 
 // Layout wrapper to handle global elements
@@ -36,6 +37,8 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/work" element={<Work />} />
             <Route path="/mynetwork" element={<MyNetwork />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/messaging" element={<Messaging />} />
           </Routes>
         </Layout>
       </BrowserRouter>
