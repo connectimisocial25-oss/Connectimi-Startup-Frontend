@@ -49,7 +49,7 @@
 
 .auth-toggle {
     display: flex;
-    background: var(--card-bg);
+    background: var(--bg-color);
     border-radius: 20px;
     padding: 4px;
     margin-bottom: 24px;
@@ -95,6 +95,7 @@
     font-size: 16px;
     transition: border-color 0.2s;
     background-color: transparent;
+    color: var(--text-primary);
     box-sizing: border-box;
     /* Important for padding */
 }
