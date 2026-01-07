@@ -5,15 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import './Profile.css';
 
-// IMPORTANT: You need to create or verify this component exists
-// If Connectimi_logo doesn't exist, replace with a logo component or remove
-import Connectimi_logo from '../components/Connectimi_logo';
+// Connectimi_logo removed (Navbar only)
 import CVModal from '../components/CVModal';
 // Icons use wrapper to support swap to updated 2026 icon set
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
+  // useTheme removed (Navbar only)
   const speechSynthesisRef = useRef(null);
 
   // State for user profile data
@@ -36,8 +34,7 @@ const Profile = () => {
     phone: ''
   });
 
-  // State for navbar dropdown
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
 
   // State for edit mode
   const [isEditing, setIsEditing] = useState(false);
@@ -509,101 +506,7 @@ const Profile = () => {
     }));
   };
 
-  // LinkedIn-like navbar component
-  const Navbar = () => (
-    <nav className="navbar">
-      <div className="navbar-left">
-        {/* IMPORTANT: If Connectimi_logo doesn't exist, replace with: */}
-        {/* <div className="logo">Connectimi</div> */}
-        <Connectimi_logo />
-        <div className="search-bar">
-          <Icon name="search" className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="search-input"
-          />
-        </div>
-      </div>
 
-      <div className="navbar-center">
-        <NavItem icon={<Icon name="home" />} label="Home" path="/home" active={false} />
-
-        <div className="nav-item" onClick={() => navigate('/mynetwork')}>
-          <div className="nav-icon"><Icon name="user-friends" /></div>
-          <span className="nav-label">My Connection</span>
-        </div>
-
-        <div className="nav-item" onClick={() => navigate('/work')}>
-          <div className="nav-icon"><Icon name="briefcase" /></div>
-          <span className="nav-label">Work</span>
-        </div>
-        <NavItem icon={<Icon name="comment-dots" />} label="Messaging" path="/messaging" active={false} />
-        <NavItem icon={<Icon name="bell" />} label="Notifications" path="/notifications" active={false} />
-
-        {/* Me dropdown */}
-        <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          <div className="nav-icon">
-            <Avatar
-              src={profileData.profileImage}
-              alt="Profile"
-              role={profileData.role}
-              size={24}
-              className="nav-profile-img"
-            />
-            <Icon name="caret-down" size={12} />
-          </div>
-          <span className="nav-label">Me</span>
-
-          {isDropdownOpen && (
-            <div className="dropdown-menu">
-              <div className="dropdown-header">
-                <Avatar
-                  src={profileData.profileImage}
-                  alt="Profile"
-                  role={profileData.role}
-                  size={56}
-                  className="dropdown-profile-img"
-                  style={{ border: '2px solid var(--primary-blue)', margin: 0 }}
-                />
-                <div>
-                  <h4>{profileData.name || 'User Name'}</h4>
-                  <p>{profileData.headline || 'Your headline'}</p>
-                </div>
-              </div>
-              <div className="dropdown-item" onClick={() => navigate('/profile')}>
-                View Profile
-              </div>
-              <div className="dropdown-item">Account</div>
-              <div className="dropdown-item">Settings & Privacy</div>
-              <div className="dropdown-divider"></div>
-              <div className="dropdown-item">Manage</div>
-              <div className="dropdown-item" onClick={() => {
-                setIsEditing(true);
-                setIsDropdownOpen(false);
-              }}>
-                <Icon name="edit" /> Edit Profile
-              </div>
-              <div className="dropdown-item" onClick={toggleTheme}>
-                <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
-                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </div>
-              <div className="dropdown-item signout-item" onClick={handleSignOut}>
-                <Icon name="sign-out" /> Sign Out
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </nav>
-  );
-
-  const NavItem = ({ icon, label, path, active }) => (
-    <div className={`nav-item ${active ? 'active' : ''}`} onClick={() => path && navigate(path)}>
-      <div className="nav-icon">{icon}</div>
-      <span className="nav-label">{label}</span>
-    </div>
-  );
 
   // Speech Controls Component
   const SpeechControls = () => (
@@ -1031,7 +934,7 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
-      <Navbar />
+
 
       <div className="profile-content">
         {/* Profile Header/Banner */}

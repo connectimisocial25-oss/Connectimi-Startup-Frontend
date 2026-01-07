@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Icon from './Icon';
 import Avatar from './Avatar';
 import Connectimi_logo from './Connectimi_logo';
 import { useTheme } from '../context/ThemeContext';
 
+import './Navbar.css';
+
 const Navbar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { theme, toggleTheme } = useTheme();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+    const isActive = (path) => location.pathname === path;
+
     return (
-        <nav className="navbar" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'var(--nav-bg)', borderBottom: '1px solid var(--border-color)', height: '60px' }}>
+        <nav className="navbar">
             <div className="navbar-left">
                 <Connectimi_logo />
                 <div className="search-bar">
@@ -25,25 +30,25 @@ const Navbar = () => {
             </div>
 
             <div className="navbar-center">
-                <div className="nav-item active" onClick={() => navigate('/home')}>
+                <div className={`nav-item ${isActive('/home') ? 'active' : ''}`} onClick={() => navigate('/home')}>
                     <div className="nav-icon"><Icon name="home" /></div>
                     <span className="nav-label">Home</span>
                 </div>
 
-                <div className="nav-item" onClick={() => navigate('/mynetwork')}>
+                <div className={`nav-item ${isActive('/mynetwork') ? 'active' : ''}`} onClick={() => navigate('/mynetwork')}>
                     <div className="nav-icon"><Icon name="user-friends" /></div>
                     <span className="nav-label">My Connection</span>
                 </div>
 
-                <div className="nav-item" onClick={() => navigate('/work')}>
+                <div className={`nav-item ${isActive('/work') ? 'active' : ''}`} onClick={() => navigate('/work')}>
                     <div className="nav-icon"><Icon name="briefcase" /></div>
                     <span className="nav-label">Work</span>
                 </div>
-                <div className="nav-item" onClick={() => navigate('/messaging')}>
+                <div className={`nav-item ${isActive('/messaging') ? 'active' : ''}`} onClick={() => navigate('/messaging')}>
                     <div className="nav-icon"><Icon name="comment-dots" /></div>
                     <span className="nav-label">Messaging</span>
                 </div>
-                <div className="nav-item" onClick={() => navigate('/notifications')}>
+                <div className={`nav-item ${isActive('/notifications') ? 'active' : ''}`} onClick={() => navigate('/notifications')}>
                     <div className="nav-icon"><Icon name="bell" /></div>
                     <span className="nav-label">Notifications</span>
                 </div>
@@ -51,7 +56,7 @@ const Navbar = () => {
                 <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                     <div className="nav-icon">
                         <Avatar
-                            src="https://via.placeholder.com/24"
+                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
                             alt="Me"
                             role="professional"
                             size={24}

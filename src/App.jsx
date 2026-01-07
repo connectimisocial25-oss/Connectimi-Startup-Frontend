@@ -5,21 +5,20 @@ import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Work from "./pages/Work";
-import Connectimi_logo from "./components/Connectimi_logo";
 import MyNetwork from "./pages/MyNetwork";
 import Notifications from "./pages/Notifications";
 import Messaging from "./pages/Messaging";
-
+import Navbar from "./components/Navbar";
 
 // Layout wrapper to handle global elements
 const Layout = ({ children }) => {
   const location = useLocation();
-  // Hide global logo on auth pages
+  // Hide global navbar on auth pages
   const showHeader = !['/', '/signup'].includes(location.pathname);
 
   return (
     <>
-      {showHeader && <Connectimi_logo />}
+      {showHeader && <Navbar />}
       {children}
     </>
   );

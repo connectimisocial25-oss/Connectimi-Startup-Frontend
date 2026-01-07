@@ -8,9 +8,9 @@ import './Profile.css'; // Utilizing Navbar styles from Profile
 
 const Work = () => {
     const navigate = useNavigate();
-    const { theme, toggleTheme } = useTheme();
+    const { theme } = useTheme(); // toggleTheme only used in Navbar
     const [activeTab, setActiveTab] = useState('fulltime');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    // isDropdownOpen removed (Navbar local)
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
         location: 'all',
@@ -201,78 +201,27 @@ const Work = () => {
         });
     };
 
-    const Navbar = () => (
-        <nav className="navbar">
-            <div className="navbar-left">
-                <Connectimi_logo />
-                <div className="search-bar">
-                    <Icon name="search" className="search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Search work"
-                        className="search-input"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-            </div>
 
-            <div className="navbar-center">
-                <div className="nav-item" onClick={() => navigate('/home')}>
-                    <div className="nav-icon"><Icon name="home" /></div>
-                    <span className="nav-label">Home</span>
-                </div>
-
-                <div className="nav-item" onClick={() => navigate('/mynetwork')}>
-                    <div className="nav-icon"><Icon name="user-friends" /></div>
-                    <span className="nav-label">My Connection</span>
-                </div>
-
-                <div className="nav-item active" onClick={() => navigate('/work')}>
-                    <div className="nav-icon"><Icon name="briefcase" /></div>
-                    <span className="nav-label">Work</span>
-                </div>
-                <div className="nav-item" onClick={() => navigate('/messaging')}>
-                    <div className="nav-icon"><Icon name="comment-dots" /></div>
-                    <span className="nav-label">Messaging</span>
-                </div>
-                <div className="nav-item" onClick={() => navigate('/notifications')}>
-                    <div className="nav-icon"><Icon name="bell" /></div>
-                    <span className="nav-label">Notifications</span>
-                </div>
-
-                <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-                    <div className="nav-icon">
-                        <img src="https://via.placeholder.com/24" alt="Me" className="nav-profile-img" />
-                        <Icon name="caret-down" size={12} />
-                    </div>
-                    <span className="nav-label">Me</span>
-                    {isDropdownOpen && (
-                        <div className="dropdown-menu">
-                            <div className="dropdown-item" onClick={() => navigate('/profile')}>
-                                View Profile
-                            </div>
-                            <div className="dropdown-item" onClick={toggleTheme}>
-                                <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
-                                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                            </div>
-                            <div className="dropdown-item signout-item" onClick={() => navigate('/')}>
-                                Sign Out
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </nav>
-    );
 
     return (
         <div className="work-container">
-            <Navbar />
 
             <div className="work-content">
                 <aside className="work-sidebar">
                     <div className="filter-card">
+                        <div className="search-container" style={{ marginBottom: '16px' }}>
+                            <div className="search-bar" style={{ width: '100%', background: 'var(--bg-color)', border: '1px solid var(--border-color)' }}>
+                                <Icon name="search" className="search-icon" />
+                                <input
+                                    type="text"
+                                    placeholder="Search work"
+                                    className="search-input"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    style={{ width: '100%' }}
+                                />
+                            </div>
+                        </div>
                         <h3 className="filter-title">Filters</h3>
 
 
