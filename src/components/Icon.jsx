@@ -5,7 +5,7 @@ import {
   FiEdit, FiPlus, FiAward, FiLink, FiCamera, FiLogOut, FiMoreHorizontal,
   FiVolume2, FiVolumeX, FiPlay, FiPause, FiCpu, FiSend, FiInfo, FiFileText,
   FiShare2, FiAlertTriangle, FiFile, FiMoon, FiSun, FiHash, FiCalendar,
-  FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo
+  FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo, FiEye, FiTrendingUp
 } from 'react-icons/fi';
 
 const iconMap = {
@@ -54,7 +54,9 @@ const iconMap = {
   'bookmark': FiBookmark,
   'image': FiImage,
   'video': FiVideo,
-  'calendar': FiCalendar
+  'calendar': FiCalendar,
+  'eye': FiEye,
+  'trending-up': FiTrendingUp
 };
 
 export default function Icon({ name, size = 16, className = '', ...rest }) {

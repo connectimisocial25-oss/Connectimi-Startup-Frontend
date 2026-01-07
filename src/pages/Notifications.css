@@ -108,6 +108,16 @@
     object-fit: cover;
 }
 
+.system-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
 .notification-details {
     flex: 1;
 }

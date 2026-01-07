@@ -23,7 +23,9 @@ const Notifications = () => {
             time: '2h',
             read: false,
             userRole: 'company',
-            image: 'https://via.placeholder.com/48/0a66c2/ffffff?text=Job'
+            icon: 'briefcase',
+            iconBg: '#e7f3ff',
+            iconColor: '#0a66c2'
         },
         {
             id: 2,
@@ -41,7 +43,9 @@ const Notifications = () => {
             time: '1d',
             read: true,
             userRole: 'company',
-            image: 'https://via.placeholder.com/48/f8c77e/000000?text=View'
+            icon: 'eye',
+            iconBg: '#fff7e6',
+            iconColor: '#d69e2e'
         },
         {
             id: 4,
@@ -59,7 +63,9 @@ const Notifications = () => {
             time: '2d',
             read: true,
             userRole: 'company',
-            image: 'https://via.placeholder.com/48/000000/ffffff?text=News'
+            icon: 'trending-up',
+            iconBg: '#f2f2f2',
+            iconColor: '#333333'
         }
     ];
 
@@ -94,13 +100,25 @@ const Notifications = () => {
                         {notifications.map(notification => (
                             <div key={notification.id} className={`notification-item ${notification.read ? '' : 'unread'}`}>
                                 <div className="notification-icon">
-                                    <Avatar
-                                        src={notification.image}
-                                        alt=""
-                                        role={notification.userRole}
-                                        size={48}
-                                        className="notification-avatar"
-                                    />
+                                    {notification.image ? (
+                                        <Avatar
+                                            src={notification.image}
+                                            alt=""
+                                            role={notification.userRole}
+                                            size={48}
+                                            className="notification-avatar"
+                                        />
+                                    ) : (
+                                        <div
+                                            className="system-icon-wrapper"
+                                            style={{
+                                                backgroundColor: notification.iconBg,
+                                                color: notification.iconColor
+                                            }}
+                                        >
+                                            <Icon name={notification.icon} size={24} />
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="notification-details">
                                     <div className="notification-text">
