@@ -27,7 +27,7 @@ const Work = () => {
             location: 'Bangalore, India',
             locationType: 'on-site',
             salaryRange: '100k-200k',
-            experienceLevel: 'senior',
+            experienceLevel: '5_plus_years',
             requiredExperience: '5+ Years Experience',
             jobType: 'Full-time',
             logo: 'https://loremflickr.com/56/56/technology,code?lock=1',
@@ -41,7 +41,7 @@ const Work = () => {
             location: 'Remote',
             locationType: 'remote',
             salaryRange: '50k-100k',
-            experienceLevel: 'mid',
+            experienceLevel: '2_5_years',
             requiredExperience: '3+ Years Experience',
             jobType: 'Full-time',
             logo: 'https://loremflickr.com/56/56/mobile,app?lock=2',
@@ -55,12 +55,26 @@ const Work = () => {
             location: 'Hyderabad, India',
             locationType: 'hybrid',
             salaryRange: '200k+',
-            experienceLevel: 'expert',
+            experienceLevel: '5_plus_years',
             requiredExperience: '7+ Years Experience',
             jobType: 'Full-time',
             logo: 'https://loremflickr.com/56/56/startup,office?lock=3',
             posted: '1 day ago',
             applicants: 128
+        },
+        {
+            id: 4,
+            title: 'Principal Software Architect',
+            company: 'Global Tech Corp',
+            location: 'Remote',
+            locationType: 'remote',
+            salaryRange: '300k+',
+            experienceLevel: '10_plus_years',
+            requiredExperience: '10+ Years Experience',
+            jobType: 'Full-time',
+            logo: 'https://loremflickr.com/56/56/architecture,server?lock=10',
+            posted: '1 day ago',
+            applicants: 25
         }
     ];
 
@@ -72,7 +86,7 @@ const Work = () => {
             location: 'Mumbai, India',
             locationType: 'remote',
             salaryRange: '<50k',
-            experienceLevel: 'entry',
+            experienceLevel: 'freshers',
             requiredExperience: 'No Experience Required',
             jobType: 'Internship',
             logo: 'https://loremflickr.com/56/56/creative,design?lock=4',
@@ -87,7 +101,7 @@ const Work = () => {
             location: 'Delhi, India',
             locationType: 'on-site',
             salaryRange: '<50k',
-            experienceLevel: 'entry',
+            experienceLevel: 'freshers',
             requiredExperience: 'No Experience Required',
             jobType: 'Internship',
             logo: 'https://loremflickr.com/56/56/marketing,growth?lock=5',
@@ -102,7 +116,7 @@ const Work = () => {
             location: 'Remote',
             locationType: 'remote',
             salaryRange: '<50k',
-            experienceLevel: 'entry',
+            experienceLevel: 'freshers',
             requiredExperience: 'No Experience Required',
             jobType: 'Internship',
             logo: 'https://loremflickr.com/56/56/ui,ux?lock=6',
@@ -120,7 +134,7 @@ const Work = () => {
             location: 'Remote',
             locationType: 'remote',
             salaryRange: '50k-100k',
-            experienceLevel: 'junior',
+            experienceLevel: '1_year',
             requiredExperience: '1+ Years Experience',
             jobType: 'Freelance',
             logo: 'https://loremflickr.com/56/56/wordpress?lock=7',
@@ -137,7 +151,7 @@ const Work = () => {
             location: 'Remote',
             locationType: 'remote',
             salaryRange: '<50k',
-            experienceLevel: 'entry',
+            experienceLevel: 'freshers',
             requiredExperience: 'No Experience Required',
             jobType: 'Freelance',
             logo: 'https://loremflickr.com/56/56/design,logo?lock=8',
@@ -154,7 +168,7 @@ const Work = () => {
             location: 'Remote',
             locationType: 'remote',
             salaryRange: '100k-200k',
-            experienceLevel: 'mid',
+            experienceLevel: '2_5_years',
             requiredExperience: '3+ Years Experience',
             jobType: 'Freelance',
             logo: 'https://loremflickr.com/56/56/react,code?lock=9',
@@ -286,11 +300,11 @@ const Work = () => {
                             <label>Experience Level</label>
                             <select name="experienceLevel" value={filters.experienceLevel} onChange={handleFilterChange}>
                                 <option value="all">Any Level</option>
-                                <option value="entry">Entry Level</option>
-                                <option value="junior">Junior</option>
-                                <option value="mid">Mid Level</option>
-                                <option value="senior">Senior</option>
-                                <option value="expert">Expert</option>
+                                <option value="freshers">Entry Level (Freshers)</option>
+                                <option value="1_year">1+ Year</option>
+                                <option value="2_5_years">2–5 Years</option>
+                                <option value="5_plus_years">5+ Years</option>
+                                <option value="10_plus_years">10+ Years</option>
                             </select>
                         </div>
 
