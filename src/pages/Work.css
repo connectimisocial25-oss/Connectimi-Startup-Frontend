@@ -120,7 +120,13 @@
 }
 
 .work-tab:hover {
-    background-color: #343131;
+    background-color: #f5f5f5;
+    color: var(--primary-blue);
+}
+
+.dark .work-tab:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-blue);
 }
 
 .work-tab.active {
