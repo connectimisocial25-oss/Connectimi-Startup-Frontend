@@ -5,6 +5,7 @@ import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
 import Connectimi_logo from '../components/Connectimi_logo';
 import './MyNetwork.css';
+import Messaging from './Messaging';
 const MyNetwork = () => {
     const navigate = useNavigate();
     const { theme } = useTheme(); // toggleTheme removed
@@ -153,9 +154,9 @@ const MyNetwork = () => {
 
                 <main className="network-main">
                     {/* Embedded Messaging Section */}
-                    <section className="messaging-section" style={{ background: 'var(--bg-secondary)', borderRadius: '12px', padding: '24px', marginBottom: '24px', border: '1px solid var(--border-color)', display: 'flex', height: '600px', gap: '20px' }}>
+                    {/* <section className="messaging-section" style={{ background: 'var(--bg-secondary)', borderRadius: '12px', padding: '24px', marginBottom: '24px', border: '1px solid var(--border-color)', display: 'flex', height: '600px', gap: '20px' }}> */}
                         {/* Conversations List */}
-                        <div className="conversations-sidebar" style={{ width: '320px', borderRight: '1px solid var(--border-color)', paddingRight: '16px' }}>
+                        {/* <div className="conversations-sidebar" style={{ width: '320px', borderRight: '1px solid var(--border-color)', paddingRight: '16px' }}>
                             <div className="conversations-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', fontWeight: '600', color: 'var(--text-primary)' }}>
                                 <span>Messaging</span>
                                 <Icon name="edit" className="cursor-pointer" />
@@ -179,10 +180,10 @@ const MyNetwork = () => {
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Chat Window */}
-                        <div className="chat-window" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        {/* <div className="chat-window" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                             <div className="chat-header" style={{ paddingBottom: '16px', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <Avatar src={activeUser?.avatar} role={activeUser?.role} size={40} />
                                 <div className="chat-user-info">
@@ -233,7 +234,9 @@ const MyNetwork = () => {
                                 }}>Send</button>
                             </div>
                         </div>
-                    </section>
+                    </section> */}
+
+                    <Messaging />
 
                     <section className="invitations-section">
                         <div className="section-header">

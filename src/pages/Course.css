@@ -16,7 +16,8 @@
     border-radius: 16px;
     padding: 48px 32px;
     margin-bottom: 40px;
-    color: white;
+    color: black;
+    background-color: rgb(185, 196, 243);
     text-align: center;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }

@@ -1,16 +1,23 @@
 /* src/pages/Messaging.css */
 .messaging-container {
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    padding-top: 52px;
+    /* min-height: 100vh; */
+    background-color: #3235e4;
+    padding: 5px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    /* height: 600px; */
+}
+
+.dark .messaging-container {
+    background-color: #70b5f9;
 }
 
 .messaging-content {
     max-width: 1128px;
-    margin: 24px auto;
-    padding: 0 24px;
+    /* margin: 24px auto; */
+    /* padding: 0 10px; */
     display: flex;
-    height: calc(100vh - 100px);
+    height: calc(50vh - 100px);
     gap: 24px;
 }
 
