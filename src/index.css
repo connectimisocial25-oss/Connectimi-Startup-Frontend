@@ -36,6 +36,10 @@ body {
   background: var(--bg-color);
   color: var(--text-primary);
   transition: background 0.3s, color 0.3s;
+  -webkit-user-select: none; /* Chrome, Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  user-select: none;         /* Standard */
 }
 
 .auth-container {
