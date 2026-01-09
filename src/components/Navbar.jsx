@@ -44,9 +44,9 @@ const Navbar = () => {
                     <div className="nav-icon"><Icon name="briefcase" /></div>
                     <span className="nav-label">Work</span>
                 </div>
-                <div className={`nav-item ${isActive('/messaging') ? 'active' : ''}`} onClick={() => navigate('/messaging')}>
-                    <div className="nav-icon"><Icon name="comment-dots" /></div>
-                    <span className="nav-label">Messaging</span>
+                <div className={`nav-item ${isActive('/course') ? 'active' : ''}`} onClick={() => navigate('/course')}>
+                    <div className="nav-icon"><Icon name="course" /></div>
+                    <span className="nav-label">Course</span>
                 </div>
                 <div className={`nav-item ${isActive('/notifications') ? 'active' : ''}`} onClick={() => navigate('/notifications')}>
                     <div className="nav-icon"><Icon name="bell" /></div>

@@ -7,7 +7,7 @@ import Profile from "./pages/Profile";
 import Work from "./pages/Work";
 import MyNetwork from "./pages/MyNetwork";
 import Notifications from "./pages/Notifications";
-import Messaging from "./pages/Messaging";
+import Course from "./pages/Course";
 import Navbar from "./components/Navbar";
 
 // Layout wrapper to handle global elements
@@ -37,7 +37,8 @@ function App() {
             <Route path="/work" element={<Work />} />
             <Route path="/mynetwork" element={<MyNetwork />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route path="/messaging" element={<Messaging />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/course" element={<Course />} />
           </Routes>
         </Layout>
       </BrowserRouter>

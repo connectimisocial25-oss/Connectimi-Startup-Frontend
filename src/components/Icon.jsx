@@ -8,6 +8,8 @@ import {
   FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo, FiEye, FiTrendingUp
 } from 'react-icons/fi';
 
+import { FaGraduationCap, FaStar } from "react-icons/fa";
+
 const iconMap = {
   'print': FiPrinter,
   'close': FiX,
@@ -26,8 +28,11 @@ const iconMap = {
   'user-circle': FiUser,
   'edit': FiEdit,
   'plus': FiPlus,
+  'star': FaStar,
   'building': FiBriefcase,
   'graduation-cap': FiAward,
+  'course': FaGraduationCap,
+  'book': FiBookmark, // Fallback or use FiBook if imported
   'link': FiLink,
   'camera': FiCamera,
   'sign-out': FiLogOut,
