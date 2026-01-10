@@ -71,7 +71,7 @@
     border-radius: 4px;
     position: relative;
     transition: all 0.2s;
-    min-width: 80px;
+    width: 110px;
 }
 
 .nav-item:hover {
