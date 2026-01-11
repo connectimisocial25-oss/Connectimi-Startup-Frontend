@@ -48,7 +48,7 @@ function Login() {
             <input
               type="email"
               className="auth-input"
-              placeholder="Email or Phone"
+              placeholder={accountType === "organization" ? "Work Email" : "Email or Phone"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

@@ -9,6 +9,7 @@ import Messaging from './Messaging';
 const MyNetwork = () => {
     const navigate = useNavigate();
     const { theme } = useTheme(); // toggleTheme removed
+    const [activeTab, setActiveTab] = useState('connections');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [activeChat, setActiveChat] = useState(1);
     const [messageInput, setMessageInput] = useState('');
@@ -116,12 +117,20 @@ const MyNetwork = () => {
                 <aside className="network-sidebar">
                     <div className="network-sidebar-card">
                         <div className="sidebar-title">Manage my connections</div>
-                        <div className="sidebar-item">
+                        <div 
+                            className={`sidebar-item ${activeTab === 'connections' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('connections')}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <Icon name="users" />
                             <span>Connections</span>
                             <span className="sidebar-count">482</span>
                         </div>
-                        <div className="sidebar-item">
+                        <div 
+                            className={`sidebar-item ${activeTab === 'messaging' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('messaging')}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <Icon name="comment-dots" />
                             <span>Messaging</span>
                         </div>
@@ -153,142 +162,63 @@ const MyNetwork = () => {
                 </aside>
 
                 <main className="network-main">
-                    {/* Embedded Messaging Section */}
-                    {/* <section className="messaging-section" style={{ background: 'var(--bg-secondary)', borderRadius: '12px', padding: '24px', marginBottom: '24px', border: '1px solid var(--border-color)', display: 'flex', height: '600px', gap: '20px' }}> */}
-                        {/* Conversations List */}
-                        {/* <div className="conversations-sidebar" style={{ width: '320px', borderRight: '1px solid var(--border-color)', paddingRight: '16px' }}>
-                            <div className="conversations-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', fontWeight: '600', color: 'var(--text-primary)' }}>
-                                <span>Messaging</span>
-                                <Icon name="edit" className="cursor-pointer" />
-                            </div>
-                            <div className="conversations-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', height: 'calc(100% - 50px)' }}>
-                                {conversations.map(conv => (
-                                    <div
-                                        key={conv.id}
-                                        className={`conversation-item ${activeChat === conv.id ? 'active' : ''}`}
-                                        onClick={() => setActiveChat(conv.id)}
-                                        style={{ display: 'flex', alignItems: 'center', padding: '10px', borderRadius: '8px', cursor: 'pointer', gap: '12px', background: activeChat === conv.id ? 'var(--hover-bg)' : 'transparent' }}
-                                    >
-                                        <Avatar src={conv.avatar} role={conv.role} size={48} />
-                                        <div className="conversation-details" style={{ flex: 1, minWidth: 0 }}>
-                                            <div className="conversation-top" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                                <span className="conversation-name" style={{ fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)' }}>{conv.name}</span>
-                                                <span className="conversation-date" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{conv.date}</span>
-                                            </div>
-                                            <div className="conversation-preview" style={{ fontSize: '12px', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{conv.lastMessage}</div>
+                    {activeTab === 'messaging' ? (
+                        <Messaging />
+                    ) : (
+                        <>
+                            <section className="invitations-section">
+                                <div className="section-header">
+                                    <h2>Invitations</h2>
+                                    <button className="see-all-btn">See all 2</button>
+                                </div>
+                                {invitations.map(invite => (
+                                    <div key={invite.id} className="invitation-card">
+                                        <Avatar
+                                            src={invite.avatar}
+                                            alt={invite.name}
+                                            role={invite.userRole}
+                                            size={56}
+                                            className="invite-avatar"
+                                            style={{ borderRadius: 'unset' }} // Components handles shape class, need to unset inline style if it conflicts or let class take over. Avatar component adds class.
+                                        />
+                                        <div className="invite-info">
+                                            <div className="invite-name">{invite.name}</div>
+                                            <div className="invite-role">{invite.role}</div>
+                                        </div>
+                                        <div className="invite-actions" style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
+                                            <button className="ignore-btn" style={{ background: 'transparent', color: 'var(--text-secondary)' }}>Ignore</button>
+                                            <button className="accept-btn">Accept</button>
                                         </div>
                                     </div>
                                 ))}
-                            </div>
-                        </div> */}
+                            </section>
 
-                        {/* Chat Window */}
-                        {/* <div className="chat-window" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                            <div className="chat-header" style={{ paddingBottom: '16px', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <Avatar src={activeUser?.avatar} role={activeUser?.role} size={40} />
-                                <div className="chat-user-info">
-                                    <h4 style={{ margin: 0, fontSize: '16px', color: 'var(--text-primary)' }}>{activeUser?.name}</h4>
-                                    <span style={{ fontSize: '12px', color: 'var(--accent-primary)' }}>Active now</span>
+                            <section className="suggestions-section">
+                                <div className="modern-teal-badge">PEOPLE YOU MAY KNOW</div>
+                                <div className="suggestions-grid">
+                                    {suggestions.map(person => (
+                                        <div key={person.id} className="suggestion-card">
+                                            <div className="suggestion-banner"></div>
+                                            <Avatar
+                                                src={person.avatar}
+                                                alt={person.name}
+                                                role={person.userRole}
+                                                size={110}
+                                                className="suggestion-avatar"
+                                            />
+                                            <div className="suggestion-info" style={{ padding: '0 16px' }}>
+                                                <div className="suggestion-name">{person.name}</div>
+                                                <div className="suggestion-role">{person.role}</div>
+                                            </div>
+                                            <button className="connect-btn">
+                                                <Icon name="user-plus" /> Connect
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
-                            </div>
-                            <div className="chat-messages" style={{ flex: 1, overflowY: 'auto', padding: '16px 0', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                {messages.map(msg => (
-                                    <div key={msg.id} className={`message-bubble ${msg.sent ? 'message-sent' : 'message-received'}`} style={{
-                                        maxWidth: '70%',
-                                        padding: '10px 16px',
-                                        borderRadius: '12px',
-                                        alignSelf: msg.sent ? 'flex-end' : 'flex-start',
-                                        background: msg.sent ? 'var(--accent-primary)' : 'var(--hover-bg)',
-                                        color: msg.sent ? '#fff' : 'var(--text-primary)'
-                                    }}>
-                                        {msg.text}
-                                        <div style={{ fontSize: '10px', marginTop: '4px', opacity: 0.7, textAlign: 'right' }}>{msg.time}</div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="chat-input-area" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '16px', display: 'flex', gap: '12px' }}>
-                                <input
-                                    type="text"
-                                    className="chat-input"
-                                    placeholder="Write a message..."
-                                    value={messageInput}
-                                    onChange={(e) => setMessageInput(e.target.value)}
-                                    style={{
-                                        flex: 1,
-                                        padding: '10px 16px',
-                                        borderRadius: '24px',
-                                        border: '1px solid var(--border-color)',
-                                        background: 'var(--bg-primary)',
-                                        color: 'var(--text-primary)',
-                                        outline: 'none'
-                                    }}
-                                />
-                                <button className="chat-send-btn" style={{
-                                    padding: '10px 24px',
-                                    borderRadius: '24px',
-                                    background: 'var(--accent-primary)',
-                                    color: '#fff',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontWeight: 600
-                                }}>Send</button>
-                            </div>
-                        </div>
-                    </section> */}
-
-                    <Messaging />
-
-                    <section className="invitations-section">
-                        <div className="section-header">
-                            <h2>Invitations</h2>
-                            <button className="see-all-btn">See all 2</button>
-                        </div>
-                        {invitations.map(invite => (
-                            <div key={invite.id} className="invitation-card">
-                                <Avatar
-                                    src={invite.avatar}
-                                    alt={invite.name}
-                                    role={invite.userRole}
-                                    size={56}
-                                    className="invite-avatar"
-                                    style={{ borderRadius: 'unset' }} // Components handles shape class, need to unset inline style if it conflicts or let class take over. Avatar component adds class.
-                                />
-                                <div className="invite-info">
-                                    <div className="invite-name">{invite.name}</div>
-                                    <div className="invite-role">{invite.role}</div>
-                                </div>
-                                <div className="invite-actions" style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
-                                    <button className="ignore-btn" style={{ background: 'transparent', color: 'var(--text-secondary)' }}>Ignore</button>
-                                    <button className="accept-btn">Accept</button>
-                                </div>
-                            </div>
-                        ))}
-                    </section>
-
-                    <section className="suggestions-section">
-                        <div className="modern-teal-badge">PEOPLE YOU MAY KNOW</div>
-                        <div className="suggestions-grid">
-                            {suggestions.map(person => (
-                                <div key={person.id} className="suggestion-card">
-                                    <div className="suggestion-banner"></div>
-                                    <Avatar
-                                        src={person.avatar}
-                                        alt={person.name}
-                                        role={person.userRole}
-                                        size={110}
-                                        className="suggestion-avatar"
-                                    />
-                                    <div className="suggestion-info" style={{ padding: '0 16px' }}>
-                                        <div className="suggestion-name">{person.name}</div>
-                                        <div className="suggestion-role">{person.role}</div>
-                                    </div>
-                                    <button className="connect-btn">
-                                        <Icon name="user-plus" /> Connect
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                            </section>
+                        </>
+                    )}
                 </main>
             </div>
         </div>

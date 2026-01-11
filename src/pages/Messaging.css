@@ -1,30 +1,30 @@
 /* src/pages/Messaging.css */
 .messaging-container {
     /* min-height: 100vh; */
-    background-color: #3235e4;
-    padding: 5px;
+    /* background-color: #3235e4; */
+    /* padding: 5px; */
     margin-bottom: 24px;
     border-radius: 12px;
     /* height: 600px; */
 }
 
-.dark .messaging-container {
+/* .dark .messaging-container {
     background-color: #70b5f9;
-}
+} */
 
 .messaging-content {
-    max-width: 1128px;
+    /* max-width: 1128px; */
     /* margin: 24px auto; */
     /* padding: 0 10px; */
     display: flex;
-    height: calc(50vh - 100px);
+    height: 600px; /* Fixed height for consistency */
     gap: 24px;
 }
 
 .messaging-main {
     flex: 1;
     background: var(--card-bg);
-    border-radius: 8px;
+    border-radius: 12px; /* Increased radius */
     border: 1px solid var(--border-color);
     display: flex;
     overflow: hidden;

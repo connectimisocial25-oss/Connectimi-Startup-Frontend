@@ -55,7 +55,7 @@ const Messaging = () => {
     return (
         <div className="messaging-container">
             <div className="messaging-content">
-                <main className="messaging-main">
+                <div className="messaging-main">
                     {/* Conversations Sidebar */}
                     <div className="conversations-sidebar">
                         <div className="conversations-header">
@@ -110,7 +110,7 @@ const Messaging = () => {
                             <button className="chat-send-btn">Send</button>
                         </div>
                     </div>
-                </main>
+                </div>
             </div>
         </div>
     );
