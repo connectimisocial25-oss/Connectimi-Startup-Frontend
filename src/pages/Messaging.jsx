@@ -7,7 +7,7 @@ import Connectimi_logo from '../components/Connectimi_logo';
 import './Messaging.css';
 import './Profile.css'; // For shared Navbar styles
 
-const Messaging = () => {
+const Messaging = ({ embedded = false }) => {
     const navigate = useNavigate();
     const { theme } = useTheme(); // toggleTheme removed if unused
     // isDropdownOpen removed
@@ -53,9 +53,9 @@ const Messaging = () => {
 
 
     return (
-        <div className="messaging-container">
-            <div className="messaging-content">
-                <div className="messaging-main">
+        <div className="messaging-container" style={embedded ? { padding: 0, height: '100%' } : {}}>
+            <div className="messaging-content" style={embedded ? { maxWidth: 'none', height: '100%' } : {}}>
+                <div className="messaging-main" style={embedded ? { height: '100%' } : {}}>
                     {/* Conversations Sidebar */}
                     <div className="conversations-sidebar">
                         <div className="conversations-header">
