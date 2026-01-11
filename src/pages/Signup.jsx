@@ -17,7 +17,13 @@ function Signup() {
     const fullName = `${firstName} ${lastName}`;
     // In a real app you'd call your signup API here with split names or full name
 
-    navigate("/profile");
+    navigate("/profile", {
+      state: {
+        newSignup: true,
+        firstName,
+        lastName
+      }
+    });
   }
 
   return (

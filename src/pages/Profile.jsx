@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import './Profile.css';
 
@@ -9,9 +9,12 @@ import './Profile.css';
 import CVModal from '../components/CVModal';
 // Icons use wrapper to support swap to updated 2026 icon set
 
+const DEFAULT_BANNER = 'https://via.placeholder.com/150';
+const DEFAULT_PROFILE_IMG = 'https://via.placeholder.com/150';
+
 const Profile = () => {
   const navigate = useNavigate();
-  // useTheme removed (Navbar only)
+  const location = useLocation();
   const speechSynthesisRef = useRef(null);
 
   // State for user profile data
@@ -64,19 +67,52 @@ const Profile = () => {
 
   // State for image upload
   const [imagePreview, setImagePreview] = useState('');
+  const [bannerPreview, setBannerPreview] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
   // Fetch profile data from API
   useEffect(() => {
-    fetchProfileData();
+    if (location.state?.newSignup) {
+      // Initialize for new user
+      const { firstName, lastName } = location.state;
+      const initialData = {
+        role: 'professional',
+        name: `${firstName} ${lastName}`,
+        headline: '',
+        location: '',
+        connections: 0,
+        profileViews: 0,
+        postImpressions: 0,
+        about: '',
+        experience: [],
+        education: [],
+        skills: [],
+        website: '',
+        profileImage: '',
+        bannerImage: '',
+        email: '',
+        phone: ''
+      };
+
+      setProfileData(initialData);
+      setEditData({
+        ...initialData,
+        newSkill: '',
+        newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
+        newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+      });
+      setIsEditing(true);
+    } else {
+      fetchProfileData();
+    }
+
     initializeSpeechSynthesis();
 
     // Cleanup function
     return () => {
       stopSpeaking();
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-      }
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
     };
   }, []);
 
@@ -371,24 +407,38 @@ const Profile = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Clean up previous preview URL if exists
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview);
-    }
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
 
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
 
     setIsUploading(true);
     try {
-      // Simulate upload delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setEditData(prev => ({
-        ...prev,
-        profileImage: previewUrl
-      }));
+      setEditData(prev => ({ ...prev, profileImage: previewUrl }));
     } catch (error) {
       console.error('Error uploading image:', error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Handle banner image upload
+  const handleBannerUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+
+    const previewUrl = URL.createObjectURL(file);
+    setBannerPreview(previewUrl);
+
+    setIsUploading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setEditData(prev => ({ ...prev, bannerImage: previewUrl }));
+    } catch (error) {
+      console.error('Error uploading banner:', error);
     } finally {
       setIsUploading(false);
     }
@@ -398,9 +448,14 @@ const Profile = () => {
   const handleSave = async () => {
     try {
       // Clean up image preview URL
+      // Clean up image preview URL
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
         setImagePreview('');
+      }
+      if (bannerPreview) {
+        URL.revokeObjectURL(bannerPreview);
+        setBannerPreview('');
       }
 
       setProfileData({ ...editData });
@@ -925,6 +980,10 @@ const Profile = () => {
             URL.revokeObjectURL(imagePreview);
             setImagePreview('');
           }
+          if (bannerPreview) {
+            URL.revokeObjectURL(bannerPreview);
+            setBannerPreview('');
+          }
         }} disabled={isUploading}>
           Cancel
         </button>
@@ -941,14 +1000,42 @@ const Profile = () => {
         <div className="profile-header">
           <div className="profile-banner">
             <img
-              src={profileData.bannerImage || 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80'}
+              src={isEditing && bannerPreview ? bannerPreview : (profileData.bannerImage || DEFAULT_BANNER)}
               alt="Banner"
               className="banner-image"
               onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80';
+                if (e.target.src !== DEFAULT_BANNER) {
+                  e.target.onerror = null;
+                  e.target.src = DEFAULT_BANNER;
+                }
               }}
             />
+            {isEditing && (
+              <div
+                className="banner-upload-container"
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 50,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+              >
+                <label htmlFor="banner-image-upload" className="image-upload-btn banner-upload-btn">
+                  <Icon name="camera" /> Change Banner
+                </label>
+                <input
+                  id="banner-image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBannerUpload}
+                  className="image-upload-input"
+                />
+              </div>
+            )}
             <div className="profile-image-container">
               <div className="profile-image-wrapper">
                 <img
@@ -1190,7 +1277,7 @@ const Profile = () => {
         )}
       </div>
       {showCV && <CVModal profileData={profileData} onClose={() => setShowCV(false)} />}
-    </div>
+    </div >
   );
 };
 

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Work from "./pages/Work";
@@ -14,7 +15,7 @@ import Navbar from "./components/Navbar";
 const Layout = ({ children }) => {
   const location = useLocation();
   // Hide global navbar on auth pages
-  const showHeader = !['/', '/signup'].includes(location.pathname);
+  const showHeader = !['/', '/signup', '/forgot-password'].includes(location.pathname);
 
   return (
     <>
@@ -32,6 +33,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/home" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/work" element={<Work />} />
