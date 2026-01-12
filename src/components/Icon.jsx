@@ -8,7 +8,8 @@ import {
   FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo, FiEye, FiTrendingUp
 } from 'react-icons/fi';
 
-import { FaGraduationCap, FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
+import { LuGraduationCap } from "react-icons/lu";
 
 const iconMap = {
   'print': FiPrinter,
@@ -31,7 +32,7 @@ const iconMap = {
   'star': FaStar,
   'building': FiBriefcase,
   'graduation-cap': FiAward,
-  'course': FaGraduationCap,
+  'course': LuGraduationCap,
   'book': FiBookmark, // Fallback or use FiBook if imported
   'link': FiLink,
   'camera': FiCamera,
