@@ -88,62 +88,133 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
-.course-image {
+/* Image now wrapped in media container */
+.course-media {
+    width: 100%;
     height: 180px;
-    background-color: #eee;
+    position: relative;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.course-image {
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
     position: relative;
+    transition: transform 0.3s ease;
+}
+
+.course-video-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: fadeIn 0.3s ease;
 }
 
 .course-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgba(0, 0, 0, 0.7);
+    top: 10px;
+    left: 10px;
+    background: var(--primary-blue);
     color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 4px 10px;
+    border-radius: 12px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .course-details {
-    padding: 20px;
-    flex: 1;
+    padding: 16px;
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
+}
+
+.course-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
 }
 
 .course-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text-primary);
     line-height: 1.4;
+    color: var(--text-primary);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.verified-badge-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 140px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 10;
+    bottom: 125%; /* Position above */
+    left: 50%;
+    margin-left: -70px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    font-weight: normal;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.verified-badge-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 
 .course-author {
     font-size: 14px;
     color: var(--text-secondary);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .course-meta {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
     font-size: 13px;
-    color: var(--text-secondary);
+    color: #f39c12;
+    margin-bottom: 12px;
+    gap: 8px;
 }
 
 .course-rating {
     display: flex;
     align-items: center;
     gap: 4px;
-    color: #f1c40f;
-    font-weight: 700;
+    font-weight: bold;
 }
 
 .course-price-row {
@@ -160,120 +231,202 @@
 }
 
 .enroll-btn {
+    padding: 8px 16px;
     background: transparent;
-    border: 2px solid var(--modern-teal);
-    color: var(--modern-teal);
-    padding: 6px 16px;
-    border-radius: 20px;
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    border-radius: 100px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .enroll-btn:hover {
-    background: var(--modern-teal);
-    color: white;
+    background: rgba(10, 102, 194, 0.1);
 }
 
-/* Modal */
+/* Modal Styles Update */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    animation: fadeIn 0.2s;
+    backdrop-filter: blur(4px);
 }
 
 .payment-modal {
-    background: var(--card-bg);
-    padding: 32px;
-    border-radius: 16px;
+    background: var(--bg-card);
     width: 90%;
-    max-width: 400px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    animation: slideUp 0.3s;
+    max-width: 450px;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
 }
 
-.payment-modal h2 {
-    margin-bottom: 24px;
+.payment-header {
+    background: var(--bg-hover);
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-header h2 {
+    margin: 0;
+    font-size: 18px;
     color: var(--text-primary);
-    text-align: center;
+}
+
+.secure-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.order-summary {
+    padding: 20px;
+    background: var(--bg-secondary);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.summary-row.fee {
+    font-size: 13px;
+    font-style: italic;
+}
+
+.summary-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 12px 0;
+}
+
+.summary-row.total {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 16px;
+    margin-bottom: 0;
 }
 
 .modal-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    padding: 24px;
+}
+
+.form-group {
+    margin-bottom: 16px;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
     font-size: 14px;
+    font-weight: 500;
     color: var(--text-secondary);
 }
 
 .form-group input {
     width: 100%;
-    padding: 10px;
+    padding: 10px 12px;
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-color);
+    border-radius: 6px;
+    background: var(--bg-hover);
     color: var(--text-primary);
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.1);
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    color: var(--text-secondary);
+}
+
+.payment-footer {
+    margin-top: 24px;
+}
+
+.powered-by {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
 }
 
 .modal-actions {
     display: flex;
+    justify-content: flex-end;
     gap: 12px;
-    margin-top: 16px;
-}
-
-.pay-btn-primary {
-    flex: 1;
-    background: var(--modern-teal);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
 }
 
 .cancel-btn {
-    flex: 1;
+    padding: 10px 20px;
     background: transparent;
-    border: 1px solid var(--border-color);
+    border: none;
     color: var(--text-secondary);
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
     cursor: pointer;
+    font-weight: 500;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
+.pay-btn-primary {
+    padding: 10px 24px;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 120px;
+}
 
-    to {
-        opacity: 1;
-    }
+.pay-btn-primary:hover {
+    background: #004182;
+}
+
+.pay-btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
 
 @keyframes slideUp {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
 
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }

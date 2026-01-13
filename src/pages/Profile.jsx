@@ -1212,6 +1212,44 @@ const Profile = () => {
                 )}
               </div>
 
+              {/* Certifications Section (New) */}
+              <div className="profile-section">
+                <div className="section-header">
+                  <h3><Icon name="certificate" /> Licenses & Certifications</h3>
+                </div>
+                <div className="certifications-list">
+                  {/* Mock Data for Demonstration */}
+                  <div className="education-item" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '48px', height: '48px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', flexShrink: 0 }}>
+                      <Icon name="star" color="#f59e0b" />
+                    </div>
+                    <div>
+                      <h4 style={{ marginBottom: '4px', fontSize: '16px' }}>Advanced React Patterns</h4>
+                      <p className="company" style={{ marginBottom: '2px' }}>TechAcademy Inc.</p>
+                      <p className="duration" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Issued Jan 2026</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+                        <Icon name="check-circle" size={14} color="#3B82F6" />
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-secondary)' }}>Verified by Connectimi</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="education-item" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', marginTop: '16px' }}>
+                    <div style={{ width: '48px', height: '48px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', flexShrink: 0 }}>
+                      <Icon name="star" color="#f59e0b" />
+                    </div>
+                    <div>
+                      <h4 style={{ marginBottom: '4px', fontSize: '16px' }}>Enterprise Security Fundamentals</h4>
+                      <p className="company" style={{ marginBottom: '2px' }}>SecureNet Global</p>
+                      <p className="duration" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Issued Dec 2025</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+                        <Icon name="check-circle" size={14} color="#3B82F6" />
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-secondary)' }}>Verified by Connectimi</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Skills Section */}
               <div className="profile-section">
                 <div className="section-header">

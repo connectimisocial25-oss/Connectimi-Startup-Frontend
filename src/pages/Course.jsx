@@ -8,20 +8,24 @@ const coursesData = [
         title: "Full-Stack Web Development Bootcamp",
         author: "Tech Academy",
         image: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        videoPreview: "https://joy1.videvo.net/videvo_files/video/free/2019-09/large_watermarked/190828_27_Supermarket_push_cart_1080p_preview.mp4", // Placeholder video
         price: 99.99,
         rating: 4.8,
         reviews: 1240,
-        category: "Tech"
+        category: "Tech",
+        isVerified: true
     },
     {
         id: 2,
         title: "UI/UX Design Masterclass",
         author: "Creative Minds",
         image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        videoPreview: "https://joy1.videvo.net/videvo_files/video/free/2019-01/large_watermarked/181015_13_Venice_Beach_Drone_001_1080p_preview.mp4",
         price: 79.99,
         rating: 4.9,
         reviews: 850,
-        category: "Design"
+        category: "Design",
+        isVerified: true
     },
     {
         id: 3,
@@ -31,17 +35,20 @@ const coursesData = [
         price: 59.99,
         rating: 4.7,
         reviews: 3200,
-        category: "Marketing"
+        category: "Marketing",
+        isVerified: false
     },
     {
         id: 4,
         title: "Artificial Intelligence for Beginners",
         author: "AI Institute",
         image: "https://images.unsplash.com/photo-1555255707-c07966088b7b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        videoPreview: "https://joy1.videvo.net/videvo_files/video/free/2015-08/large_watermarked/Typing_dark_08_videvo_preview.mp4",
         price: 129.99,
         rating: 4.9,
         reviews: 5600,
-        category: "Tech"
+        category: "Tech",
+        isVerified: true
     },
     {
         id: 5,
@@ -51,7 +58,8 @@ const coursesData = [
         price: 49.99,
         rating: 4.6,
         reviews: 980,
-        category: "Creative"
+        category: "Creative",
+        isVerified: false
     },
     {
         id: 6,
@@ -61,7 +69,8 @@ const coursesData = [
         price: 89.99,
         rating: 4.7,
         reviews: 2100,
-        category: "Business"
+        category: "Business",
+        isVerified: true
     }
 ];
 
@@ -72,6 +81,7 @@ const Course = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [hoveredCourse, setHoveredCourse] = useState(null);
 
     const filteredCourses = activeCategory === "All"
         ? coursesData
@@ -120,11 +130,35 @@ const Course = () => {
                 <div className="course-grid">
                     {filteredCourses.map(course => (
                         <div key={course.id} className="course-card">
-                            <div className="course-image" style={{ backgroundImage: `url(${course.image})` }}>
-                                <span className="course-badge">{course.category}</span>
+                            <div className="course-media"
+                                onMouseEnter={() => setHoveredCourse(course.id)}
+                                onMouseLeave={() => setHoveredCourse(null)}
+                            >
+                                {hoveredCourse === course.id && course.videoPreview ? (
+                                    <video
+                                        src={course.videoPreview}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        className="course-video-preview"
+                                    />
+                                ) : (
+                                    <div className="course-image" style={{ backgroundImage: `url(${course.image})` }}>
+                                        <span className="course-badge">{course.category}</span>
+                                    </div>
+                                )}
                             </div>
+
                             <div className="course-details">
-                                <h3 className="course-title">{course.title}</h3>
+                                <div className="course-header-row">
+                                    <h3 className="course-title">{course.title}</h3>
+                                    {course.isVerified && (
+                                        <div className="verified-badge-tooltip">
+                                            <Icon name="check-circle" className="verified-badge" color="#3B82F6" size={16} />
+                                            <span className="tooltip-text">Verified by Connectimi</span>
+                                        </div>
+                                    )}
+                                </div>
                                 <div className="course-author">{course.author}</div>
                                 <div className="course-meta">
                                     <div className="course-rating">
@@ -150,16 +184,40 @@ const Course = () => {
             {isModalOpen && (
                 <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
                     <div className="payment-modal" onClick={e => e.stopPropagation()}>
-                        <h2>Enroll in Course</h2>
-                        <div style={{ marginBottom: '20px', padding: '12px', background: 'rgba(0,0,0,0.05)', borderRadius: '8px' }}>
-                            <strong>{selectedCourse?.title}</strong>
-                            <div style={{ float: 'right', fontWeight: 'bold' }}>${selectedCourse?.price}</div>
+                        <div className="payment-header">
+                            <h2>Connectimi Secure Gateway</h2>
+                            <div className="secure-badge">
+                                <Icon name="lock" size={12} /> Encrypted
+                            </div>
+                        </div>
+
+                        <div className="order-summary">
+                            <div className="summary-row">
+                                <span className="item-name">{selectedCourse?.title}</span>
+                                <span className="item-price">${selectedCourse?.price}</span>
+                            </div>
+                            <div className="summary-row fee">
+                                <span className="item-name">Processing Fee</span>
+                                <span className="item-price">$2.00</span>
+                            </div>
+                            <div className="summary-divider"></div>
+                            <div className="summary-row total">
+                                <span>Total</span>
+                                <span>${(selectedCourse?.price + 2).toFixed(2)}</span>
+                            </div>
                         </div>
 
                         <form className="modal-form" onSubmit={handlePayment}>
                             <div className="form-group">
+                                <label>Cardholder Name</label>
+                                <input type="text" placeholder="John Doe" required />
+                            </div>
+                            <div className="form-group">
                                 <label>Card Number</label>
-                                <input type="text" placeholder="1234 5678 9123 4567" required />
+                                <div className="input-with-icon">
+                                    <Icon name="credit-card" size={16} className="input-icon" />
+                                    <input type="text" placeholder="1234 5678 9123 4567" required style={{ paddingLeft: '36px' }} />
+                                </div>
                             </div>
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <div className="form-group" style={{ flex: 1 }}>
@@ -171,13 +229,19 @@ const Course = () => {
                                     <input type="text" placeholder="123" required />
                                 </div>
                             </div>
-                            <div className="modal-actions">
-                                <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>
-                                    Cancel
-                                </button>
-                                <button type="submit" className="pay-btn-primary" disabled={isProcessing}>
-                                    {isProcessing ? 'Processing...' : `Pay $${selectedCourse?.price}`}
-                                </button>
+
+                            <div className="payment-footer">
+                                <div className="powered-by">
+                                    Payments powered by <strong>Connectimi</strong>
+                                </div>
+                                <div className="modal-actions">
+                                    <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>
+                                        Cancel
+                                    </button>
+                                    <button type="submit" className="pay-btn-primary" disabled={isProcessing}>
+                                        {isProcessing ? 'Processing...' : `Pay $${(selectedCourse?.price + 2).toFixed(2)}`}
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>

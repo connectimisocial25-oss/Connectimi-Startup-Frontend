@@ -329,3 +329,75 @@
         margin-top: -70px;
     }
 }
+
+/* Ads Dashboard Styles */
+.ads-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.ads-stat-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.ads-stat-card h3 {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ads-stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 12px 0 8px;
+}
+
+.ads-stat-card .stat-trend {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.stat-trend.positive {
+    color: #10B981;
+}
+
+.stat-trend.negative {
+    color: #EF4444;
+}
+
+.org-btn-outline {
+    background: transparent;
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    padding: 6px 16px;
+    border-radius: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.org-btn-outline:hover {
+    background: rgba(10, 102, 194, 0.1);
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+/* Ensure modal from Course.css works here too or add overrides */
+.modal-overlay {
+    z-index: 2000;
+}
