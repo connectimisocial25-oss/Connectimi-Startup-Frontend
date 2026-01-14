@@ -4,179 +4,354 @@
     padding-top: 52px;
 }
 
-.notifications-content {
-    max-width: 1128px;
-    margin: 24px auto;
-    padding: 0 24px;
+.notifications-wrapper {
+    max-width: 780px;
+    /* Focused single column width */
+    margin: 32px auto;
+    padding: 0 16px;
     display: flex;
+    flex-direction: column;
     gap: 24px;
+}
+
+/* Header Section */
+.notifications-page-header {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-color);
+}
+
+.notifications-page-header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-right: 24px;
+}
+
+.notifications-actions {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.filter-pill {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+.filter-pill:hover {
+    background: var(--hover-bg);
     color: var(--text-primary);
 }
 
-/* Left Sidebar */
-.notifications-left-sidebar {
-    width: 225px;
+.filter-pill.active {
+    background: var(--primary-blue);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(10, 102, 194, 0.25);
+}
+
+.settings-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-btn:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* Feed & Groups */
+.notifications-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.group-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Notification Card */
+.notification-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Card Hover Effects */
+.notification-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* Soft lift */
+    transform: translateY(-1px);
+    border-color: var(--border-color);
+    z-index: 1;
+}
+
+/* Read/Unread States */
+.notification-card.unread {
+    background: var(--card-bg);
+    /* Keep transparent/card bg but add border/indicator */
+    border-left: 3px solid var(--primary-blue);
+}
+
+.notification-card.read {
+    opacity: 0.9;
+}
+
+.notification-content-wrapper {
+    display: flex;
+    gap: 16px;
+    flex: 1;
+}
+
+.notification-user-media {
+    position: relative;
     flex-shrink: 0;
 }
 
-.notifications-sidebar-card {
-    background: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 0 0 1px var(--border-color);
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-    position: sticky;
-    top: 76px;
-    padding: 16px;
-}
-
-.notifications-sidebar-items {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-/* Main Feed */
-.notifications-main {
-    flex: 1;
-    background: var(--card-bg);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 0 1px var(--border-color);
-    overflow: hidden;
-}
-
-.notifications-header {
-    padding: 16px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.notifications-filter-btn {
-    background: transparent;
-    border: 1px solid var(--primary-blue);
-    color: var(--primary-blue);
-    padding: 6px 16px;
-    border-radius: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.notifications-filter-btn:hover {
-    background-color: rgba(10, 102, 194, 0.1);
-}
-
-.notification-item {
-    padding: 16px;
-    display: flex;
-    gap: 12px;
-    border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-    transition: background-color 0.2s;
-    position: relative;
-}
-
-.notification-item.unread {
-    background-color: rgba(10, 102, 194, 0.1);
-}
-
-.notification-item:hover {
-    background-color: #f3f3f3;
-}
-
-/* Dark mode hover fix */
-.dark .notification-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.notification-icon {
-    font-size: 48px;
-    /* Placeholder for avatar/icon */
-    width: 48px;
-    height: 48px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.notification-avatar {
-    width: 48px;
-    height: 48px;
+.unread-dot-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-blue);
     border-radius: 50%;
-    object-fit: cover;
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    border: 2px solid var(--card-bg);
 }
 
 .system-icon-wrapper {
     width: 48px;
     height: 48px;
-    border-radius: 50%;
+    border-radius: 12px;
+    /* Softer square */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 20px;
 }
 
-.notification-details {
-    flex: 1;
+.notification-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
 }
 
-.notification-text {
-    font-size: 14px;
+.notification-main-text {
+    font-size: 15px;
     color: var(--text-primary);
-    line-height: 1.4;
-    margin-bottom: 4px;
+    line-height: 1.5;
 }
 
-.notification-time {
-    font-size: 12px;
+.notification-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
     color: var(--text-secondary);
 }
 
-.notification-options-btn {
+.time-stamp {
+    font-weight: 500;
+}
+
+/* Options Button */
+.notification-options {
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-left: 12px;
+}
+
+.notification-card:hover .notification-options {
+    opacity: 1;
+}
+
+.more-options-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+}
+
+.more-options-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .notifications-wrapper {
+        margin: 16px auto;
+        width: 100%;
+        padding: 0 12px;
+    }
+
+    .notifications-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .notifications-page-header h1 {
+        margin-bottom: 0;
+    }
+
+    .notifications-actions {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        /* Hide scrollbar */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .notifications-actions::-webkit-scrollbar {
+        display: none;
+    }
+
+    .settings-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+    }
+
+    .notification-options {
+        opacity: 1;
+        /* Always show on mobile */
+    }
+}
+
+/* Promoted Section */
+.promoted-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px 0 24px 0;
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.promoted-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.promoted-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--hover-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.promoted-more-btn {
     background: transparent;
     border: none;
     color: var(--text-secondary);
     cursor: pointer;
     padding: 4px;
-    border-radius: 50%;
 }
 
-.notification-options-btn:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+.promoted-content {
+    display: flex;
+    gap: 16px;
+    align-items: center;
 }
 
-/* Right Sidebar */
-.notifications-right-sidebar {
-    width: 300px;
-    flex-shrink: 0;
-}
-
-.ad-card {
-    background: var(--card-bg);
+.promoted-image {
+    width: 80px;
+    height: 80px;
     border-radius: 8px;
-    border: 1px solid var(--border-color);
-    padding: 16px;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-secondary);
+    object-fit: cover;
 }
 
-/* Responsive */
-@media (max-width: 992px) {
-    .notifications-content {
+.promoted-info {
+    flex: 1;
+}
+
+.promoted-info h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.promoted-info p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.promoted-cta {
+    background: transparent;
+    border: 1px solid var(--primary-blue);
+    color: var(--primary-blue);
+    padding: 6px 16px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.promoted-cta:hover {
+    background: rgba(10, 102, 194, 0.1);
+}
+
+@media (max-width: 480px) {
+    .promoted-content {
         flex-direction: column;
+        align-items: flex-start;
     }
 
-    .notifications-left-sidebar,
-    .notifications-right-sidebar {
+    .promoted-image {
         width: 100%;
-        display: none;
-        /* Hide sidebars on smaller screens for simplicity like LinkedIn often does or stack them */
+        height: 120px;
     }
 
-    .notifications-main {
+    .promoted-cta {
         width: 100%;
     }
 }

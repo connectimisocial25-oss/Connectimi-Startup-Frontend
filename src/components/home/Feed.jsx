@@ -50,13 +50,35 @@ const Feed = () => {
                     </div>
                 </div>
                 <div className="create-post-actions">
-                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center', gap: '24px' }}>
-                        <Icon name="file-alt" size={20} style={{ color: '#e16745' }} />
-                        <Icon name="image" size={20} style={{ color: '#e16745' }} />
-                        <Icon name="video" size={20} style={{ color: '#e16745' }} />
-                        <Icon name="calendar" size={20} style={{ color: '#e16745' }} />
-                        <Icon name="share" size={20} style={{ color: '#e16745' }} />
+                    <div className="media-buttons">
+                        {/* Hidden file input for mechanics */}
+                        <input
+                            type="file"
+                            id="file-upload"
+                            style={{ display: 'none' }}
+                            // ref={fileInputRef} // Simple direct ref not strictly needed if we use ID or state, but let's just use a ref in full implementation. 
+                            // For simplicity in this replacement, we'll use a direct document.getElementById or just render logic
+                            onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                    alert(`Selected file: ${e.target.files[0].name}`);
+                                }
+                            }}
+                        />
+
+                        <button className="action-icon-btn" title="Write Article" onClick={() => document.getElementById('file-upload').click()}>
+                            <Icon name="file-alt" size={24} style={{ color: '#5735e0ff' }} />
+                        </button>
+                        <button className="action-icon-btn" title="Add Image" onClick={() => document.getElementById('file-upload').click()}>
+                            <Icon name="image" size={24} style={{ color: '#5735e0ff' }} />
+                        </button>
+                        <button className="action-icon-btn" title="Add Video" onClick={() => document.getElementById('file-upload').click()}>
+                            <Icon name="video" size={24} style={{ color: '#5735e0ff' }} />
+                        </button>
+                        <button className="action-icon-btn" title="Create Event">
+                            <Icon name="calendar" size={24} style={{ color: '#5735e0ff' }} />
+                        </button>
                     </div>
+                    {/* Spacer */}
                     <div style={{ flex: 1 }}></div>
                     <button className="btn-post">Post</button>
                 </div>

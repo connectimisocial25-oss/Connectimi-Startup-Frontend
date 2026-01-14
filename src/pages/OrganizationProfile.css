@@ -1,11 +1,19 @@
 /* OrganizationProfile.css */
+/* Standardized Design - Matches Profile.css and index.css */
+
 .org-dashboard-container {
     min-height: 100vh;
-    background-color: #f3f2ef;
-    /* LinkedIn-like light gray bg */
+    background-color: var(--bg-color, #f3f2ef);
     padding-top: 24px;
     padding-bottom: 60px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text-primary, #191919);
+}
+
+/* Fix for layout shift due to scrollbar */
+html {
+    overflow-y: scroll;
+    /* Forces scrollbar to always exist, preventing jumps */
 }
 
 .org-dashboard-content {
@@ -14,55 +22,54 @@
     padding: 0 16px;
     display: flex;
     gap: 24px;
+    align-items: flex-start;
+    /* Ensures sidebar doesn't stretch */
 }
 
 /* Sidebar */
 .org-sidebar {
-    width: 240px;
+    width: 260px;
     flex-shrink: 0;
     align-self: flex-start;
-    background: white;
+    background: var(--card-bg, #ffffff);
     border-radius: 8px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color, #e0e0e0);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
     overflow: hidden;
     position: sticky;
-    top: 90px;
-    /* Assuming navbar height + gap */
+    top: 80px;
 }
 
 .org-sidebar-header {
-    background: white;
+    background: var(--card-bg, white);
     padding: 24px 16px;
     text-align: center;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
     position: relative;
-    background: linear-gradient(to bottom, #dbeafe 0%, #dbeafe 40%, white 40%, white 100%);
 }
 
 .org-avatar {
     width: 72px;
     height: 72px;
-    border-radius: 4px;
-    /* Square shape for companies often */
+    border-radius: 8px;
     margin: 0 auto 12px;
     object-fit: cover;
-    border: 2px solid white;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-    background: white;
+    border: 1px solid var(--border-color, #e0e0e0);
+    background: var(--card-bg, white);
     display: block;
 }
 
 .org-name {
     font-size: 18px;
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.9);
+    color: var(--text-primary, #191919);
     margin: 8px 0 4px;
     line-height: 1.4;
 }
 
 .org-type {
     font-size: 14px;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--text-secondary, #666666);
 }
 
 .org-nav {
@@ -75,7 +82,7 @@
     gap: 12px;
     padding: 12px 20px;
     cursor: pointer;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--text-secondary, #666666);
     transition: all 0.2s ease;
     font-weight: 600;
     font-size: 14px;
@@ -83,12 +90,12 @@
 }
 
 .org-nav-item:hover {
-    background-color: #f3f2ef;
-    color: rgba(0, 0, 0, 0.9);
+    background-color: var(--hover-bg, rgba(0, 0, 0, 0.04));
+    color: var(--text-primary, #191919);
 }
 
 .org-nav-item.active {
-    background-color: rgba(112, 181, 249, 0.1);
+    background-color: var(--card-bg, white);
     color: var(--primary-blue, #0a66c2);
     border-left-color: var(--primary-blue, #0a66c2);
 }
@@ -99,28 +106,31 @@
     min-width: 0;
 }
 
+/* Standard Card Style */
 .org-section-card {
-    background: white;
+    background: var(--card-bg, #ffffff);
     border-radius: 8px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05);
-    /* Realistic subtle shadow */
+    border: 1px solid var(--border-color, #e0e0e0);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
     padding: 24px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
-/* New Banner Styles */
 .profile-card-polished {
     padding: 0;
-    /* Remove default padding for full-width banner */
+    overflow: hidden;
+    min-height: 400px;
+    /* Prevent shrinking too much */
 }
 
+/* Banner & Upload Styles */
 .org-banner-container {
     height: 200px;
     width: 100%;
     position: relative;
-    background-color: #e0e0e0;
+    background-color: #a0b4b7;
 }
 
 .org-banner-img {
@@ -129,24 +139,52 @@
     object-fit: cover;
 }
 
-.org-edit-cover-btn {
+/* NEW: Banner Upload Button Centered */
+.org-banner-upload {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    background: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    /* Rounded key */
-    font-weight: 600;
-    color: #0a66c2;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    display: flex;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.org-upload-btn {
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    height: 32px;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.7);
+    /* Dark semi-transparent */
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.org-upload-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+/* NEW: Avatar Upload Styles */
+.org-avatar-edit-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.org-upload-btn.small {
+    position: absolute;
+    bottom: -15px;
+    /* Overlap bottom of image */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    padding: 6px 12px;
+    white-space: nowrap;
+    z-index: 10;
 }
 
 .org-profile-header-content {
@@ -155,112 +193,173 @@
 }
 
 .org-avatar-large {
-    width: 120px;
-    height: 120px;
+    width: 128px;
+    height: 128px;
     border-radius: 8px;
-    border: 4px solid white;
-    margin-top: -84px;
-    /* Pull up over banner */
-    background: white;
+    border: 4px solid var(--card-bg, white);
+    margin-top: -88px;
+    background: var(--card-bg, white);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     object-fit: cover;
+    position: relative;
+    z-index: 2;
 }
 
 .org-section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
 }
 
 .org-section-header.no-border {
     border-bottom: none;
     padding-bottom: 0;
     margin-bottom: 16px;
-    flex-direction: row-reverse;
-    /* Put edit button on right, maybe */
 }
 
 .org-section-title {
     font-size: 20px;
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.9);
+    color: var(--text-primary, #191919);
 }
 
-/* Polished Form */
+/* NEW: Enhanced Typography Classes for Dark Mode */
+.org-profile-name {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary, #191919);
+    letter-spacing: -0.03em;
+}
+
+.org-profile-type {
+    color: var(--text-secondary, #666);
+    font-size: 16px;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.org-profile-meta {
+    display: flex;
+    gap: 24px;
+    color: var(--text-secondary, #666);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.org-website-link {
+    color: var(--primary-blue, #0a66c2);
+    text-decoration: none;
+}
+
+.org-website-link:hover {
+    text-decoration: underline;
+}
+
+.org-about-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary, #191919);
+}
+
+.org-about-text {
+    line-height: 1.6;
+    color: var(--text-primary, #191919);
+    /* Using primary for better readability */
+    font-size: 14px;
+    max-width: 800px;
+}
+
+/* Forms */
 .org-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    gap: 20px;
+    padding-bottom: 16px;
+}
+
+.org-form-group.full-width {
+    grid-column: span 2;
 }
 
 .org-form-group label {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.7);
-    margin-bottom: 4px;
+    color: var(--text-secondary, #666666);
+    margin-bottom: 6px;
+    display: block;
 }
 
 .org-form-group input,
 .org-form-group textarea {
-    padding: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    /* Slightly darker border for visibility */
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color, #666666);
     border-radius: 4px;
     font-size: 14px;
-    transition: all 0.2s;
-    background-color: white;
-    color: rgba(0, 0, 0, 0.9);
+    background-color: transparent;
+    color: var(--text-primary, #191919);
 }
 
 .org-form-group input:focus,
 .org-form-group textarea:focus {
     outline: none;
-    border-color: #0a66c2;
-    box-shadow: 0 0 0 1px #0a66c2;
-    /* Crisp focus ring */
+    border-color: var(--primary-blue, #0a66c2);
+    box-shadow: 0 0 0 1px var(--primary-blue, #0a66c2);
 }
 
-/* Polished Course List */
+/* Course List */
 .org-course-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
 .org-course-item {
     display: flex;
     gap: 16px;
     padding: 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-    background: white;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    background: var(--card-bg, white);
+}
+
+.org-course-item:last-child {
+    border-bottom: none;
 }
 
 .org-course-item:hover {
-    background-color: #f9fafb;
-    border-color: #d1d5db;
+    background-color: var(--hover-bg, #f9f9f9);
+}
+
+.dark .org-course-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    /* Specific fix for dark mode hover */
 }
 
 .org-course-img {
-    width: 140px;
-    height: 90px;
-    border-radius: 6px;
+    width: 120px;
+    height: 68px;
+    border-radius: 4px;
     background-color: #f3f4f6;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid #e0e0e0;
 }
 
 .org-course-title {
     font-weight: 600;
     font-size: 16px;
-    color: #111827;
-    margin-bottom: 6px;
+    color: var(--text-primary, #191919);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
 }
 
 .org-course-stats {
@@ -268,8 +367,7 @@
     align-items: center;
     gap: 16px;
     font-size: 13px;
-    color: #6b7280;
-    margin-top: 8px;
+    color: var(--text-secondary, #666666);
 }
 
 .org-course-stats span {
@@ -278,14 +376,15 @@
     gap: 4px;
 }
 
+/* Buttons - Matching Global Theme */
 .org-btn-primary {
-    background-color: #0a66c2;
+    background-color: var(--primary-blue, #0a66c2);
     color: white;
     border: none;
     padding: 6px 16px;
     border-radius: 16px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -297,21 +396,90 @@
     background-color: #004182;
 }
 
-.icon-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.org-btn-outline {
+    background: transparent;
+    border: 1px solid var(--primary-blue, #0a66c2);
+    color: var(--primary-blue, #0a66c2);
+    padding: 6px 16px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.org-about-section h3 {
-    font-size: 18px;
+.org-btn-outline:hover {
+    background-color: rgba(112, 181, 249, 0.1);
+    box-shadow: inset 0 0 0 1px var(--primary-blue, #0a66c2);
+}
+
+/* Ads Dashboard */
+.ads-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.ads-stat-card {
+    background: var(--card-bg, white);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.ads-stat-card h3 {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-secondary, #666666);
+    font-weight: 400;
+}
+
+.ads-stat-card .stat-value {
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--text-primary, #191919);
+    margin: 8px 0 4px;
+}
+
+.stat-trend {
+    font-size: 12px;
     font-weight: 600;
-    color: rgba(0, 0, 0, 0.9);
-    margin-bottom: 12px;
+}
+
+.stat-trend.positive {
+    color: #057642;
+}
+
+.stat-trend.negative {
+    color: #cc1016;
+}
+
+/* Modals */
+.org-modal-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.org-modal {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    width: 90%;
+    max-width: 500px;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .org-dashboard-content {
         flex-direction: column;
     }
@@ -322,82 +490,11 @@
         margin-bottom: 16px;
     }
 
-    .org-avatar-large {
-        width: 100px;
-        /* Smaller mobile avatar */
-        height: 100px;
-        margin-top: -70px;
+    .org-form-grid {
+        grid-template-columns: 1fr;
     }
-}
 
-/* Ads Dashboard Styles */
-.ads-dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 32px;
-}
-
-.ads-stat-card {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 24px;
-    text-align: center;
-    border: 1px solid #e9ecef;
-}
-
-.ads-stat-card h3 {
-    margin: 0;
-    font-size: 14px;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.ads-stat-card .stat-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 12px 0 8px;
-}
-
-.ads-stat-card .stat-trend {
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.stat-trend.positive {
-    color: #10B981;
-}
-
-.stat-trend.negative {
-    color: #EF4444;
-}
-
-.org-btn-outline {
-    background: transparent;
-    border: 1px solid var(--primary-blue);
-    color: var(--primary-blue);
-    padding: 6px 16px;
-    border-radius: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.org-btn-outline:hover {
-    background: rgba(10, 102, 194, 0.1);
-}
-
-.close-btn {
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    color: var(--text-secondary);
-    cursor: pointer;
-}
-
-/* Ensure modal from Course.css works here too or add overrides */
-.modal-overlay {
-    z-index: 2000;
+    .ads-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
 }

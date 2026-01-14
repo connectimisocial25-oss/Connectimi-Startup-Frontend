@@ -11,8 +11,7 @@ import './Profile.css';
 
 const Notifications = ({ embedded = false }) => {
     const navigate = useNavigate();
-    const { theme } = useTheme(); // toggleTheme removed
-    // isDropdownOpen removed
+    const { theme } = useTheme();
 
     // Mock Notifications Data
     const notifications = [
@@ -25,7 +24,8 @@ const Notifications = ({ embedded = false }) => {
             userRole: 'company',
             icon: 'briefcase',
             iconBg: '#e7f3ff',
-            iconColor: '#0a66c2'
+            iconColor: '#0a66c2',
+            group: 'New'
         },
         {
             id: 2,
@@ -34,7 +34,8 @@ const Notifications = ({ embedded = false }) => {
             time: '5h',
             read: true,
             userRole: 'professional',
-            image: 'https://i.pravatar.cc/150?u=sarah'
+            image: 'https://i.pravatar.cc/150?u=sarah',
+            group: 'New'
         },
         {
             id: 3,
@@ -45,7 +46,8 @@ const Notifications = ({ embedded = false }) => {
             userRole: 'company',
             icon: 'eye',
             iconBg: '#fff7e6',
-            iconColor: '#d69e2e'
+            iconColor: '#d69e2e',
+            group: 'Earlier'
         },
         {
             id: 4,
@@ -54,7 +56,8 @@ const Notifications = ({ embedded = false }) => {
             time: '1d',
             read: true,
             userRole: 'professor',
-            image: 'https://i.pravatar.cc/150?u=david'
+            image: 'https://i.pravatar.cc/150?u=david',
+            group: 'Earlier'
         },
         {
             id: 5,
@@ -65,105 +68,106 @@ const Notifications = ({ embedded = false }) => {
             userRole: 'company',
             icon: 'trending-up',
             iconBg: '#f2f2f2',
-            iconColor: '#333333'
+            iconColor: '#333333',
+            group: 'Earlier'
         }
     ];
 
-
+    // Grouping
+    const groupedNotifications = {
+        New: notifications.filter(n => n.group === 'New'),
+        Earlier: notifications.filter(n => n.group === 'Earlier')
+    };
 
     return (
         <div className="notifications-container">
-            <div className="notifications-content">
-                {/* Left Sidebar */}
-                {!embedded && (
-                    <aside className="notifications-left-sidebar">
-                        <div className="notifications-sidebar-card">
-                            <div className="notifications-sidebar-items">
-                                Manage your Notifications
-                            </div>
-                            <div style={{ marginTop: '16px', color: 'var(--primary-blue)', fontWeight: '600', fontSize: '14px', cursor: 'pointer' }}>
-                                View Settings
-                            </div>
-                        </div>
-                    </aside>
-                )}
-
-                {/* Main Feed */}
-                <main className="notifications-main" style={embedded ? { flex: 1, maxWidth: 'none' } : {}}>
-                    <div className="notifications-header">
-                        <div style={{ fontWeight: '600' }}>Notifications</div>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                            <button className="notifications-filter-btn">My posts</button>
-                            <button className="notifications-filter-btn">Mentions</button>
-                        </div>
+            <div className="notifications-wrapper">
+                <header className="notifications-page-header">
+                    <h1>Notifications</h1>
+                    <div className="notifications-actions">
+                        <div className="filter-pill active">All</div>
+                        <div className="filter-pill">My Posts</div>
+                        <div className="filter-pill">Mentions</div>
                     </div>
+                    <button className="settings-btn" title="Notification Settings">
+                        <Icon name="cog" />
+                    </button>
+                </header>
 
-                    <div className="notifications-list">
-                        {notifications.map(notification => (
-                            <div key={notification.id} className={`notification-item ${notification.read ? '' : 'unread'}`}>
-                                <div className="notification-icon">
-                                    {notification.image ? (
-                                        <Avatar
-                                            src={notification.image}
-                                            alt=""
-                                            role={notification.userRole}
-                                            size={48}
-                                            className="notification-avatar"
-                                        />
-                                    ) : (
-                                        <div
-                                            className="system-icon-wrapper"
-                                            style={{
-                                                backgroundColor: notification.iconBg,
-                                                color: notification.iconColor
-                                            }}
-                                        >
-                                            <Icon name={notification.icon} size={24} />
+                <div className="notifications-feed">
+                    {Object.entries(groupedNotifications).map(([group, items], index) => (
+                        <div key={group}>
+                            {group === 'Earlier' && (
+                                <div className="promoted-section">
+                                    <div className="promoted-header">
+                                        <span className="promoted-label">Promoted</span>
+                                        <button className="promoted-more-btn"><Icon name="ellipsis-h" /></button>
+                                    </div>
+                                    <div className="promoted-content">
+                                        <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=150" alt="Ad" className="promoted-image" />
+                                        <div className="promoted-info">
+                                            <h3>Unlock your full potential with Premium</h3>
+                                            <p>See who viewed your profile and get exclusive insights.</p>
+                                            <button className="promoted-cta">Try for Free</button>
                                         </div>
-                                    )}
-                                </div>
-                                <div className="notification-details">
-                                    <div className="notification-text">
-                                        {notification.text}
-                                    </div>
-                                    <div className="notification-time">
-                                        {notification.time}
                                     </div>
                                 </div>
-                                <button className="notification-options-btn">
-                                    <Icon name="ellipsis-h" />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </main>
+                            )}
 
-                {/* Right Sidebar */}
-                {!embedded && (
-                    <aside className="notifications-right-sidebar">
+                            {items.length > 0 && (
+                                <div className="notification-group">
+                                    <h2 className="group-title">{group}</h2>
+                                    {items.map(notification => (
+                                        <div key={notification.id} className={`notification-card ${notification.read ? 'read' : 'unread'}`}>
+                                            <div className="notification-content-wrapper">
+                                                <div className="notification-user-media">
+                                                    {notification.image ? (
+                                                        <Avatar
+                                                            src={notification.image}
+                                                            alt=""
+                                                            role={notification.userRole}
+                                                            size={48}
+                                                            className="notification-avatar"
+                                                        />
+                                                    ) : (
+                                                        <div
+                                                            className="system-icon-wrapper"
+                                                            style={{
+                                                                backgroundColor: notification.iconBg,
+                                                                color: notification.iconColor
+                                                            }}
+                                                        >
+                                                            <Icon name={notification.icon} size={20} />
+                                                        </div>
+                                                    )}
+                                                    {/* Role Icon Badger - Optional, can be added if needed */}
+                                                    {!notification.read && <div className="unread-dot-indicator"></div>}
+                                                </div>
 
-                        <div className="ad-card">
-                            <div style={{ fontSize: '12px', textAlign: 'right', marginBottom: '8px' }}>Ad</div>
-                            <div style={{ marginBottom: '12px' }}>
-                                <img src="https://via.placeholder.com/80" alt="Ad" style={{ borderRadius: '8px' }} />
-                            </div>
-                            <div style={{ marginBottom: '8px' }}>
-                                Master the skills you need for your future.
-                            </div>
-                            <button style={{
-                                background: 'transparent',
-                                border: '1px solid var(--primary-blue)',
-                                color: 'var(--primary-blue)',
-                                borderRadius: '16px',
-                                padding: '6px 16px',
-                                fontWeight: '600',
-                                cursor: 'pointer'
-                            }}>
-                                Learn more
-                            </button>
+                                                <div className="notification-info">
+                                                    <div className="notification-main-text">
+                                                        {notification.text}
+                                                    </div>
+                                                    <div className="notification-meta">
+                                                        <span className="time-stamp">{notification.time}</span>
+                                                        {/* <span className="meta-separator">•</span> */}
+                                                        {/* <span className="notification-type">{notification.type}</span> */}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="notification-options">
+                                                <button className="more-options-btn">
+                                                    <Icon name="ellipsis-h" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    </aside>
-                )}
+                    ))}
+                </div>
             </div>
         </div>
     );
