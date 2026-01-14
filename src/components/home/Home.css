@@ -227,7 +227,6 @@
     align-items: center;
     gap: 20px;
     padding-left: 0;
-    /* Removed padding to align centered icon */
     padding-top: 8px;
 }
 
@@ -236,7 +235,6 @@
     display: flex;
     gap: 24px;
     justify-content: flex-start;
-    /* Align left or center as per design, text said 'justifyContent: center' in inline styles previously, but 'flex-start' might be better for standard look. Let's stick to center to match previous or left? The previous inline code had justifyContent: center. I will make it flex-start to look more like typical input actions or keep center if that's the vibe. Let's do flex-start to align with the left input. Actually, the mock had them spread. Let's use gap. */
     margin-left: 8px;
 }
 

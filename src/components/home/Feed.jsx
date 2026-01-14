@@ -41,7 +41,6 @@ const Feed = () => {
 
     return (
         <main className="feed-container">
-            {/* Create Post Widget */}
             <div className="card create-post-card">
                 <div className="create-post-top">
                     <Avatar src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" size={48} />
@@ -51,13 +50,10 @@ const Feed = () => {
                 </div>
                 <div className="create-post-actions">
                     <div className="media-buttons">
-                        {/* Hidden file input for mechanics */}
                         <input
                             type="file"
                             id="file-upload"
                             style={{ display: 'none' }}
-                            // ref={fileInputRef} // Simple direct ref not strictly needed if we use ID or state, but let's just use a ref in full implementation. 
-                            // For simplicity in this replacement, we'll use a direct document.getElementById or just render logic
                             onChange={(e) => {
                                 if (e.target.files && e.target.files[0]) {
                                     alert(`Selected file: ${e.target.files[0].name}`);
