@@ -1,19 +1,14 @@
-/* OrganizationProfile.css */
-/* Standardized Design - Matches Profile.css and index.css */
-
 .org-dashboard-container {
     min-height: 100vh;
     background-color: var(--bg-color, #f3f2ef);
-    padding-top: 24px;
+    padding-top: 0;
     padding-bottom: 60px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: var(--text-primary, #191919);
 }
 
-/* Fix for layout shift due to scrollbar */
 html {
     overflow-y: scroll;
-    /* Forces scrollbar to always exist, preventing jumps */
 }
 
 .org-dashboard-content {
@@ -23,7 +18,6 @@ html {
     display: flex;
     gap: 24px;
     align-items: flex-start;
-    /* Ensures sidebar doesn't stretch */
 }
 
 /* Sidebar */
@@ -122,7 +116,6 @@ html {
     padding: 0;
     overflow: hidden;
     min-height: 400px;
-    /* Prevent shrinking too much */
 }
 
 /* Banner & Upload Styles */
@@ -139,7 +132,7 @@ html {
     object-fit: cover;
 }
 
-/* NEW: Banner Upload Button Centered */
+
 .org-banner-upload {
     position: absolute;
     top: 50%;
@@ -168,7 +161,7 @@ html {
     background: rgba(0, 0, 0, 0.9);
 }
 
-/* NEW: Avatar Upload Styles */
+
 .org-avatar-edit-wrapper {
     position: relative;
     display: inline-block;
@@ -226,7 +219,6 @@ html {
     color: var(--text-primary, #191919);
 }
 
-/* NEW: Enhanced Typography Classes for Dark Mode */
 .org-profile-name {
     margin: 0 0 8px;
     font-size: 28px;
@@ -497,4 +489,33 @@ html {
     .ads-dashboard-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.org-profile-content-container {
+    display: flex;
+    gap: 24px;
+    padding: 0 24px 24px;
+    position: relative;
+    margin-top: -10px;
+}
+
+.org-profile-left {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.org-profile-right {
+    flex: 1;
+    min-width: 0;
+    padding-top: 24px;
+}
+
+.org-profile-left .org-avatar-large {
+    margin-bottom: 24px;
+}
+
+.org-profile-left .org-about-section {
+    margin-top: 0;
 }

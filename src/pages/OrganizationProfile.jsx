@@ -117,16 +117,16 @@ const OrganizationProfile = () => {
                             )}
                         </div>
 
-                        <div className="org-profile-header-content">
-                            <div className="org-section-header no-border">
-                                <div style={{ flex: 1 }}>{/* Spacer */}</div>
-                                <button className="org-btn-primary" onClick={() => setIsEditing(!isEditing)}>
-                                    <Icon name={isEditing ? "save" : "edit"} />
-                                    {isEditing ? "Save Changes" : "Edit Profile"}
-                                </button>
-                            </div>
+                        {isEditing ? (
+                            <div className="org-profile-header-content">
+                                <div className="org-section-header no-border">
+                                    <div style={{ flex: 1 }}>{/* Spacer */}</div>
+                                    <button className="org-btn-primary" onClick={() => setIsEditing(!isEditing)}>
+                                        <Icon name="save" />
+                                        Save Changes
+                                    </button>
+                                </div>
 
-                            {isEditing ? (
                                 <div className="org-form-grid">
                                     {/* Upload Logo Control in Edit Mode */}
                                     <div className="org-logo-upload-section" style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
@@ -191,36 +191,43 @@ const OrganizationProfile = () => {
                                         />
                                     </div>
                                 </div>
-                            ) : (
-                                <div>
-                                    <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '24px' }}>
-                                        <img
-                                            src={orgData.logo}
-                                            alt="Logo"
-                                            className="org-avatar-large"
-                                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://ui-avatars.com/api/?name=TC&background=0D8ABC&color=fff&size=150' }}
-                                        />
-                                        <div style={{ marginLeft: '24px', flex: 1, marginTop: '24px' }}>
-                                            <h1 className="org-profile-name">
-                                                {orgData.name}
-                                            </h1>
-                                            <div className="org-profile-type">{orgData.type}</div>
-
-                                            <div className="org-profile-meta">
-                                                <span className="icon-text"><Icon name="map-marker" /> {orgData.location}</span>
-                                                <span className="icon-text"><Icon name="globe" /> <a href={orgData.website} target="_blank" rel="noopener noreferrer" className="org-website-link">{orgData.website}</a></span>
-                                                <span className="icon-text"><Icon name="users" /> 12,500 Followers</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                            </div>
+                        ) : (
+                            <div className="org-profile-content-container">
+                                <div className="org-profile-left">
+                                    <img
+                                        src={orgData.logo}
+                                        alt="Logo"
+                                        className="org-avatar-large"
+                                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://ui-avatars.com/api/?name=TC&background=0D8ABC&color=fff&size=150' }}
+                                    />
                                     <div className="org-about-section">
                                         <h3 className="org-about-title">About</h3>
                                         <p className="org-about-text">{orgData.description}</p>
                                     </div>
                                 </div>
-                            )}
-                        </div>
+
+                                <div className="org-profile-right">
+                                    <div className="org-section-header no-border" style={{ marginBottom: '8px' }}>
+                                        <div style={{ flex: 1 }}>{/* Spacer */}</div>
+                                        <button className="org-btn-primary" onClick={() => setIsEditing(!isEditing)}>
+                                            <Icon name="edit" />
+                                            Edit Profile
+                                        </button>
+                                    </div>
+                                    <h1 className="org-profile-name">
+                                        {orgData.name}
+                                    </h1>
+                                    <div className="org-profile-type">{orgData.type}</div>
+
+                                    <div className="org-profile-meta">
+                                        <span className="icon-text"><Icon name="map-marker" /> {orgData.location}</span>
+                                        <span className="icon-text"><Icon name="globe" /> <a href={orgData.website} target="_blank" rel="noopener noreferrer" className="org-website-link">{orgData.website}</a></span>
+                                        <span className="icon-text"><Icon name="users" /> 12,500 Followers</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 );
             case 'messaging':
@@ -231,13 +238,7 @@ const OrganizationProfile = () => {
                 );
             case 'notifications':
                 return (
-                    <div className="org-section-card">
-                        <div className="org-section-header">
-                            <h2 className="org-section-title">Notifications</h2>
-                            <button className="org-btn-outline" style={{ fontSize: '13px', padding: '6px 12px' }}>
-                                Mark all read
-                            </button>
-                        </div>
+                    <div className="org-section-card profile-card-polished" style={{ height: 'calc(100vh - 120px)', padding: 0, overflow: 'auto' }}>
                         <Notifications embedded={true} />
                     </div>
                 );
@@ -250,7 +251,6 @@ const OrganizationProfile = () => {
                                 <Icon name="plus" /> Add New Course
                             </button>
                         </div>
-
                         <div className="org-course-list">
                             {orgData.courses.map(course => (
                                 <div key={course.id} className="org-course-item">
@@ -278,59 +278,61 @@ const OrganizationProfile = () => {
                 );
             case 'ads':
                 return (
-                    <div className="org-section-card">
-                        <div className="org-section-header">
-                            <h2 className="org-section-title">Advertising & Revenue</h2>
-                            <button className="org-btn-outline">Download Report</button>
-                        </div>
-
-                        <div className="ads-dashboard-grid">
-                            <div className="ads-stat-card">
-                                <h3>Total Ad Revenue</h3>
-                                <div className="stat-value">$12,450.00</div>
-                                <div className="stat-trend positive">
-                                    <Icon name="arrow-up" size={12} /> 15% this month
+                    <div className="org-section-card profile-card-polished" style={{ height: 'calc(100vh - 120px)', padding: 0, overflow: 'hidden' }}>
+                        <div className="org-profile-content-container">
+                            <div className="org-profile-right">
+                                <div className="org-section-header">
+                                    <h2 className="org-section-title">Advertising & Revenue</h2>
+                                    <button className="org-btn-outline">Download Report</button>
                                 </div>
-                            </div>
-                            <div className="ads-stat-card">
-                                <h3>Ad Spend</h3>
-                                <div className="stat-value">$1,200.00</div>
-                                <div className="stat-trend negative">
-                                    <Icon name="arrow-up" size={12} /> 5% this month
-                                </div>
-                            </div>
-                            <div className="ads-stat-card">
-                                <h3>Active Campaigns</h3>
-                                <div className="stat-value">3</div>
-                            </div>
-                        </div>
-
-                        <h3 style={{ fontSize: '16px', fontWeight: '600', marginTop: '24px', marginBottom: '16px', color: '#191919' }}>Boost Your Courses</h3>
-                        <div className="org-course-list">
-                            {orgData.courses.map(course => (
-                                <div key={course.id} className="org-course-item">
-                                    <div style={{ flex: 1 }}>
-                                        <div className="org-course-title">{course.title}</div>
-                                        <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>
-                                            {course.isBoosted ? 'Currently Boosted' : 'Not Boosted'}
+                                <div className="ads-dashboard-grid">
+                                    <div className="ads-stat-card">
+                                        <h3>Total Ad Revenue</h3>
+                                        <div className="stat-value">$12,450.00</div>
+                                        <div className="stat-trend positive">
+                                            <Icon name="arrow-up" size={12} /> 15% this month
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <button
-                                            className={`org-btn-primary ${course.isBoosted ? 'secondary' : ''}`}
-                                            onClick={() => {
-                                                const updatedCourses = orgData.courses.map(c =>
-                                                    c.id === course.id ? { ...c, isBoosted: !c.isBoosted } : c
-                                                );
-                                                setOrgData({ ...orgData, courses: updatedCourses });
-                                                alert(course.isBoosted ? "Campaign paused." : "Course boosted successfully! Ad spend initialized.");
-                                            }}
-                                        >
-                                            {course.isBoosted ? 'Pause Campaign' : 'Boost Course'}
-                                        </button>
+                                    <div className="ads-stat-card">
+                                        <h3>Ad Spend</h3>
+                                        <div className="stat-value">$1,200.00</div>
+                                        <div className="stat-trend negative">
+                                            <Icon name="arrow-up" size={12} /> 5% this month
+                                        </div>
+                                    </div>
+                                    <div className="ads-stat-card">
+                                        <h3>Active Campaigns</h3>
+                                        <div className="stat-value">3</div>
                                     </div>
                                 </div>
-                            ))}
+                                <h3 style={{ fontSize: '16px', fontWeight: '600', marginTop: '24px', marginBottom: '16px', color: '#191919' }}>Boost Your Courses</h3>
+                                <div className="org-course-list">
+                                    {orgData.courses.map(course => (
+                                        <div key={course.id} className="org-course-item">
+                                            <div style={{ flex: 1 }}>
+                                                <div className="org-course-title">{course.title}</div>
+                                                <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>
+                                                    {course.isBoosted ? 'Currently Boosted' : 'Not Boosted'}
+                                                </div>
+                                            </div>
+                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                <button
+                                                    className={`org-btn-primary ${course.isBoosted ? 'secondary' : ''}`}
+                                                    onClick={() => {
+                                                        const updatedCourses = orgData.courses.map(c =>
+                                                            c.id === course.id ? { ...c, isBoosted: !c.isBoosted } : c
+                                                        );
+                                                        setOrgData({ ...orgData, courses: updatedCourses });
+                                                        alert(course.isBoosted ? "Campaign paused." : "Course boosted successfully! Ad spend initialized.");
+                                                    }}
+                                                >
+                                                    {course.isBoosted ? 'Pause Campaign' : 'Boost Course'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
