@@ -5,7 +5,8 @@ import {
   FiEdit, FiPlus, FiAward, FiLink, FiCamera, FiLogOut, FiMoreHorizontal,
   FiVolume2, FiVolumeX, FiPlay, FiPause, FiCpu, FiSend, FiInfo, FiFileText,
   FiShare2, FiAlertTriangle, FiFile, FiMoon, FiSun, FiHash, FiCalendar,
-  FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo, FiEye, FiTrendingUp
+  FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo, FiEye, FiTrendingUp,
+  FiLock, FiUnlock, FiCheckCircle, FiClock, FiCheck, FiArrowRight
 } from 'react-icons/fi';
 
 import { FaStar } from "react-icons/fa";
@@ -33,7 +34,7 @@ const iconMap = {
   'building': FiBriefcase,
   'graduation-cap': FiAward,
   'course': LuGraduationCap,
-  'book': FiBookmark, // Fallback or use FiBook if imported
+  'book': FiBookmark,
   'link': FiLink,
   'camera': FiCamera,
   'sign-out': FiLogOut,
@@ -62,7 +63,15 @@ const iconMap = {
   'video': FiVideo,
   'calendar': FiCalendar,
   'eye': FiEye,
-  'trending-up': FiTrendingUp
+  'trending-up': FiTrendingUp,
+  'lock': FiLock,
+  'lock-open': FiUnlock,
+  'check-circle': FiCheckCircle,
+  'clock': FiClock,
+  'check': FiCheck,
+  'arrow-right': FiArrowRight,
+  'chart-line': FiTrendingUp,
+  'map-marker-alt': FiMapPin
 };
 
 export default function Icon({ name, size = 16, className = '', ...rest }) {

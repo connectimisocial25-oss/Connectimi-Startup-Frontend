@@ -11,12 +11,14 @@ import Notifications from "./pages/Notifications";
 import Course from "./pages/Course";
 import OrganizationProfile from "./pages/OrganizationProfile";
 
+
+import Resources from "./pages/Resources";
+import CourseRoadmap from "./pages/CourseRoadmap";
+
 import Navbar from "./components/Navbar";
 
-// Layout wrapper to handle global elements
 const Layout = ({ children }) => {
   const location = useLocation();
-  // Hide global navbar on auth pages
   const showHeader = !['/', '/signup', '/forgot-password', '/organization'].includes(location.pathname);
 
   return (
@@ -43,6 +45,8 @@ function App() {
             <Route path="/notifications" element={<Notifications />} />
             {/* <Route path="/notifications" element={<Notifications />} /> */}
             <Route path="/course" element={<Course />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/resources/:courseId" element={<CourseRoadmap />} />
             <Route path="/organization" element={<OrganizationProfile />} />
           </Routes>
         </Layout>

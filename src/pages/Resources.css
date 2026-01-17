@@ -1,0 +1,165 @@
+.resources-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--bg-primary);
+    min-height: calc(100vh - 64px);
+    color: var(--text-primary);
+}
+
+.resources-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.resources-header h1 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.resources-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Tree Layout */
+.roadmap-tree {
+    position: relative;
+    padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.tree-level {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+/* Connecting Lines */
+.tree-level::after {
+    content: '';
+    position: absolute;
+    bottom: -2rem; /* Halfway to next level */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 2rem;
+    background-color: var(--border-color);
+    z-index: 1;
+}
+
+.tree-level:last-child::after {
+    display: none;
+}
+
+.tree-node-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tree-node {
+    width: 280px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.tree-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+}
+
+.node-type {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.type-micro {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+}
+
+.type-medium {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+}
+
+.type-capstone {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #F59E0B;
+}
+
+.node-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.node-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.node-status {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Horizontal Connector for multiple nodes in a level */
+.connector-horizontal {
+    position: absolute;
+    top: -2rem;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--border-color);
+    z-index: 0;
+}
+
+/* Custom Tree SVG Implementation */
+.tree-svg-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 20px;
+}
+
+.tree-node-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.tree-node-card:hover {
+    transform: scale(1.05);
+    border-color: var(--primary-color);
+}

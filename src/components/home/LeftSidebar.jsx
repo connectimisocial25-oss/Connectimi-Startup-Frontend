@@ -6,101 +6,98 @@ import Icon from '../Icon';
 const LeftSidebar = () => {
     const navigate = useNavigate();
 
-    // Mock data - replace with actual context/props later
     const user = {
         name: 'Alex Johnson',
-        headline: 'Senior Software Engineer at TechCorp',
+        role: 'Senior Software Engineer',
+        company: 'Opster',
+        stack: 'React • TypeScript • Engineer',
         location: 'San Francisco',
-        joined: '2019',
-        bgGradient: 'linear-gradient(135deg, #4b6cb7 0%, #182848 100%)' // Fallback or specific
-    };
-
-    const stats = {
-        views: '1,234',
-        impressions: '12.5K',
-        searchAppearances: 89
+        connections: '200+',
     };
 
     return (
-        <aside className="left-sidebar">
-            {/* Profile Card */}
-            <div className="card profile-card">
-                <div className="card-banner" style={{ background: '#5735e0ff' }}></div>
-                <div className="card-body profile-body">
-                    <div className="profile-avatar-wrapper">
-                        <Avatar
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                            alt={user.name}
-                            size={72}
-                            className="profile-avatar-large"
-                        />
-                    </div>
-                    <div className="profile-identity">
-                        <h3 className="profile-name" onClick={() => navigate('/profile')}>{user.name}</h3>
-                        <p className="profile-headline">{user.headline}</p>
-                        <div className="profile-meta">
-                            <span className="meta-item">
-                                <Icon name="map-marker-alt" size={12} /> {user.location}
-                            </span>
-                            <span className="meta-item">
-                                <Icon name="calendar-alt" size={12} /> Joined {user.joined}
-                            </span>
-                        </div>
+        <aside className="left-sidebar-panel">
+            {/* Profile Header Section */}
+            <div className="sidebar-section profile-section">
+                <div className="profile-header-row">
+                    <Avatar
+                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                        size={60}
+                        className="profile-avatar-dark"
+                    />
+                    <div className="profile-info-dark">
+                        <h3 className="profile-name-dark" onClick={() => navigate('/profile')}>{user.name}</h3>
+                        <p className="profile-role-dark">
+                            {user.role} <span className="highlight-text">@{user.company}</span>
+                        </p>
+                        <p className="profile-role-dark">{user.stack}</p>
+                        <p className="profile-sub-dark">GreyDants</p>
+                        <p className="profile-sub-dark">Dutch Franchise • 200m 2099</p>
                     </div>
                 </div>
             </div>
 
-            {/* Analytics Card */}
-            <div className="card stats-card">
-                <h4 className="card-title">
-                    <Icon name="chart-line" size={14} style={{ color: 'var(--primary-blue)' }} />
-                    Profile Analytics
-                </h4>
-                <div className="stats-list">
-                    <div className="stat-row">
-                        <span className="stat-label">Profile views</span>
-                        <span className="stat-value">{stats.views}</span>
+            <div className="sidebar-divider"></div>
+
+            {/* Profile Analytics Section */}
+            <div className="sidebar-section analytics-section">
+                <h4 className="sidebar-title">Profile Analytics</h4>
+                <div className="stats-list-dark">
+                    <div className="stat-row-dark">
+                        <span>Profile View</span>
+                        <span className="stat-value-dark">883</span>
                     </div>
-                    <div className="stat-row">
-                        <span className="stat-label">Post impressions</span>
-                        <span className="stat-value">{stats.impressions}</span>
+                    <div className="stat-row-dark">
+                        <span>Post Interactions</span>
+                        <span className="stat-value-dark">1.22M</span>
                     </div>
-                    <div className="stat-row">
-                        <span className="stat-label">Search appearances</span>
-                        <span className="stat-value">{stats.searchAppearances}</span>
+                    <div className="stat-row-dark">
+                        <span>Reached be botmed</span>
+                        <span className="stat-value-dark">390.09</span>
+                    </div>
+                    <div className="stat-row-dark">
+                        <span>Search</span>
+                        <span className="stat-value-dark">190</span>
                     </div>
                 </div>
             </div>
 
-            {/* Resources / Menu Card */}
-            <div className="card menu-card">
-                <h4 className="card-title">Resources</h4>
-                <ul className="menu-list">
-                    <li className="menu-item">
-                        <div className="menu-label">Saved items</div>
-                        <span className="menu-badge">12</span>
-                    </li>
-                    <li className="menu-item">
-                        <div className="menu-label">My events</div>
-                        <span className="menu-badge">3</span>
-                    </li>
-                    <li className="menu-item">
-                        <div className="menu-label">My groups</div>
-                        <span className="menu-badge">8</span>
-                    </li>
-                </ul>
+            <div className="sidebar-divider"></div>
+
+            {/* Resources Section */}
+            <div className="sidebar-section resources-section">
+                <h4 className="sidebar-title">Resources</h4>
+                <div className="stats-list-dark">
+                    <div className="stat-row-dark">
+                        <span>Post Impressions</span>
+                        <span className="stat-value-dark">3299</span>
+                    </div>
+                    <div className="stat-row-dark">
+                        <span>Provce apppearances</span>
+                        <span className="stat-value-dark">99</span>
+                    </div>
+                </div>
             </div>
 
-            {/* Profile Strength */}
-            <div className="card strength-card">
-                <div className="strength-header">
-                    <h4 className="card-title">Profile Strength</h4>
-                    <span className="strength-score">85%</span>
+            <div className="sidebar-divider"></div>
+
+            {/* Mentorship Section */}
+            <div className="sidebar-section mentorship-section">
+                <h4 className="sidebar-title">Mentorship Opportunities</h4>
+                <div className="mentorship-content">
+                    <div className="mentorship-row">
+                        <span>Border adicone P820-K</span>
+                        <span className="mentorship-val">$345.99</span>
+                    </div>
+                    <div className="mentorship-row">
+                        <span>Skils: 8223UG</span>
+                        <span className="mentorship-val">03</span>
+                    </div>
                 </div>
-                <div className="progress-track">
-                    <div className="progress-fill" style={{ width: '85%' }}></div>
+                <div className="mentorship-footer">
+                    <span>Deader hiy a Collab</span>
+                    <Icon name="arrow-right" size={14} />
                 </div>
-                <p className="strength-hint">Add a portfolio link to reach 100%</p>
             </div>
 
         </aside>

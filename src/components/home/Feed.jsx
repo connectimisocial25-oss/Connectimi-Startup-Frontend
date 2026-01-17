@@ -3,130 +3,95 @@ import Avatar from '../Avatar';
 import Icon from '../Icon';
 
 const Feed = () => {
-    const posts = [
+    const insights = [
         {
             id: 1,
-            author: 'Emily Rodriguez',
-            role: 'Startup Founder | YC W23',
-            time: '8h ago',
-            avatar: 'https://i.pravatar.cc/150?u=emily',
-            content: "We just closed our Series A! 🎉 After 18 months of building, pivoting twice, and many sleepless nights, we're thrilled to announce $12M to continue building the future of async work.\n\nThank you to everyone who believed in us!",
-            likes: 2479,
-            comments: 234,
-            shares: 89
+            author: 'Salic UX Research',
+            authorImg: 'https://i.pravatar.cc/150?u=salic',
+            image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            title: 'Solving User Friction in Fintech',
+            takeaway: 'We found that reducing steps by 20% increased retention by 50%',
+            liked: true
         },
         {
             id: 2,
-            author: 'Marcus Johnson',
-            role: 'Engineering Manager at Notion',
-            time: '5h ago',
-            avatar: 'https://i.pravatar.cc/150?u=marcus',
-            content: "Hot take: The best engineering cultures prioritize psychological safety over technical excellence. You can teach skills, but building trust takes intentional effort.",
-            likes: 924,
-            comments: 89,
-            shares: 34
+            author: 'Skili UX Research',
+            authorImg: 'https://i.pravatar.cc/150?u=skili',
+            image: 'https://images.unsplash.com/photo-1555421689-d68471e189f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            title: 'Optimize Database Queries',
+            takeaway: 'We found that indexing tags dbs by 20% increased return by 54%',
+            liked: false
         },
         {
             id: 3,
-            author: 'Sarah Miller',
-            role: 'Product Designer at Stripe',
-            time: '2h ago',
-            avatar: 'https://i.pravatar.cc/150?u=sarah',
-            content: "Just shipped a major redesign that increased conversion by 34%! The key insight? Removing friction beats adding features every time. Sometimes the best design is invisible.",
-            likes: 156,
-            comments: 24,
-            shares: 5
+            author: 'John Doe',
+            authorImg: 'https://i.pravatar.cc/150?u=john',
+            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            title: 'Team Collaboration at Scale',
+            takeaway: 'Async communication is key for distributed teams.',
+            liked: false
+        },
+        {
+            id: 4,
+            author: 'Jane Smith',
+            authorImg: 'https://i.pravatar.cc/150?u=jane',
+            image: 'https://images.unsplash.com/photo-1504384308090-c54be3852f33?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            title: 'The Future of AI Design',
+            takeaway: 'Generative UI will change how we build interfaces.',
+            liked: true
         }
     ];
 
     return (
         <main className="feed-container">
-            <div className="card create-post-card">
-                <div className="create-post-top">
-                    <Avatar src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" size={48} />
-                    <div className="create-post-input">
-                        Build something meaningful...
+            {/* Create Post Area */}
+            <div className="share-insight-card">
+                <div className="share-header">
+                    <Avatar className="user-avatar-ring" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" size={48} />
+                    <div className="share-input-wrapper">
+                        <span className="share-placeholder">Sharing an Insight</span>
+                        <div className="share-actions-inline">
+                            <Avatar src="https://i.pravatar.cc/150?u=collab" size={24} />
+                            <button className="btn-miing">Miing</button>
+                        </div>
                     </div>
                 </div>
-                <div className="create-post-actions">
-                    <div className="media-buttons">
-                        <input
-                            type="file"
-                            id="file-upload"
-                            style={{ display: 'none' }}
-                            onChange={(e) => {
-                                if (e.target.files && e.target.files[0]) {
-                                    alert(`Selected file: ${e.target.files[0].name}`);
-                                }
-                            }}
-                        />
-
-                        <button className="action-icon-btn" title="Write Article" onClick={() => document.getElementById('file-upload').click()}>
-                            <Icon name="file-alt" size={24} style={{ color: '#5735e0ff' }} />
-                        </button>
-                        <button className="action-icon-btn" title="Add Image" onClick={() => document.getElementById('file-upload').click()}>
-                            <Icon name="image" size={24} style={{ color: '#5735e0ff' }} />
-                        </button>
-                        <button className="action-icon-btn" title="Add Video" onClick={() => document.getElementById('file-upload').click()}>
-                            <Icon name="video" size={24} style={{ color: '#5735e0ff' }} />
-                        </button>
-                        <button className="action-icon-btn" title="Create Event">
-                            <Icon name="calendar" size={24} style={{ color: '#5735e0ff' }} />
-                        </button>
-                    </div>
-                    {/* Spacer */}
+                <div className="share-footer-actions">
+                    <button className="btn-icon-text"><Icon name="image" /> Photo</button>
+                    <button className="btn-icon-text"><Icon name="video" /> Video</button>
+                    <button className="btn-icon-text"><Icon name="calendar" /> Event</button>
                     <div style={{ flex: 1 }}></div>
-                    <button className="btn-post">Post</button>
+                    <button className="btn-post-action"><Icon name="edit" /> Post</button>
                 </div>
             </div>
 
-            {/* Posts Feed */}
-            <div className="posts-list">
-                {posts.map(post => (
-                    <div key={post.id} className="card post-card">
-                        <div className="post-header">
-                            <Avatar src={post.avatar} size={48} className="post-avatar" />
-                            <div className="post-meta">
-                                <div className="post-author-row">
-                                    <span className="post-author">{post.author}</span>
-                                    {/* Optional verified badge or connection degree could go here */}
-                                </div>
-                                <div className="post-role">{post.role}</div>
-                                <div className="post-time">{post.time}</div>
-                            </div>
-                            <div className="post-options">
-                                <Icon name="ellipsis-h" />
-                            </div>
+            {/* Insights Grid */}
+            <div className="insights-grid">
+                {insights.map(insight => (
+                    <div key={insight.id} className="insight-card">
+                        <div className="insight-header">
+                            <Avatar src={insight.authorImg} size={24} />
+                            <span className="insight-author">{insight.author}</span>
                         </div>
 
-                        <div className="post-content">
-                            {post.content}
+                        <div className="insight-image-wrapper">
+                            <img src={insight.image} alt={insight.title} className="insight-image" />
+                            <button className="btn-arrow-overlay"><Icon name="arrow-right" /></button>
                         </div>
 
-                        <div className="post-stats">
-                            <div className="stats-left">
-                                <span className="reaction-icons">👍❤️👏</span>
-                                <span className="reaction-count">{post.likes.toLocaleString()}</span>
-                            </div>
-                            <div className="stats-right">
-                                <span>{post.comments} comments</span> &bull; <span>{post.shares} shares</span>
-                            </div>
-                        </div>
+                        <div className="insight-body">
+                            <h3 className="insight-title">{insight.title}</h3>
 
-                        <div className="post-actions">
-                            <button className="feed-action-btn">
-                                <Icon name="thumbs-up" /> Like
-                            </button>
-                            <button className="feed-action-btn">
-                                <Icon name="comment" /> Comment
-                            </button>
-                            <button className="feed-action-btn">
-                                <Icon name="share" /> Share
-                            </button>
-                            <div style={{ flex: 1 }}></div>
-                            <button className="feed-action-btn bookmark-btn">
-                                <Icon name="bookmark" />
-                            </button>
+                            <div className="insight-takeaway">
+                                <span className="takeaway-label">KEY TAKEAWAY:</span>
+                                <p>{insight.takeaway}</p>
+                            </div>
+
+                            <div className="insight-actions">
+                                <button className="btn-action-outline">Applaud</button>
+                                <button className="btn-action-outline">Save to Portfolio</button>
+                                <button className="btn-action-text">Message for Details</button>
+                            </div>
                         </div>
                     </div>
                 ))}
