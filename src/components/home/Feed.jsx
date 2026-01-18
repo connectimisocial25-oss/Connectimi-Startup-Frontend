@@ -35,7 +35,7 @@ const Feed = () => {
             id: 4,
             author: 'Jane Smith',
             authorImg: 'https://i.pravatar.cc/150?u=jane',
-            image: 'https://images.unsplash.com/photo-1504384308090-c54be3852f33?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
             title: 'The Future of AI Design',
             takeaway: 'Generative UI will change how we build interfaces.',
             liked: true
@@ -47,12 +47,11 @@ const Feed = () => {
             {/* Create Post Area */}
             <div className="share-insight-card">
                 <div className="share-header">
-                    <Avatar className="user-avatar-ring" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" size={48} />
+                    <Avatar className="user-avatar-ring" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" size={48} />
                     <div className="share-input-wrapper">
-                        <span className="share-placeholder">Sharing an Insight</span>
+                        <span className="share-placeholder">Build Something meaningful....</span>
                         <div className="share-actions-inline">
-                            <Avatar src="https://i.pravatar.cc/150?u=collab" size={24} />
-                            <button className="btn-miing">Miing</button>
+                            <button className="btn-miing">Post</button>
                         </div>
                     </div>
                 </div>
@@ -61,7 +60,6 @@ const Feed = () => {
                     <button className="btn-icon-text"><Icon name="video" /> Video</button>
                     <button className="btn-icon-text"><Icon name="calendar" /> Event</button>
                     <div style={{ flex: 1 }}></div>
-                    <button className="btn-post-action"><Icon name="edit" /> Post</button>
                 </div>
             </div>
 

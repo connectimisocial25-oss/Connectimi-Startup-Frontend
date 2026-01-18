@@ -44,11 +44,13 @@ const RightSidebar = () => {
     ];
 
     return (
-        <aside className="right-sidebar">
-            <h4 className="rail-title">MICRO OPPORTUNITY RAIL</h4>
+        <aside className="right-sidebar-panel">
+            <div className="sidebar-section">
+                <h4 className="rail-title">MICRO OPPORTUNITY RAIL</h4>
+            </div>
 
             {/* Featured Opportunity Card */}
-            <div className="card opp-card-featured">
+            <div className="featured-section">
                 <div className="featured-header">
                     <h3>Design Lead @ InnovateX</h3>
                     <span className="apply-tag">1-click apply</span>
@@ -57,8 +59,8 @@ const RightSidebar = () => {
                 <div className="featured-content">
                     <Avatar src={opportunities[0].img} size={32} />
                     <div className="featured-text">
-                        <p>Yee both Inson Serfe Oiem</p>
-                        <p className="sub-text">| Seribte Olat</p>
+                        <p>Jerald Harrison</p>
+                        <p className="sub-text">| Open to remote</p>
                     </div>
                 </div>
 
@@ -67,25 +69,27 @@ const RightSidebar = () => {
                 </div>
             </div>
 
-            <h4 className="rail-title" style={{ marginTop: '20px' }}>MICRO OPPORTUNITY RAIL</h4>
+            <div className="sidebar-section">
+                <h4 className="rail-title" style={{ marginTop: '20px' }}>MICRO OPPORTUNITY RAIL</h4>
 
-            {/* List of People/Opportunities */}
-            <div className="opp-list">
-                {opportunities.slice(1).map(opp => (
-                    <div key={opp.id} className="card opp-card-person">
-                        <div className="person-row">
-                            <Avatar src={opp.img} size={40} />
-                            <div className="person-info">
-                                <h5>{opp.name}</h5>
-                                <p>{opp.detail}</p>
+                {/* List of People/Opportunities */}
+                <div className="opp-list">
+                    {opportunities.slice(1).map(opp => (
+                        <div key={opp.id} className="person-row">
+                            <div className="person-row-main">
+                                <Avatar src={opp.img} size={40} />
+                                <div className="person-info">
+                                    <h5>{opp.name}</h5>
+                                    <p>{opp.detail}</p>
+                                </div>
+                                <button className="btn-connect-pill">Connect</button>
                             </div>
-                            <button className="btn-connect-pill">Connect</button>
+                            {opp.connections && (
+                                <div className="mutual-text">{opp.connections}</div>
+                            )}
                         </div>
-                        {opp.connections && (
-                            <div className="mutual-text">{opp.connections}</div>
-                        )}
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
         </aside>
