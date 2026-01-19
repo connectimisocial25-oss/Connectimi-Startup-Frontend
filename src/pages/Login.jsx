@@ -24,7 +24,23 @@ function Login() {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <img src="/Connectimi_logo.png" alt="Connectimi Logo" />
+            <div
+              style={{
+                width: "48px",
+                height: "48px",
+                backgroundColor: "var(--primary-green)",
+                WebkitMaskImage: "url(/Connectimi_logo.png)",
+                maskImage: "url(/Connectimi_logo.png)",
+                WebkitMaskSize: "contain",
+                maskSize: "contain",
+                WebkitMaskRepeat: "no-repeat",
+                maskRepeat: "no-repeat",
+                WebkitMaskPosition: "center",
+                maskPosition: "center",
+              }}
+              role="img"
+              aria-label="Connectimi Logo"
+            />
           </div>
           <h1 className="auth-title">Sign in</h1>
           <p className="auth-subtitle">Stay updated on your professional world</p>
