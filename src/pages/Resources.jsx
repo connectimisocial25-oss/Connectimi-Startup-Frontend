@@ -59,8 +59,6 @@ const Resources = () => {
                             </div>
 
                             <div className="tree-level">
-                                {/* Visual Connector Lines Logic would go here for a complex SVG tree, 
-                                    keeping it simple with flex gap for now */}
                                 {level.nodes.map(node => (
                                     <div
                                         key={node.id}

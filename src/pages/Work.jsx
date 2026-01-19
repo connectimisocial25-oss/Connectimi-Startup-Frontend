@@ -10,7 +10,6 @@ const Work = () => {
     const navigate = useNavigate();
     const { theme } = useTheme(); // toggleTheme only used in Navbar
     const [activeTab, setActiveTab] = useState('fulltime');
-    // isDropdownOpen removed (Navbar local)
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
         location: 'all',
@@ -18,7 +17,6 @@ const Work = () => {
         experienceLevel: 'all'
     });
 
-    // Mock Data
     const fullTimeWork = [
         {
             id: 1,

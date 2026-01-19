@@ -46,7 +46,6 @@
     content: '';
     position: absolute;
     bottom: -2rem;
-    /* Halfway to next level */
     left: 50%;
     transform: translateX(-50%);
     width: 2px;

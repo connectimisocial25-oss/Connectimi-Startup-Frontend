@@ -100,6 +100,7 @@
     display: flex;
     justify-content: center;
 }
+
 .cv-document {
     background-color: var(--card-bg);
     width: 210mm;
@@ -262,7 +263,6 @@
     .cv-document {
         box-shadow: none;
         padding: 20mm;
-        /* Standard margin for print */
         width: 100%;
     }
 

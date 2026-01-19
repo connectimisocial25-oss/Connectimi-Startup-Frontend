@@ -56,9 +56,9 @@
 }
 
 .filter-pill.active {
-    background: var(--primary-blue);
+    background: var(--primary-green);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(10, 102, 194, 0.25);
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
 }
 
 .settings-btn {
@@ -124,7 +124,7 @@
 .notification-card.unread {
     background: var(--card-bg);
     /* Keep transparent/card bg but add border/indicator */
-    border-left: 3px solid var(--primary-blue);
+    border-left: 3px solid var(--primary-green);
 }
 
 .notification-card.read {
@@ -145,7 +145,7 @@
 .unread-dot-indicator {
     width: 10px;
     height: 10px;
-    background-color: var(--primary-blue);
+    background-color: var(--primary-green);
     border-radius: 50%;
     position: absolute;
     top: -2px;
@@ -326,8 +326,8 @@
 
 .promoted-cta {
     background: transparent;
-    border: 1px solid var(--primary-blue);
-    color: var(--primary-blue);
+    border: 1px solid var(--primary-green);
+    color: var(--primary-green);
     padding: 6px 16px;
     border-radius: 16px;
     font-size: 13px;
@@ -337,7 +337,7 @@
 }
 
 .promoted-cta:hover {
-    background: rgba(10, 102, 194, 0.1);
+    background: rgba(22, 163, 74, 0.1);
 }
 
 @media (max-width: 480px) {

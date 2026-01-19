@@ -8,21 +8,26 @@ const Connectimi_logo = () => {
         alignItems: "center",
         gap: "10px",
         padding: "12px 16px",
-        // backgroundColor: "#ffffff",
         width: "fit-content",
-        // borderBottom: "1px solid #e0e0e0",
         fontFamily: "Segoe UI, Roboto, Arial, sans-serif",
       }}
     >
-        <img
-        src="/Connectimi_logo.png"
-        alt="Connectimi Logo"
+      <div
         style={{
           width: "36px",
           height: "36px",
-          objectFit: "contain",
-          filter: "hue-rotate(90deg) brightness(1.2)",
+          backgroundColor: "var(--primary-green)",
+          WebkitMaskImage: "url(/Connectimi_logo.png)",
+          maskImage: "url(/Connectimi_logo.png)",
+          WebkitMaskSize: "contain",
+          maskSize: "contain",
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskPosition: "center",
+          maskPosition: "center",
         }}
+        aria-label="Connectimi Logo"
+        role="img"
       />
 
       <p

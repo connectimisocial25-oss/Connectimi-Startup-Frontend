@@ -43,7 +43,6 @@ function App() {
             <Route path="/work" element={<Work />} />
             <Route path="/mynetwork" element={<MyNetwork />} />
             <Route path="/notifications" element={<Notifications />} />
-            {/* <Route path="/notifications" element={<Notifications />} /> */}
             <Route path="/course" element={<Course />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/resources/:courseId" element={<CourseRoadmap />} />

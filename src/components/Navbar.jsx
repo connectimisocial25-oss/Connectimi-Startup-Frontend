@@ -48,10 +48,7 @@ const Navbar = () => {
                     <div className="nav-icon"><Icon name="course" /></div>
                     <span className="nav-label">Resources</span>
                 </div>
-                <div className={`nav-item ${isActive('/notifications') ? 'active' : ''}`} onClick={() => navigate('/notifications')}>
-                    <div className="nav-icon"><Icon name="bell" /></div>
-                    <span className="nav-label">Notifications</span>
-                </div>
+
 
                 <div className="nav-item me-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                     <div className="nav-icon">
@@ -69,6 +66,10 @@ const Navbar = () => {
                         <div className="dropdown-menu">
                             <div className="dropdown-item" onClick={() => navigate('/profile')}>
                                 View Profile
+                            </div>
+                            <div className="dropdown-item" onClick={() => navigate('/notifications')}>
+                                <Icon name="bell" />
+                                Notifications
                             </div>
                             <div className="dropdown-item" onClick={toggleTheme}>
                                 <Icon name={theme === 'dark' ? 'sun' : 'moon'} />

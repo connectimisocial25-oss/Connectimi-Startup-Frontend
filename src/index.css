@@ -5,15 +5,12 @@
   --text-secondary: #666666;
   --border-color: #e0e0e0;
   --nav-bg: #ffffff;
-  --primary-blue: #355ae0;
-  /* Connectimi official color (2026) */
-  --primary-blue-700: #1d4ed8;
-  /* darker hover */
-  --primary-blue-variant: #378fe9;
-  /* secondary stop for gradients */
+  --primary-green: #16a34a;
+  --primary-green-hover: #15803d;
+  --primary-green-variant: #22c55e;
+  --brand-light-green: #83f28f;
+
   --on-primary: #ffffff;
-  /* Connectimi Light Green (2026) */
-  --primary-green: #83f28f;
 }
 
 .dark {
@@ -23,8 +20,8 @@
   --text-secondary: #f0f0f0;
   --border-color: #333333;
   --nav-bg: #1e1e1e;
-  --primary-blue: #70b5f9;
-  --on-primary: #ffffff;
+  --primary-green: #4ade80;
+  --on-primary: #000000;
 }
 
 * {
@@ -39,13 +36,9 @@ body {
   color: var(--text-primary);
   transition: background 0.3s, color 0.3s;
   -webkit-user-select: none;
-  /* Chrome, Safari */
   -moz-user-select: none;
-  /* Firefox */
   -ms-user-select: none;
-  /* IE/Edge */
   user-select: none;
-  /* Standard */
 }
 
 .auth-container {
@@ -90,7 +83,7 @@ body {
   display: inline-block;
   margin-top: 12px;
   padding: 10px 16px;
-  background: var(--primary-blue);
+  background: var(--primary-green);
   color: var(--on-primary);
   border-radius: 8px;
   text-decoration: none;
@@ -101,12 +94,12 @@ body {
 /* Outline variant for buttons */
 .btn-outline-primary {
   background: transparent;
-  color: var(--primary-blue);
-  border: 1px solid var(--primary-blue);
+  color: var(--primary-green);
+  border: 1px solid var(--primary-green);
 }
 
 .btn-outline-primary:hover {
-  background: var(--primary-blue);
+  background: var(--primary-green);
   color: var(--on-primary);
 }
 
@@ -126,8 +119,6 @@ body {
 }
 
 .avatar-hexagon {
-  /* Hexagon using clip-path */
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  /* Ensure it doesn't get cut off weirdly without a background */
   background-color: transparent;
 }

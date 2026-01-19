@@ -2,7 +2,7 @@
     min-height: 100vh;
     background-color: var(--bg-color);
     padding-top: 52px;
-    --modern-teal: var(--primary-blue);
+    --modern-teal: var(--primary-green);
 }
 
 .network-content {
@@ -50,7 +50,7 @@
 
 .sidebar-item:hover {
     background-color: #f3f3f3;
-    color: var(--primary-blue);
+    color: var(--primary-green);
 }
 
 .dark .sidebar-item:hover {
