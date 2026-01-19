@@ -76,7 +76,7 @@
 }
 
 .highlight-text {
-    color: #10b981;
+    color: var(--primary-green);
     font-weight: 600;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .user-avatar-ring {
-    border: 2px solid #10b981;
+    border: 2px solid var(--primary-green);
     padding: 2px;
 }
 
@@ -186,7 +186,7 @@
 }
 
 .btn-miing {
-    background: #10b981;
+    background: var(--primary-green);
     color: #000;
     font-weight: 700;
     font-size: 12px;
@@ -288,7 +288,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #10b981;
+    background: var(--primary-green);
     color: #000;
     border: none;
     display: flex;
@@ -399,8 +399,8 @@
 
 .apply-tag {
     font-size: 10px;
-    color: #10b981;
-    background: rgba(16, 185, 129, 0.1);
+    color: var(--primary-green);
+    background: rgba(131, 242, 143, 0.1);
     padding: 2px 6px;
     border-radius: 4px;
     white-space: nowrap;

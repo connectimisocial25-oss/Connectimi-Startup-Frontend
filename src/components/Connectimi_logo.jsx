@@ -14,13 +14,14 @@ const Connectimi_logo = () => {
         fontFamily: "Segoe UI, Roboto, Arial, sans-serif",
       }}
     >
-      <img
+        <img
         src="/Connectimi_logo.png"
         alt="Connectimi Logo"
         style={{
           width: "36px",
           height: "36px",
           objectFit: "contain",
+          filter: "hue-rotate(90deg) brightness(1.2)",
         }}
       />
 
@@ -28,7 +29,7 @@ const Connectimi_logo = () => {
         style={{
           fontSize: "20px",
           fontWeight: "700",
-          color: "var(--primary-blue)",
+          color: "var(--primary-green)",
           margin: 0,
           letterSpacing: "0.5px",
         }}

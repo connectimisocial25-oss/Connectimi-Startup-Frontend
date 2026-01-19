@@ -103,8 +103,8 @@
 }
 
 .status-badge.complete {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #10B981;
+    background-color: rgba(131, 242, 143, 0.1);
+    color: var(--primary-green);
 }
 
 .status-badge.inprogress {

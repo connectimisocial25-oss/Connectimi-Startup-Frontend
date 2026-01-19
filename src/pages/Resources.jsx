@@ -71,7 +71,7 @@ const Resources = () => {
                                         <h3 className="node-title">{node.title}</h3>
                                         <p className="node-desc">{node.desc}</p>
                                         <div className="node-status">
-                                            {node.status === 'Locked' ? <Icon name="lock" size={14} /> : <Icon name="check-circle" size={14} color="#10B981" />}
+                                            {node.status === 'Locked' ? <Icon name="lock" size={14} /> : <Icon name="check-circle" size={14} color="#83f28f" />}
                                             {node.status}
                                         </div>
                                     </div>
