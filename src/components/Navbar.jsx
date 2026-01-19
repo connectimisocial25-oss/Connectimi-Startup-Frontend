@@ -44,9 +44,11 @@ const Navbar = () => {
                     <div className="nav-icon"><Icon name="briefcase" /></div>
                     <span className="nav-label">Work</span>
                 </div>
-                <div className={`nav-item ${isActive('/resources') ? 'active' : ''}`} onClick={() => navigate('/resources')}>
-                    <div className="nav-icon"><Icon name="course" /></div>
-                    <span className="nav-label">Resources</span>
+                <div className={`nav-item ${location.pathname.startsWith('/courses') ? 'active' : ''}`} onClick={() => navigate('/courses')}>
+                    <div className="nav-icon">
+                        <Icon name="course" />
+                    </div>
+                    <span className="nav-label">Courses</span>
                 </div>
 
 

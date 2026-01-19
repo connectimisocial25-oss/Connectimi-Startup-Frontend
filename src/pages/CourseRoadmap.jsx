@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Icon from '../components/Icon';
+import PaymentModal from '../components/PaymentModal';
 import './CourseRoadmap.css';
 
 const CourseRoadmap = () => {
     const { courseId } = useParams();
     const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
     // Mock specific course data for demo
     // In a real app, fetch based on courseId
@@ -22,12 +24,13 @@ const CourseRoadmap = () => {
         ]
     };
 
-    const handleUnlock = () => {
-        // Simulate payment/enrollment process
-        const confirmUnlock = window.confirm("Unlock the full course for $49.99?");
-        if (confirmUnlock) {
-            setIsEnrolled(true);
-        }
+    const handleUnlockClick = () => {
+        setIsPaymentModalOpen(true);
+    };
+
+    const handlePaymentSuccess = () => {
+        setIsEnrolled(true);
+        // You might want to show a success toast here
     };
 
     return (
@@ -87,11 +90,19 @@ const CourseRoadmap = () => {
                     <h2>Ready to Master the Full Stack?</h2>
                     <p>Unlock the remaining modules, including Real-time features and Deployment.</p>
                     <br />
-                    <button className="unlock-btn" onClick={handleUnlock}>
+                    <button className="unlock-btn" onClick={handleUnlockClick}>
                         <Icon name="lock-open" /> Unlock Full Course Access
                     </button>
                 </div>
             )}
+
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                onPaymentSuccess={handlePaymentSuccess}
+                courseTitle={courseData.title}
+                price="49.99"
+            />
         </div>
     );
 };

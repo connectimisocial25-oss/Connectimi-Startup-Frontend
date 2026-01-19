@@ -12,7 +12,7 @@ import Course from "./pages/Course";
 import OrganizationProfile from "./pages/OrganizationProfile";
 
 
-import Resources from "./pages/Resources";
+import Courses from "./pages/Courses";
 import CourseRoadmap from "./pages/CourseRoadmap";
 
 import Navbar from "./components/Navbar";
@@ -44,8 +44,8 @@ function App() {
             <Route path="/mynetwork" element={<MyNetwork />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/course" element={<Course />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/resources/:courseId" element={<CourseRoadmap />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:courseId" element={<CourseRoadmap />} />
             <Route path="/organization" element={<OrganizationProfile />} />
           </Routes>
         </Layout>
