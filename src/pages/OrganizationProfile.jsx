@@ -94,13 +94,13 @@ const OrganizationProfile = () => {
         switch (activeTab) {
             case 'feed':
                 return (
-                    <div className="org-section-card" style={{ background: 'transparent', border: 'none', boxShadow: 'none', padding: 0 }}>
+                    <div className="org-section-card profile-card-polished" style={{ height: 'calc(100vh - 120px)', padding: 20, overflow: 'auto' }}>
                         <Feed />
                     </div>
                 );
             case 'profile':
                 return (
-                    <div className="org-section-card profile-card-polished">
+                    <div className="org-section-card profile-card-polished" style={{ height: 'calc(100vh - 120px)', padding: 0, overflow: 'auto' }}>
                         {/* Banner Image */}
                         <div className="org-banner-container">
                             <img
@@ -135,14 +135,13 @@ const OrganizationProfile = () => {
                                 </div>
 
                                 <div className="org-form-grid">
-                                    {/* Upload Logo Control in Edit Mode */}
                                     <div className="org-logo-upload-section" style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
                                         <div className="org-avatar-edit-wrapper">
                                             <img
                                                 src={imagePreview || orgData.logo}
                                                 alt="Current Logo"
                                                 className="org-avatar-large"
-                                                style={{ marginTop: 0 }} /* Reset margin for edit view */
+                                                style={{ marginTop: 0 }}
                                             />
                                             <label htmlFor="org-logo-upload" className="org-upload-btn small">
                                                 <Icon name="camera" /> Change Photo

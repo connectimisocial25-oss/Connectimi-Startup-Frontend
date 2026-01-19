@@ -36,7 +36,6 @@ const iconMap = {
   'graduation-cap': FiAward,
   'course': LuGraduationCap,
   'book': FiBook,
-  'book': FiBook,
   'chart-bar': FiBarChart2,
   'credit-card': FiCreditCard,
   'smartphone': FiSmartphone,
