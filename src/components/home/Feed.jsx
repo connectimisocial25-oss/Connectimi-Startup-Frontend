@@ -56,6 +56,7 @@ const Feed = () => {
                     </div>
                 </div>
                 <div className="share-footer-actions">
+                    <button className="btn-icon-text"><Icon name="project" /> Project</button>
                     <button className="btn-icon-text"><Icon name="image" /> Photo</button>
                     <button className="btn-icon-text"><Icon name="video" /> Video</button>
                     <button className="btn-icon-text"><Icon name="calendar" /> Event</button>

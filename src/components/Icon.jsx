@@ -7,7 +7,7 @@ import {
   FiShare2, FiAlertTriangle, FiFile, FiMoon, FiSun, FiHash, FiCalendar,
   FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo, FiEye, FiTrendingUp,
   FiLock, FiUnlock, FiCheckCircle, FiClock, FiCheck, FiArrowRight, FiBook, FiBarChart2,
-  FiCreditCard, FiSmartphone
+  FiCreditCard, FiSmartphone, FiLayers
 } from 'react-icons/fi';
 
 import { FaStar } from "react-icons/fa";
@@ -76,7 +76,8 @@ const iconMap = {
   'check': FiCheck,
   'arrow-right': FiArrowRight,
   'chart-line': FiTrendingUp,
-  'map-marker-alt': FiMapPin
+  'map-marker-alt': FiMapPin,
+  'project': FiLayers
 };
 
 export default function Icon({ name, size = 16, className = '', ...rest }) {

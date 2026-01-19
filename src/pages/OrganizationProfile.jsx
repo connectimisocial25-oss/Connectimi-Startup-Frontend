@@ -6,10 +6,11 @@ import './OrganizationProfile.css';
 // Reusing existing components where possible or creating compact versions
 import Messaging from './Messaging';
 import Notifications from './Notifications';
+import Feed from '../components/home/Feed';
 
 const OrganizationProfile = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState('feed');
     const [orgData, setOrgData] = useState({
         name: "TechCorp Inc.",
         type: "Software Company",
@@ -91,6 +92,12 @@ const OrganizationProfile = () => {
 
     const renderContent = () => {
         switch (activeTab) {
+            case 'feed':
+                return (
+                    <div className="org-section-card" style={{ background: 'transparent', border: 'none', boxShadow: 'none', padding: 0 }}>
+                        <Feed />
+                    </div>
+                );
             case 'profile':
                 return (
                     <div className="org-section-card profile-card-polished">
@@ -352,6 +359,12 @@ const OrganizationProfile = () => {
                         <div className="org-type">Organization</div>
                     </div>
                     <nav className="org-nav">
+                        <div
+                            className={`org-nav-item ${activeTab === 'feed' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('feed')}
+                        >
+                            <Icon name="home" /> Home
+                        </div>
                         <div
                             className={`org-nav-item ${activeTab === 'profile' ? 'active' : ''}`}
                             onClick={() => setActiveTab('profile')}

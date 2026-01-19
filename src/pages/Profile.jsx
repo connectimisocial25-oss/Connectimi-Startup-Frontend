@@ -28,6 +28,7 @@ const Profile = () => {
     postImpressions: 0,
     about: '',
     experience: [],
+    projects: [],
     education: [],
     skills: [],
     website: '',
@@ -62,6 +63,7 @@ const Profile = () => {
     ...profileData,
     newSkill: '',
     newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
+    newProject: { title: '', description: '', link: '' },
     newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
   });
 
@@ -99,6 +101,7 @@ const Profile = () => {
         ...initialData,
         newSkill: '',
         newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
+        newProject: { title: '', description: '', link: '' },
         newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
       });
       setIsEditing(true);
@@ -361,6 +364,20 @@ const Profile = () => {
             description: 'Developed and maintained multiple client websites and web applications'
           }
         ],
+        projects: [
+          {
+            id: 1,
+            title: 'E-commerce Platform',
+            description: 'Built a full-stack e-commerce platform using MERN stack with payment gateway integration.',
+            link: 'https://github.com/alex/ecommerce'
+          },
+          {
+            id: 2,
+            title: 'AI Chatbot',
+            description: 'Implemented an NLP-based chatbot using Python and TensorFlow for customer support automation.',
+            link: 'https://github.com/alex/chatbot'
+          }
+        ],
         education: [
           {
             id: 1,
@@ -500,6 +517,19 @@ const Profile = () => {
     }));
   };
 
+  // Handle project changes
+  const handleProjectChange = (index, field, value) => {
+    const updatedProjects = [...editData.projects];
+    updatedProjects[index] = {
+      ...updatedProjects[index],
+      [field]: value
+    };
+    setEditData(prev => ({
+      ...prev,
+      projects: updatedProjects
+    }));
+  };
+
   // Add new experience
   const addExperience = () => {
     const newExp = {
@@ -523,6 +553,19 @@ const Profile = () => {
       ...prev,
       education: [...prev.education, newEdu],
       newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+    }));
+  };
+
+  // Add new project
+  const addProject = () => {
+    const newProj = {
+      id: Date.now(),
+      ...editData.newProject
+    };
+    setEditData(prev => ({
+      ...prev,
+      projects: [...prev.projects, newProj],
+      newProject: { title: '', description: '', link: '' }
     }));
   };
 
@@ -550,6 +593,14 @@ const Profile = () => {
     setEditData(prev => ({
       ...prev,
       education: prev.education.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Remove project
+  const removeProject = (index) => {
+    setEditData(prev => ({
+      ...prev,
+      projects: prev.projects.filter((_, i) => i !== index)
     }));
   };
 
@@ -739,6 +790,77 @@ const Profile = () => {
             placeholder="Tell us about yourself..."
             rows={4}
           />
+        </div>
+
+        {/* Projects Section */}
+        <div className="form-section full-width projects-section">
+          <h4>Projects</h4>
+          {editData.projects.map((proj, index) => (
+            <div key={proj.id} className="form-row">
+              <input
+                type="text"
+                placeholder="Project Title"
+                value={proj.title}
+                onChange={(e) => handleProjectChange(index, 'title', e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={proj.description}
+                onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Link"
+                value={proj.link}
+                onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
+              />
+              <button
+                type="button"
+                className="btn-remove"
+                onClick={() => removeProject(index)}
+              >
+                <Icon name="close" />
+              </button>
+            </div>
+          ))}
+
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Project Title"
+              value={editData.newProject.title}
+              onChange={(e) => setEditData(prev => ({
+                ...prev,
+                newProject: { ...prev.newProject, title: e.target.value }
+              }))}
+            />
+            <input
+              type="text"
+              placeholder="Description"
+              value={editData.newProject.description}
+              onChange={(e) => setEditData(prev => ({
+                ...prev,
+                newProject: { ...prev.newProject, description: e.target.value }
+              }))}
+            />
+            <input
+              type="text"
+              placeholder="Link"
+              value={editData.newProject.link}
+              onChange={(e) => setEditData(prev => ({
+                ...prev,
+                newProject: { ...prev.newProject, link: e.target.value }
+              }))}
+            />
+            <button
+              type="button"
+              className="btn-add"
+              onClick={addProject}
+            >
+              <Icon name="plus" /> Add
+            </button>
+          </div>
         </div>
 
         {/* Experience Section */}
@@ -1172,6 +1294,30 @@ const Profile = () => {
                   <h3>About</h3>
                 </div>
                 <p>{profileData.about || 'No about information available.'}</p>
+              </div>
+
+              {/* Projects Section */}
+              <div className="profile-section">
+                <div className="section-header">
+                  <h3><Icon name="project" /> Projects</h3>
+                </div>
+                {profileData.projects && profileData.projects.length > 0 ? (
+                  profileData.projects.map((proj, index) => (
+                    <div key={proj.id || index} className="experience-item">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <h4>{proj.title}</h4>
+                        {proj.link && (
+                          <a href={proj.link} target="_blank" rel="noopener noreferrer" className="project-link" style={{ fontSize: '12px', color: 'var(--primary-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Icon name="link" size={12} /> View
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && <p className="description" style={{ marginTop: '4px' }}>{proj.description}</p>}
+                    </div>
+                  ))
+                ) : (
+                  <p>No projects added yet.</p>
+                )}
               </div>
 
               {/* Experience Section */}
