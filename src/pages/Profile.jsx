@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Icon from '../components/Icon';
-import Avatar from '../components/Avatar';
+// Avatar import removed since it's not used
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
+// useTheme import removed since it's not used
 import './Profile.css';
 
 // Connectimi_logo removed (Navbar only)
@@ -16,6 +16,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const speechSynthesisRef = useRef(null);
+  const progressIntervalRef = useRef(null);
+  const isMountedRef = useRef(true);
 
   // State for user profile data
   const [profileData, setProfileData] = useState({
@@ -38,8 +40,6 @@ const Profile = () => {
     phone: ''
   });
 
-
-
   // State for edit mode
   const [isEditing, setIsEditing] = useState(false);
 
@@ -60,7 +60,22 @@ const Profile = () => {
 
   // State for temporary edit data
   const [editData, setEditData] = useState({
-    ...profileData,
+    name: '',
+    headline: '',
+    location: '',
+    connections: 0,
+    profileViews: 0,
+    postImpressions: 0,
+    about: '',
+    experience: [],
+    projects: [],
+    education: [],
+    skills: [],
+    website: '',
+    profileImage: '',
+    bannerImage: '',
+    email: '',
+    phone: '',
     newSkill: '',
     newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
     newProject: { title: '', description: '', link: '' },
@@ -72,8 +87,34 @@ const Profile = () => {
   const [bannerPreview, setBannerPreview] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
+  // Clean up speech synthesis
+  const stopSpeaking = useCallback(() => {
+    if (speechSynthesisRef.current && isSpeechSupported) {
+      speechSynthesisRef.current.cancel();
+      setIsSpeaking(false);
+      setIsPaused(false);
+      setSpeechProgress(0);
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+    }
+  }, [isSpeechSupported]);
+
+  // Clean up preview URLs
+  const cleanupPreviewURLs = useCallback(() => {
+    if (imagePreview && imagePreview.startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreview);
+    }
+    if (bannerPreview && bannerPreview.startsWith('blob:')) {
+      URL.revokeObjectURL(bannerPreview);
+    }
+  }, [imagePreview, bannerPreview]);
+
   // Fetch profile data from API
   useEffect(() => {
+    isMountedRef.current = true;
+
     if (location.state?.newSignup) {
       // Initialize for new user
       const { firstName, lastName } = location.state;
@@ -96,15 +137,17 @@ const Profile = () => {
         phone: ''
       };
 
-      setProfileData(initialData);
-      setEditData({
-        ...initialData,
-        newSkill: '',
-        newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
-        newProject: { title: '', description: '', link: '' },
-        newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
-      });
-      setIsEditing(true);
+      if (isMountedRef.current) {
+        setProfileData(initialData);
+        setEditData({
+          ...initialData,
+          newSkill: '',
+          newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
+          newProject: { title: '', description: '', link: '' },
+          newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+        });
+        setIsEditing(true);
+      }
     } else {
       fetchProfileData();
     }
@@ -113,11 +156,18 @@ const Profile = () => {
 
     // Cleanup function
     return () => {
+      isMountedRef.current = false;
       stopSpeaking();
-      if (imagePreview) URL.revokeObjectURL(imagePreview);
-      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+      cleanupPreviewURLs();
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      // Clean up speech synthesis voices event listener
+      if (speechSynthesisRef.current) {
+        speechSynthesisRef.current.onvoiceschanged = null;
+      }
     };
-  }, []);
+  }, [location.state, stopSpeaking, cleanupPreviewURLs]);
 
   // Initialize speech synthesis
   const initializeSpeechSynthesis = () => {
@@ -127,6 +177,7 @@ const Profile = () => {
 
       // Load available voices
       const loadVoices = () => {
+        if (!isMountedRef.current) return;
         const voices = speechSynthesisRef.current.getVoices();
         setAvailableVoices(voices);
 
@@ -151,27 +202,37 @@ const Profile = () => {
 
   // Generate AI summary of profile
   const generateProfileSummary = async () => {
+    if (!isMountedRef.current) return;
+    
     setIsSummarizing(true);
 
     try {
       // Simulate AI API call - Replace with actual AI service
       const aiSummary = await simulateAISummary(profileData);
-      setProfileSummary(aiSummary);
+      
+      if (isMountedRef.current) {
+        setProfileSummary(aiSummary);
 
-      // Start speaking automatically after generation
-      if (aiSummary && isSpeechSupported) {
-        speakText(aiSummary);
+        // Start speaking automatically after generation
+        if (aiSummary && isSpeechSupported) {
+          speakText(aiSummary);
+        }
       }
     } catch (error) {
       console.error('Error generating summary:', error);
       // Fallback to manual summary
       const fallbackSummary = createManualSummary();
-      setProfileSummary(fallbackSummary);
-      if (isSpeechSupported) {
-        speakText(fallbackSummary);
+      
+      if (isMountedRef.current) {
+        setProfileSummary(fallbackSummary);
+        if (isSpeechSupported) {
+          speakText(fallbackSummary);
+        }
       }
     } finally {
-      setIsSummarizing(false);
+      if (isMountedRef.current) {
+        setIsSummarizing(false);
+      }
     }
   };
 
@@ -179,11 +240,14 @@ const Profile = () => {
   const handleShareProfile = () => {
     const url = window.location.href;
     const title = profileData.name ? `${profileData.name} — Profile` : 'Profile';
+    
     if (navigator.share) {
       navigator.share({ title, url }).catch(() => { });
-    } else if (navigator.clipboard) {
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(url).then(() => {
         alert('Profile link copied to clipboard');
+      }).catch(() => {
+        prompt('Copy this profile link:', url);
       });
     } else {
       prompt('Copy this profile link:', url);
@@ -255,34 +319,55 @@ const Profile = () => {
     let startTime = Date.now();
     const estimatedDuration = (text.length / 150) * 60 * 1000; // Rough estimate
 
-    let progressInterval;
-
     utterance.onstart = () => {
+      if (!isMountedRef.current) return;
       setIsSpeaking(true);
       setIsPaused(false);
       setSpeechProgress(0);
       startTime = Date.now();
+      
+      // Clear any existing interval
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+      
+      // Update progress
+      progressIntervalRef.current = setInterval(() => {
+        if (!isMountedRef.current) {
+          clearInterval(progressIntervalRef.current);
+          return;
+        }
+        if (isSpeaking && !isPaused) {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min((elapsed / estimatedDuration) * 100, 100);
+          setSpeechProgress(progress);
+        }
+      }, 100);
     };
 
-    // Update progress
-    progressInterval = setInterval(() => {
-      if (isSpeaking && !isPaused) {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min((elapsed / estimatedDuration) * 100, 100);
-        setSpeechProgress(progress);
-      }
-    }, 100);
-
     utterance.onend = () => {
-      clearInterval(progressInterval);
+      if (!isMountedRef.current) return;
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
       setIsSpeaking(false);
       setIsPaused(false);
       setSpeechProgress(100);
-      setTimeout(() => setSpeechProgress(0), 1000);
+      setTimeout(() => {
+        if (isMountedRef.current) {
+          setSpeechProgress(0);
+        }
+      }, 1000);
     };
 
-    utterance.onerror = () => {
-      clearInterval(progressInterval);
+    utterance.onerror = (event) => {
+      console.error('Speech synthesis error:', event);
+      if (!isMountedRef.current) return;
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
       setIsSpeaking(false);
       setIsPaused(false);
       setSpeechProgress(0);
@@ -302,15 +387,6 @@ const Profile = () => {
     if (speechSynthesisRef.current && isPaused && isSpeechSupported) {
       speechSynthesisRef.current.resume();
       setIsPaused(false);
-    }
-  };
-
-  const stopSpeaking = () => {
-    if (speechSynthesisRef.current && isSpeechSupported) {
-      speechSynthesisRef.current.cancel();
-      setIsSpeaking(false);
-      setIsPaused(false);
-      setSpeechProgress(0);
     }
   };
 
@@ -406,14 +482,16 @@ const Profile = () => {
         phone: '+1 (555) 123-4567'
       };
 
-      setProfileData(mockData);
-      setEditData(prev => ({
-        ...prev,
-        ...mockData,
-        newSkill: '',
-        newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
-        newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
-      }));
+      if (isMountedRef.current) {
+        setProfileData(mockData);
+        setEditData({
+          ...mockData,
+          newSkill: '',
+          newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
+          newProject: { title: '', description: '', link: '' },
+          newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+        });
+      }
     } catch (error) {
       console.error('Error fetching profile data:', error);
     }
@@ -424,7 +502,10 @@ const Profile = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    // Clean up previous preview if it exists
+    if (imagePreview && imagePreview.startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreview);
+    }
 
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
@@ -432,11 +513,15 @@ const Profile = () => {
     setIsUploading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setEditData(prev => ({ ...prev, profileImage: previewUrl }));
+      if (isMountedRef.current) {
+        setEditData(prev => ({ ...prev, profileImage: previewUrl }));
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
-      setIsUploading(false);
+      if (isMountedRef.current) {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -445,7 +530,10 @@ const Profile = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+    // Clean up previous preview if it exists
+    if (bannerPreview && bannerPreview.startsWith('blob:')) {
+      URL.revokeObjectURL(bannerPreview);
+    }
 
     const previewUrl = URL.createObjectURL(file);
     setBannerPreview(previewUrl);
@@ -453,31 +541,48 @@ const Profile = () => {
     setIsUploading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      setEditData(prev => ({ ...prev, bannerImage: previewUrl }));
+      if (isMountedRef.current) {
+        setEditData(prev => ({ ...prev, bannerImage: previewUrl }));
+      }
     } catch (error) {
       console.error('Error uploading banner:', error);
     } finally {
-      setIsUploading(false);
+      if (isMountedRef.current) {
+        setIsUploading(false);
+      }
     }
   };
 
   // Handle edit save
   const handleSave = async () => {
     try {
-      // Clean up image preview URL
-      // Clean up image preview URL
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-        setImagePreview('');
-      }
-      if (bannerPreview) {
-        URL.revokeObjectURL(bannerPreview);
-        setBannerPreview('');
-      }
+      // Clean up image preview URLs
+      cleanupPreviewURLs();
+      setImagePreview('');
+      setBannerPreview('');
 
-      setProfileData({ ...editData });
-      setIsEditing(false);
-
+      if (isMountedRef.current) {
+        setProfileData({
+          role: editData.role || 'professional',
+          name: editData.name,
+          headline: editData.headline,
+          location: editData.location,
+          connections: editData.connections,
+          profileViews: editData.profileViews,
+          postImpressions: editData.postImpressions,
+          about: editData.about,
+          experience: editData.experience,
+          projects: editData.projects,
+          education: editData.education,
+          skills: editData.skills,
+          website: editData.website,
+          profileImage: editData.profileImage,
+          bannerImage: editData.bannerImage,
+          email: editData.email,
+          phone: editData.phone
+        });
+        setIsEditing(false);
+      }
     } catch (error) {
       console.error('Error saving profile:', error);
     }
@@ -611,8 +716,6 @@ const Profile = () => {
       skills: prev.skills.filter((_, i) => i !== index)
     }));
   };
-
-
 
   // Speech Controls Component
   const SpeechControls = () => (
@@ -945,6 +1048,15 @@ const Profile = () => {
                 newExperience: { ...prev.newExperience, endDate: e.target.value }
               }))}
             />
+            <input
+                type="text"
+                placeholder="Location"
+                value={editData.newExperience.location}
+                onChange={(e) => setEditData(prev => ({
+                  ...prev,
+                  newExperience: { ...prev.newExperience, location: e.target.value }
+                }))}
+            />
             <button
               type="button"
               className="btn-add"
@@ -1097,15 +1209,10 @@ const Profile = () => {
           {isUploading ? 'Saving...' : 'Save Changes'}
         </button>
         <button className="btn-cancel" onClick={() => {
+          cleanupPreviewURLs();
+          setImagePreview('');
+          setBannerPreview('');
           setIsEditing(false);
-          if (imagePreview) {
-            URL.revokeObjectURL(imagePreview);
-            setImagePreview('');
-          }
-          if (bannerPreview) {
-            URL.revokeObjectURL(bannerPreview);
-            setBannerPreview('');
-          }
         }} disabled={isUploading}>
           Cancel
         </button>
@@ -1115,8 +1222,6 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
-
-
       <div className="profile-content">
         {/* Profile Header/Banner */}
         <div className="profile-header">
@@ -1133,19 +1238,7 @@ const Profile = () => {
               }}
             />
             {isEditing && (
-              <div
-                className="banner-upload-container"
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  zIndex: 50,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-              >
+              <div className="banner-upload-overlay">
                 <label htmlFor="banner-image-upload" className="image-upload-btn banner-upload-btn">
                   <Icon name="camera" /> Change Banner
                 </label>
@@ -1161,12 +1254,14 @@ const Profile = () => {
             <div className="profile-image-container">
               <div className="profile-image-wrapper">
                 <img
-                  src={isEditing && imagePreview ? imagePreview : (profileData.profileImage || 'https://via.placeholder.com/150')}
+                  src={isEditing && imagePreview ? imagePreview : (profileData.profileImage || DEFAULT_PROFILE_IMG)}
                   alt={profileData.name}
                   className="profile-image"
                   onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/150';
+                    if (e.target.src !== DEFAULT_PROFILE_IMG) {
+                      e.target.onerror = null;
+                      e.target.src = DEFAULT_PROFILE_IMG;
+                    }
                   }}
                 />
                 {isEditing && (
@@ -1190,9 +1285,26 @@ const Profile = () => {
                   className="edit-profile-btn"
                   onClick={() => {
                     setEditData({
-                      ...profileData,
+                      role: profileData.role,
+                      name: profileData.name,
+                      headline: profileData.headline,
+                      location: profileData.location,
+                      connections: profileData.connections,
+                      profileViews: profileData.profileViews,
+                      postImpressions: profileData.postImpressions,
+                      about: profileData.about,
+                      experience: [...profileData.experience],
+                      projects: [...profileData.projects],
+                      education: [...profileData.education],
+                      skills: [...profileData.skills],
+                      website: profileData.website,
+                      profileImage: profileData.profileImage,
+                      bannerImage: profileData.bannerImage,
+                      email: profileData.email,
+                      phone: profileData.phone,
                       newSkill: '',
                       newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
+                      newProject: { title: '', description: '', link: '' },
                       newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
                     });
                     setIsEditing(true);
@@ -1260,13 +1372,16 @@ const Profile = () => {
                         <div className="more-dropdown-item" onClick={generateProfileSummary}>
                           <Icon name="robot" /> AI Profile Summary
                         </div>
-                        {/* <div className="more-dropdown-item" onClick={() => window.print()}>
+                        <div className="more-dropdown-item" onClick={() => window.print()}>
                           <Icon name="file-pdf" /> Save as PDF
-                        </div> */}
+                        </div>
                         <div className="more-dropdown-item">
                           <Icon name="info-circle" /> About this profile
                         </div>
                         <div className="more-dropdown-divider"></div>
+                        <div className="more-dropdown-item" onClick={handleSignOut}>
+                          <Icon name="sign-out" /> Sign Out
+                        </div>
                         <div className="more-dropdown-item">
                           <Icon name="exclamation-triangle" /> Report/Block
                         </div>
@@ -1461,7 +1576,7 @@ const Profile = () => {
         )}
       </div>
       {showCV && <CVModal profileData={profileData} onClose={() => setShowCV(false)} />}
-    </div >
+    </div>
   );
 };
 
