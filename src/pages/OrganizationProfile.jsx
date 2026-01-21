@@ -94,7 +94,7 @@ const OrganizationProfile = () => {
         switch (activeTab) {
             case 'feed':
                 return (
-                    <div className="org-section-card profile-card-polished" style={{ height: 'calc(100vh - 120px)', padding: 20, overflow: 'auto' }}>
+                    <div className="org-section-card profile-card-polished" style={{ height: 'calc(100vh - 120px)', padding: 12, overflow: 'auto' }}>
                         <Feed />
                     </div>
                 );

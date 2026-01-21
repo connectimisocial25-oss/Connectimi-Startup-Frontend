@@ -1,8 +1,9 @@
 .org-dashboard-container {
     min-height: 100vh;
     background-color: var(--bg-color, #f3f2ef);
-    padding-top: 0;
-    padding-bottom: 60px;
+    /* padding-top: 0; */
+    margin: 3rem 0;
+    /* padding-bottom: 60px; */
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: var(--text-primary, #191919);
 }
@@ -31,7 +32,7 @@ html {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
     overflow: hidden;
     position: sticky;
-    top: 80px;
+    /* top: 80px; */
 }
 
 .org-sidebar-header {
