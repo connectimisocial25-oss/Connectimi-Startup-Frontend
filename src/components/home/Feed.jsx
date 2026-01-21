@@ -170,7 +170,7 @@ const Feed = () => {
                     padding: '20px'
                 }} onClick={closeProjectModal}>
                     <div style={{
-                        backgroundColor: 'white',
+                        backgroundColor: 'var(--card-bg)',
                         borderRadius: '12px',
                         maxWidth: '900px',
                         width: '100%',
@@ -182,15 +182,15 @@ const Feed = () => {
                     }} onClick={e => e.stopPropagation()}>
 
                         {/* 1. Modal Header Title */}
-                        <div style={{ padding: '20px 24px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#333', margin: 0 }}>{selectedInsight.title}</h2>
-                            <button onClick={closeProjectModal} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: '#666' }}>
+                        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h2 style={{ fontSize: '18px', fontWeight: '600', color: 'var(--text-primary)', margin: 0 }}>{selectedInsight.title}</h2>
+                            <button onClick={closeProjectModal} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: 'var(--text-secondary)' }}>
                                 <Icon name="close" />
                             </button>
                         </div>
 
                         {/* 2. Full Width Image Banner */}
-                        <div style={{ width: '100%', height: '280px', backgroundColor: '#f0f0f0', position: 'relative' }}>
+                        <div style={{ width: '100%', height: '280px', backgroundColor: 'var(--bg-color)', position: 'relative' }}>
                             <img
                                 src={selectedInsight.image}
                                 alt={selectedInsight.title}
@@ -210,17 +210,17 @@ const Feed = () => {
                             {/* Left Column: Details */}
                             <div style={{ minWidth: 0 }}>
                                 <div style={{ marginBottom: '30px' }}>
-                                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#555', marginBottom: '8px', textTransform: 'uppercase' }}>Project Overview</h3>
-                                    <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#666' }}>
+                                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '8px', textTransform: 'uppercase' }}>Project Overview</h3>
+                                    <p style={{ fontSize: '15px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
                                         A deep dive into fintech user flows using mixed-methods research to uncover pain points and optimization opportunities.
                                     </p>
                                 </div>
 
                                 <div>
-                                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#555', marginBottom: '8px', textTransform: 'uppercase' }}>Key Takeaway</h3>
+                                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '8px', textTransform: 'uppercase' }}>Key Takeaway</h3>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         <span style={{ fontSize: '11px', fontWeight: '700', color: '#16a34a', textTransform: 'uppercase' }}>KEY RESULT:</span>
-                                        <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#666' }}>
+                                        <p style={{ fontSize: '15px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
                                             {selectedInsight.takeaway}
                                         </p>
                                     </div>
@@ -228,13 +228,13 @@ const Feed = () => {
                             </div>
 
                             {/* Right Column: Author & Actions */}
-                            <div style={{ paddingLeft: '20px', borderLeft: '1px solid #f0f0f0' }}>
+                            <div style={{ paddingLeft: '20px', borderLeft: '1px solid var(--border-color)' }}>
                                 {/* Author Row */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
                                     <Avatar src={selectedInsight.authorImg} size={40} />
                                     <div>
-                                        <h4 style={{ fontSize: '14px', fontWeight: '700', margin: 0, color: '#333' }}>{selectedInsight.author}</h4>
-                                        <p style={{ fontSize: '12px', color: '#888', margin: 0 }}>Project Lead</p>
+                                        <h4 style={{ fontSize: '14px', fontWeight: '700', margin: 0, color: 'var(--text-primary)' }}>{selectedInsight.author}</h4>
+                                        <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>Project Lead</p>
                                     </div>
                                 </div>
 
@@ -260,14 +260,14 @@ const Feed = () => {
                                 </button>
 
                                 {/* Stats Row */}
-                                <div style={{ display: 'flex', justifyContent: 'space-around', borderTop: '1px solid #eee', paddingTop: '20px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-around', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
                                     <div style={{ textAlign: 'center' }}>
-                                        <span style={{ display: 'block', fontSize: '16px', fontWeight: '700', color: '#333' }}>{selectedInsight.likes}</span>
-                                        <span style={{ fontSize: '12px', color: '#888' }}>Likes</span>
+                                        <span style={{ display: 'block', fontSize: '16px', fontWeight: '700', color: 'var(--text-primary)' }}>{selectedInsight.likes}</span>
+                                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Likes</span>
                                     </div>
                                     <div style={{ textAlign: 'center' }}>
-                                        <span style={{ display: 'block', fontSize: '16px', fontWeight: '700', color: '#333' }}>{selectedInsight.comments}</span>
-                                        <span style={{ fontSize: '12px', color: '#888' }}>Comments</span>
+                                        <span style={{ display: 'block', fontSize: '16px', fontWeight: '700', color: 'var(--text-primary)' }}>{selectedInsight.comments}</span>
+                                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Comments</span>
                                     </div>
                                 </div>
                             </div>
