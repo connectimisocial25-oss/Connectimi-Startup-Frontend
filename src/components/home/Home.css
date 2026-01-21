@@ -3,7 +3,8 @@
     min-height: 100vh;
     background-color: var(--bg-color);
     color: var(--text-primary);
-    padding-top: 80px;
+    /* padding-top: 80px; */
+    margin-top: 5rem;
     font-family: 'Inter', sans-serif;
 }
 

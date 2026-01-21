@@ -1,7 +1,8 @@
 .notifications-container {
     min-height: 100vh;
     background-color: var(--bg-color);
-    padding-top: 52px;
+    /* padding-top: 52px; */
+    margin-top: 5rem;
 }
 
 .notifications-wrapper {

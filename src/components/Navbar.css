@@ -73,7 +73,7 @@
     transition: all 0.2s;
     width: auto;
     /* Let it fit content, or keep fixed if strictly needed */
-    min-width: 80px;
+    width: 115px;
 }
 
 .nav-item:hover {
@@ -92,7 +92,7 @@
     content: '';
     position: absolute;
     bottom: 0px;
-    width: 60%;
+    width: 100%;
     /* Not full width, looks cleaner */
     height: 2px;
     background-color: var(--primary-green);

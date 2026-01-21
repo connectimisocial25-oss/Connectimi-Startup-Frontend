@@ -1,15 +1,17 @@
 .courses-container {
-    padding-top: 60px;
+    /* margin: 30px auto; */
+    /* padding-top: 52px; */
+    margin-top: 5rem;
     min-height: 100vh;
 }
 
 .courses-hero {
     position: relative;
-    width: 95%;
+    width: 62.5%;
     /* Resized width */
     margin: 0 auto 40px;
     /* Centered */
-    height: 350px;
+    height: 250px;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1951&q=80');
     background-size: cover;
     background-position: center;

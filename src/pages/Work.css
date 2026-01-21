@@ -2,8 +2,9 @@
 
 .work-container {
     min-height: 100vh;
+    margin-top: 5rem;
     background-color: var(--bg-color);
-    padding-top: 52px;
+    /* padding-top: 52px; */
     /* Space for fixed navbar */
 }
 

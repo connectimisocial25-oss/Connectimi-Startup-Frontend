@@ -1,13 +1,15 @@
 .network-container {
+    margin-top: 5rem;
+    /* margin: 30px auto; */
     min-height: 100vh;
     background-color: var(--bg-color);
-    padding-top: 52px;
+    /* padding-top: 52px; */
     --modern-teal: var(--primary-green);
 }
 
 .network-content {
     max-width: 1128px;
-    margin: 24px auto;
+    margin: 0 auto;
     padding: 0 24px;
     display: flex;
     gap: 24px;
