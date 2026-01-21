@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Icon from '../components/Icon';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Icon from "../components/Icon";
 // Avatar import removed since it's not used
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 // useTheme import removed since it's not used
-import './Profile.css';
+import "./Profile.css";
 
 // Connectimi_logo removed (Navbar only)
-import CVModal from '../components/CVModal';
+import CVModal from "../components/CVModal";
+import EditForm from "../components/editProfile";
 // Icons use wrapper to support swap to updated 2026 icon set
 
-const DEFAULT_BANNER = 'https://via.placeholder.com/150';
-const DEFAULT_PROFILE_IMG = 'https://via.placeholder.com/150';
+const DEFAULT_BANNER = "https://via.placeholder.com/150";
+const DEFAULT_PROFILE_IMG = "https://via.placeholder.com/150";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -21,23 +22,23 @@ const Profile = () => {
 
   // State for user profile data
   const [profileData, setProfileData] = useState({
-    role: 'professional', // Default role for testing shapes
-    name: '',
-    headline: '',
-    location: '',
+    role: "professional", // Default role for testing shapes
+    name: "",
+    headline: "",
+    location: "",
     connections: 0,
     profileViews: 0,
     postImpressions: 0,
-    about: '',
+    about: "",
     experience: [],
     projects: [],
     education: [],
     skills: [],
-    website: '',
-    profileImage: '',
-    bannerImage: '',
-    email: '',
-    phone: ''
+    website: "",
+    profileImage: "",
+    bannerImage: "",
+    email: "",
+    phone: "",
   });
 
   // State for edit mode
@@ -52,7 +53,7 @@ const Profile = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [speechProgress, setSpeechProgress] = useState(0);
   const [isSummarizing, setIsSummarizing] = useState(false);
-  const [profileSummary, setProfileSummary] = useState('');
+  const [profileSummary, setProfileSummary] = useState("");
   const [voiceSpeed, setVoiceSpeed] = useState(1.0);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [availableVoices, setAvailableVoices] = useState([]);
@@ -60,31 +61,46 @@ const Profile = () => {
 
   // State for temporary edit data
   const [editData, setEditData] = useState({
-    name: '',
-    headline: '',
-    location: '',
+    name: "",
+    headline: "",
+    location: "",
     connections: 0,
     profileViews: 0,
     postImpressions: 0,
-    about: '',
+    about: "",
     experience: [],
     projects: [],
     education: [],
     skills: [],
-    website: '',
-    profileImage: '',
-    bannerImage: '',
-    email: '',
-    phone: '',
-    newSkill: '',
-    newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
-    newProject: { title: '', description: '', link: '' },
-    newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+    website: "",
+    profileImage: "",
+    bannerImage: "",
+    email: "",
+    phone: "",
+    newSkill: "",
+    newExperience: {
+      title: "",
+      company: "",
+      startDate: "",
+      endDate: "",
+      location: "",
+      description: "",
+      current: false,
+    },
+    newProject: { title: "", description: "", link: "" },
+    newEducation: {
+      school: "",
+      degree: "",
+      field: "",
+      startYear: "",
+      endYear: "",
+      description: "",
+    },
   });
 
   // State for image upload
-  const [imagePreview, setImagePreview] = useState('');
-  const [bannerPreview, setBannerPreview] = useState('');
+  const [imagePreview, setImagePreview] = useState("");
+  const [bannerPreview, setBannerPreview] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
   // Clean up speech synthesis
@@ -103,10 +119,10 @@ const Profile = () => {
 
   // Clean up preview URLs
   const cleanupPreviewURLs = useCallback(() => {
-    if (imagePreview && imagePreview.startsWith('blob:')) {
+    if (imagePreview && imagePreview.startsWith("blob:")) {
       URL.revokeObjectURL(imagePreview);
     }
-    if (bannerPreview && bannerPreview.startsWith('blob:')) {
+    if (bannerPreview && bannerPreview.startsWith("blob:")) {
       URL.revokeObjectURL(bannerPreview);
     }
   }, [imagePreview, bannerPreview]);
@@ -119,32 +135,47 @@ const Profile = () => {
       // Initialize for new user
       const { firstName, lastName } = location.state;
       const initialData = {
-        role: 'professional',
+        role: "professional",
         name: `${firstName} ${lastName}`,
-        headline: '',
-        location: '',
+        headline: "",
+        location: "",
         connections: 0,
         profileViews: 0,
         postImpressions: 0,
-        about: '',
+        about: "",
         experience: [],
         education: [],
         skills: [],
-        website: '',
-        profileImage: '',
-        bannerImage: '',
-        email: '',
-        phone: ''
+        website: "",
+        profileImage: "",
+        bannerImage: "",
+        email: "",
+        phone: "",
       };
 
       if (isMountedRef.current) {
         setProfileData(initialData);
         setEditData({
           ...initialData,
-          newSkill: '',
-          newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
-          newProject: { title: '', description: '', link: '' },
-          newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+          newSkill: "",
+          newExperience: {
+            title: "",
+            company: "",
+            startDate: "",
+            endDate: "",
+            location: "",
+            description: "",
+            current: false,
+          },
+          newProject: { title: "", description: "", link: "" },
+          newEducation: {
+            school: "",
+            degree: "",
+            field: "",
+            startYear: "",
+            endYear: "",
+            description: "",
+          },
         });
         setIsEditing(true);
       }
@@ -171,7 +202,7 @@ const Profile = () => {
 
   // Initialize speech synthesis
   const initializeSpeechSynthesis = () => {
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       speechSynthesisRef.current = window.speechSynthesis;
       setIsSpeechSupported(true);
 
@@ -182,10 +213,14 @@ const Profile = () => {
         setAvailableVoices(voices);
 
         // Try to find a natural-sounding voice
-        const preferredVoice = voices.find(voice =>
-          voice.lang.includes('en') &&
-          (voice.name.includes('Google') || voice.name.includes('Samantha') || voice.name.includes('Daniel'))
-        ) || voices[0];
+        const preferredVoice =
+          voices.find(
+            (voice) =>
+              voice.lang.includes("en") &&
+              (voice.name.includes("Google") ||
+                voice.name.includes("Samantha") ||
+                voice.name.includes("Daniel")),
+          ) || voices[0];
 
         if (preferredVoice) {
           setSelectedVoice(preferredVoice);
@@ -195,7 +230,7 @@ const Profile = () => {
       loadVoices();
       speechSynthesisRef.current.onvoiceschanged = loadVoices;
     } else {
-      console.warn('Speech synthesis not supported in this browser');
+      console.warn("Speech synthesis not supported in this browser");
       setIsSpeechSupported(false);
     }
   };
@@ -203,13 +238,13 @@ const Profile = () => {
   // Generate AI summary of profile
   const generateProfileSummary = async () => {
     if (!isMountedRef.current) return;
-    
+
     setIsSummarizing(true);
 
     try {
       // Simulate AI API call - Replace with actual AI service
       const aiSummary = await simulateAISummary(profileData);
-      
+
       if (isMountedRef.current) {
         setProfileSummary(aiSummary);
 
@@ -219,10 +254,10 @@ const Profile = () => {
         }
       }
     } catch (error) {
-      console.error('Error generating summary:', error);
+      console.error("Error generating summary:", error);
       // Fallback to manual summary
       const fallbackSummary = createManualSummary();
-      
+
       if (isMountedRef.current) {
         setProfileSummary(fallbackSummary);
         if (isSpeechSupported) {
@@ -239,18 +274,23 @@ const Profile = () => {
   // Share profile: use Web Share API when available, otherwise copy link
   const handleShareProfile = () => {
     const url = window.location.href;
-    const title = profileData.name ? `${profileData.name} — Profile` : 'Profile';
-    
+    const title = profileData.name
+      ? `${profileData.name} — Profile`
+      : "Profile";
+
     if (navigator.share) {
-      navigator.share({ title, url }).catch(() => { });
+      navigator.share({ title, url }).catch(() => {});
     } else if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Profile link copied to clipboard');
-      }).catch(() => {
-        prompt('Copy this profile link:', url);
-      });
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          alert("Profile link copied to clipboard");
+        })
+        .catch(() => {
+          prompt("Copy this profile link:", url);
+        });
     } else {
-      prompt('Copy this profile link:', url);
+      prompt("Copy this profile link:", url);
     }
   };
 
@@ -259,19 +299,19 @@ const Profile = () => {
     return new Promise((resolve) => {
       setTimeout(() => {
         const summary = `Meet ${profile.name}, ${profile.headline}. 
-        Based in ${profile.location}, ${profile.name.split(' ')[0]} has over ${Math.floor(profile.experience.length * 3)} years of professional experience.
+        Based in ${profile.location}, ${profile.name.split(" ")[0]} has over ${Math.floor(profile.experience.length * 3)} years of professional experience.
         ${profile.about}
         
-        Professional background includes: ${profile.experience.map(exp =>
-          `${exp.title} at ${exp.company}`
-        ).join(', ')}.
+        Professional background includes: ${profile.experience
+          .map((exp) => `${exp.title} at ${exp.company}`)
+          .join(", ")}.
         
-        Educational background: ${profile.education.map(edu =>
-          `${edu.degree} from ${edu.school}`
-        ).join(', ')}.
+        Educational background: ${profile.education
+          .map((edu) => `${edu.degree} from ${edu.school}`)
+          .join(", ")}.
         
-        Key skills include ${profile.skills.slice(0, 5).join(', ')} and more.
-        ${profile.name.split(' ')[0]} has ${profile.connections} professional connections and their profile has been viewed ${profile.profileViews} times.`;
+        Key skills include ${profile.skills.slice(0, 5).join(", ")} and more.
+        ${profile.name.split(" ")[0]} has ${profile.connections} professional connections and their profile has been viewed ${profile.profileViews} times.`;
 
         resolve(summary);
       }, 1500);
@@ -284,21 +324,24 @@ const Profile = () => {
     ${profileData.headline} based in ${profileData.location}.
     ${profileData.about}
     
-    Experience: ${profileData.experience.map(exp =>
-      `${exp.title} at ${exp.company} from ${exp.startDate} to ${exp.endDate}`
-    ).join('. ')}.
+    Experience: ${profileData.experience
+      .map(
+        (exp) =>
+          `${exp.title} at ${exp.company} from ${exp.startDate} to ${exp.endDate}`,
+      )
+      .join(". ")}.
     
-    Education: ${profileData.education.map(edu =>
-      `${edu.degree} from ${edu.school}`
-    ).join(', ')}.
+    Education: ${profileData.education
+      .map((edu) => `${edu.degree} from ${edu.school}`)
+      .join(", ")}.
     
-    Skills: ${profileData.skills.slice(0, 8).join(', ')}.`;
+    Skills: ${profileData.skills.slice(0, 8).join(", ")}.`;
   };
 
   // Text-to-speech functionality
   const speakText = (text) => {
     if (!speechSynthesisRef.current || !isSpeechSupported) {
-      console.warn('Speech synthesis not available');
+      console.warn("Speech synthesis not available");
       return;
     }
 
@@ -325,12 +368,12 @@ const Profile = () => {
       setIsPaused(false);
       setSpeechProgress(0);
       startTime = Date.now();
-      
+
       // Clear any existing interval
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current);
       }
-      
+
       // Update progress
       progressIntervalRef.current = setInterval(() => {
         if (!isMountedRef.current) {
@@ -362,7 +405,7 @@ const Profile = () => {
     };
 
     utterance.onerror = (event) => {
-      console.error('Speech synthesis error:', event);
+      console.error("Speech synthesis error:", event);
       if (!isMountedRef.current) return;
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current);
@@ -401,99 +444,132 @@ const Profile = () => {
   // Handle sign out
   const handleSignOut = () => {
     stopSpeaking(); // Stop any ongoing speech
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('userData');
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("userData");
     sessionStorage.clear();
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    navigate('/');
+    navigate("/");
   };
 
   const fetchProfileData = async () => {
     try {
       // Mock data - replace with actual API call
       const mockData = {
-        name: 'Alex Johnson',
-        role: 'professor', // Testing 'professor' (hexagon) or 'company' (square)
-        headline: 'Senior Software Engineer at TechCorp',
-        location: 'San Francisco, California',
+        name: "Alex Johnson",
+        role: "professor", // Testing 'professor' (hexagon) or 'company' (square)
+        headline: "Senior Software Engineer at TechCorp",
+        location: "San Francisco, California",
         connections: 543,
         profileViews: 1287,
         postImpressions: 3256,
-        about: 'Passionate software engineer with 8+ years of experience building scalable web applications. Specialized in React, Node.js, and cloud technologies. Previously worked at WebSolutions Inc where I led a team of 5 developers.',
+        about:
+          "Passionate software engineer with 8+ years of experience building scalable web applications. Specialized in React, Node.js, and cloud technologies. Previously worked at WebSolutions Inc where I led a team of 5 developers.",
         experience: [
           {
             id: 1,
-            title: 'Senior Software Engineer',
-            company: 'TechCorp',
-            startDate: '2020-03',
-            endDate: 'Present',
-            location: 'San Francisco, CA',
-            description: 'Lead development of customer-facing web applications using React and Node.js'
+            title: "Senior Software Engineer",
+            company: "TechCorp",
+            startDate: "2020-03",
+            endDate: "Present",
+            location: "San Francisco, CA",
+            description:
+              "Lead development of customer-facing web applications using React and Node.js",
           },
           {
             id: 2,
-            title: 'Software Engineer',
-            company: 'WebSolutions Inc',
-            startDate: '2017-06',
-            endDate: '2020-02',
-            location: 'New York, NY',
-            description: 'Developed and maintained multiple client websites and web applications'
-          }
+            title: "Software Engineer",
+            company: "WebSolutions Inc",
+            startDate: "2017-06",
+            endDate: "2020-02",
+            location: "New York, NY",
+            description:
+              "Developed and maintained multiple client websites and web applications",
+          },
         ],
         projects: [
           {
             id: 1,
-            title: 'E-commerce Platform',
-            description: 'Built a full-stack e-commerce platform using MERN stack with payment gateway integration.',
-            link: 'https://github.com/alex/ecommerce'
+            title: "E-commerce Platform",
+            description:
+              "Built a full-stack e-commerce platform using MERN stack with payment gateway integration.",
+            link: "https://github.com/alex/ecommerce",
           },
           {
             id: 2,
-            title: 'AI Chatbot',
-            description: 'Implemented an NLP-based chatbot using Python and TensorFlow for customer support automation.',
-            link: 'https://github.com/alex/chatbot'
-          }
+            title: "AI Chatbot",
+            description:
+              "Implemented an NLP-based chatbot using Python and TensorFlow for customer support automation.",
+            link: "https://github.com/alex/chatbot",
+          },
         ],
         education: [
           {
             id: 1,
-            school: 'Stanford University',
-            degree: 'Master of Science',
-            field: 'Computer Science',
-            startYear: '2015',
-            endYear: '2017',
-            description: 'Specialized in Machine Learning and Web Technologies'
+            school: "Stanford University",
+            degree: "Master of Science",
+            field: "Computer Science",
+            startYear: "2015",
+            endYear: "2017",
+            description: "Specialized in Machine Learning and Web Technologies",
           },
           {
             id: 2,
-            school: 'University of California, Berkeley',
-            degree: 'Bachelor of Science',
-            field: 'Computer Science',
-            startYear: '2011',
-            endYear: '2015',
-            description: 'Graduated Magna Cum Laude'
-          }
+            school: "University of California, Berkeley",
+            degree: "Bachelor of Science",
+            field: "Computer Science",
+            startYear: "2011",
+            endYear: "2015",
+            description: "Graduated Magna Cum Laude",
+          },
         ],
-        skills: ['React', 'JavaScript', 'Node.js', 'TypeScript', 'AWS', 'MongoDB', 'Python', 'Docker', 'Kubernetes', 'GraphQL'],
-        website: 'https://alexjohnson.dev',
-        profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-        bannerImage: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-        email: 'alex.johnson@example.com',
-        phone: '+1 (555) 123-4567'
+        skills: [
+          "React",
+          "JavaScript",
+          "Node.js",
+          "TypeScript",
+          "AWS",
+          "MongoDB",
+          "Python",
+          "Docker",
+          "Kubernetes",
+          "GraphQL",
+        ],
+        website: "https://alexjohnson.dev",
+        profileImage:
+          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+        bannerImage:
+          "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
+        email: "alex.johnson@example.com",
+        phone: "+1 (555) 123-4567",
       };
 
       if (isMountedRef.current) {
         setProfileData(mockData);
         setEditData({
           ...mockData,
-          newSkill: '',
-          newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
-          newProject: { title: '', description: '', link: '' },
-          newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+          newSkill: "",
+          newExperience: {
+            title: "",
+            company: "",
+            startDate: "",
+            endDate: "",
+            location: "",
+            description: "",
+            current: false,
+          },
+          newProject: { title: "", description: "", link: "" },
+          newEducation: {
+            school: "",
+            degree: "",
+            field: "",
+            startYear: "",
+            endYear: "",
+            description: "",
+          },
         });
       }
     } catch (error) {
-      console.error('Error fetching profile data:', error);
+      console.error("Error fetching profile data:", error);
     }
   };
 
@@ -503,7 +579,7 @@ const Profile = () => {
     if (!file) return;
 
     // Clean up previous preview if it exists
-    if (imagePreview && imagePreview.startsWith('blob:')) {
+    if (imagePreview && imagePreview.startsWith("blob:")) {
       URL.revokeObjectURL(imagePreview);
     }
 
@@ -512,12 +588,12 @@ const Profile = () => {
 
     setIsUploading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       if (isMountedRef.current) {
-        setEditData(prev => ({ ...prev, profileImage: previewUrl }));
+        setEditData((prev) => ({ ...prev, profileImage: previewUrl }));
       }
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error("Error uploading image:", error);
     } finally {
       if (isMountedRef.current) {
         setIsUploading(false);
@@ -531,7 +607,7 @@ const Profile = () => {
     if (!file) return;
 
     // Clean up previous preview if it exists
-    if (bannerPreview && bannerPreview.startsWith('blob:')) {
+    if (bannerPreview && bannerPreview.startsWith("blob:")) {
       URL.revokeObjectURL(bannerPreview);
     }
 
@@ -540,12 +616,12 @@ const Profile = () => {
 
     setIsUploading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       if (isMountedRef.current) {
-        setEditData(prev => ({ ...prev, bannerImage: previewUrl }));
+        setEditData((prev) => ({ ...prev, bannerImage: previewUrl }));
       }
     } catch (error) {
-      console.error('Error uploading banner:', error);
+      console.error("Error uploading banner:", error);
     } finally {
       if (isMountedRef.current) {
         setIsUploading(false);
@@ -558,12 +634,12 @@ const Profile = () => {
     try {
       // Clean up image preview URLs
       cleanupPreviewURLs();
-      setImagePreview('');
-      setBannerPreview('');
+      setImagePreview("");
+      setBannerPreview("");
 
       if (isMountedRef.current) {
         setProfileData({
-          role: editData.role || 'professional',
+          role: editData.role || "professional",
           name: editData.name,
           headline: editData.headline,
           location: editData.location,
@@ -579,20 +655,20 @@ const Profile = () => {
           profileImage: editData.profileImage,
           bannerImage: editData.bannerImage,
           email: editData.email,
-          phone: editData.phone
+          phone: editData.phone,
         });
         setIsEditing(false);
       }
     } catch (error) {
-      console.error('Error saving profile:', error);
+      console.error("Error saving profile:", error);
     }
   };
 
   // Handle input changes in edit mode
   const handleInputChange = (field, value) => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -601,11 +677,11 @@ const Profile = () => {
     const updatedExperiences = [...editData.experience];
     updatedExperiences[index] = {
       ...updatedExperiences[index],
-      [field]: value
+      [field]: value,
     };
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      experience: updatedExperiences
+      experience: updatedExperiences,
     }));
   };
 
@@ -614,11 +690,11 @@ const Profile = () => {
     const updatedEducation = [...editData.education];
     updatedEducation[index] = {
       ...updatedEducation[index],
-      [field]: value
+      [field]: value,
     };
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      education: updatedEducation
+      education: updatedEducation,
     }));
   };
 
@@ -627,11 +703,11 @@ const Profile = () => {
     const updatedProjects = [...editData.projects];
     updatedProjects[index] = {
       ...updatedProjects[index],
-      [field]: value
+      [field]: value,
     };
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      projects: updatedProjects
+      projects: updatedProjects,
     }));
   };
 
@@ -639,12 +715,20 @@ const Profile = () => {
   const addExperience = () => {
     const newExp = {
       id: Date.now(),
-      ...editData.newExperience
+      ...editData.newExperience,
     };
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
       experience: [...prev.experience, newExp],
-      newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false }
+      newExperience: {
+        title: "",
+        company: "",
+        startDate: "",
+        endDate: "",
+        location: "",
+        description: "",
+        current: false,
+      },
     }));
   };
 
@@ -652,12 +736,19 @@ const Profile = () => {
   const addEducation = () => {
     const newEdu = {
       id: Date.now(),
-      ...editData.newEducation
+      ...editData.newEducation,
     };
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
       education: [...prev.education, newEdu],
-      newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+      newEducation: {
+        school: "",
+        degree: "",
+        field: "",
+        startYear: "",
+        endYear: "",
+        description: "",
+      },
     }));
   };
 
@@ -665,55 +756,55 @@ const Profile = () => {
   const addProject = () => {
     const newProj = {
       id: Date.now(),
-      ...editData.newProject
+      ...editData.newProject,
     };
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
       projects: [...prev.projects, newProj],
-      newProject: { title: '', description: '', link: '' }
+      newProject: { title: "", description: "", link: "" },
     }));
   };
 
   // Add new skill
   const addSkill = () => {
     if (editData.newSkill.trim()) {
-      setEditData(prev => ({
+      setEditData((prev) => ({
         ...prev,
         skills: [...prev.skills, prev.newSkill.trim()],
-        newSkill: ''
+        newSkill: "",
       }));
     }
   };
 
   // Remove experience
   const removeExperience = (index) => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      experience: prev.experience.filter((_, i) => i !== index)
+      experience: prev.experience.filter((_, i) => i !== index),
     }));
   };
 
   // Remove education
   const removeEducation = (index) => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      education: prev.education.filter((_, i) => i !== index)
+      education: prev.education.filter((_, i) => i !== index),
     }));
   };
 
   // Remove project
   const removeProject = (index) => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      projects: prev.projects.filter((_, i) => i !== index)
+      projects: prev.projects.filter((_, i) => i !== index),
     }));
   };
 
   // Remove skill
   const removeSkill = (index) => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      skills: prev.skills.filter((_, i) => i !== index)
+      skills: prev.skills.filter((_, i) => i !== index),
     }));
   };
 
@@ -723,7 +814,9 @@ const Profile = () => {
       <div className="speech-header">
         <Icon name="robot" className="ai-icon" />
         <h4>Profile Podcast</h4>
-        {isSummarizing && <span className="summarizing-badge">Generating...</span>}
+        {isSummarizing && (
+          <span className="summarizing-badge">Generating...</span>
+        )}
       </div>
 
       <div className="progress-bar-container">
@@ -747,14 +840,28 @@ const Profile = () => {
         ) : (
           <button
             className="speech-btn play-btn"
-            onClick={() => profileSummary ? speakText(profileSummary) : generateProfileSummary()}
+            onClick={() =>
+              profileSummary
+                ? speakText(profileSummary)
+                : generateProfileSummary()
+            }
             disabled={isSummarizing || !isSpeechSupported}
           >
-            {isSummarizing ? 'Generating...' : <><Icon name="play" /> Listen to Profile</>}
+            {isSummarizing ? (
+              "Generating..."
+            ) : (
+              <>
+                <Icon name="play" /> Listen to Profile
+              </>
+            )}
           </button>
         )}
 
-        <button className="speech-btn stop-btn" onClick={stopSpeaking} disabled={!isSpeechSupported}>
+        <button
+          className="speech-btn stop-btn"
+          onClick={stopSpeaking}
+          disabled={!isSpeechSupported}
+        >
           <Icon name="volume-mute" /> Stop
         </button>
       </div>
@@ -763,10 +870,10 @@ const Profile = () => {
         <div className="speed-control">
           <label>Speed:</label>
           <div className="speed-options">
-            {[0.5, 0.75, 1.0, 1.25, 1.5].map(speed => (
+            {[0.5, 0.75, 1.0, 1.25, 1.5].map((speed) => (
               <button
                 key={speed}
-                className={`speed-option ${voiceSpeed === speed ? 'active' : ''}`}
+                className={`speed-option ${voiceSpeed === speed ? "active" : ""}`}
                 onClick={() => changeVoiceSpeed(speed)}
                 disabled={!isSpeechSupported}
               >
@@ -780,18 +887,27 @@ const Profile = () => {
           <div className="voice-selector">
             <label>Voice:</label>
             <select
-              value={selectedVoice ? selectedVoice.name : ''}
+              value={selectedVoice ? selectedVoice.name : ""}
               onChange={(e) => {
-                const voice = availableVoices.find(v => v.name === e.target.value);
+                const voice = availableVoices.find(
+                  (v) => v.name === e.target.value,
+                );
                 setSelectedVoice(voice);
               }}
               disabled={!isSpeechSupported}
             >
-              {availableVoices.filter(v => v.lang.includes('en')).map(voice => (
-                <option key={voice.name} value={voice.name}>
-                  {voice.name.replace('Microsoft ', '').replace('Google ', '').split(' - ')[0]}
-                </option>
-              ))}
+              {availableVoices
+                .filter((v) => v.lang.includes("en"))
+                .map((voice) => (
+                  <option key={voice.name} value={voice.name}>
+                    {
+                      voice.name
+                        .replace("Microsoft ", "")
+                        .replace("Google ", "")
+                        .split(" - ")[0]
+                    }
+                  </option>
+                ))}
             </select>
           </div>
         )}
@@ -819,407 +935,6 @@ const Profile = () => {
     </div>
   );
 
-  // Complete Edit Form Component
-  const EditForm = () => (
-    <div className="edit-form">
-      <h3>Edit Profile Information</h3>
-
-      <div className="form-grid">
-        <div className="form-group">
-          <label>Name</label>
-          <input
-            type="text"
-            value={editData.name}
-            onChange={(e) => handleInputChange('name', e.target.value)}
-            placeholder="Enter your name"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Headline</label>
-          <input
-            type="text"
-            value={editData.headline}
-            onChange={(e) => handleInputChange('headline', e.target.value)}
-            placeholder="e.g., Senior Software Engineer at Company"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Location</label>
-          <input
-            type="text"
-            value={editData.location}
-            onChange={(e) => handleInputChange('location', e.target.value)}
-            placeholder="City, Country"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            value={editData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            placeholder="your.email@example.com"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Phone</label>
-          <input
-            type="tel"
-            value={editData.phone}
-            onChange={(e) => handleInputChange('phone', e.target.value)}
-            placeholder="+1 (555) 123-4567"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Website</label>
-          <input
-            type="url"
-            value={editData.website}
-            onChange={(e) => handleInputChange('website', e.target.value)}
-            placeholder="https://yourwebsite.com"
-          />
-        </div>
-
-        <div className="form-group full-width">
-          <label>About</label>
-          <textarea
-            value={editData.about}
-            onChange={(e) => handleInputChange('about', e.target.value)}
-            placeholder="Tell us about yourself..."
-            rows={4}
-          />
-        </div>
-
-        {/* Projects Section */}
-        <div className="form-section full-width projects-section">
-          <h4>Projects</h4>
-          {editData.projects.map((proj, index) => (
-            <div key={proj.id} className="form-row">
-              <input
-                type="text"
-                placeholder="Project Title"
-                value={proj.title}
-                onChange={(e) => handleProjectChange(index, 'title', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                value={proj.description}
-                onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Link"
-                value={proj.link}
-                onChange={(e) => handleProjectChange(index, 'link', e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn-remove"
-                onClick={() => removeProject(index)}
-              >
-                <Icon name="close" />
-              </button>
-            </div>
-          ))}
-
-          <div className="form-row">
-            <input
-              type="text"
-              placeholder="Project Title"
-              value={editData.newProject.title}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newProject: { ...prev.newProject, title: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="Description"
-              value={editData.newProject.description}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newProject: { ...prev.newProject, description: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="Link"
-              value={editData.newProject.link}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newProject: { ...prev.newProject, link: e.target.value }
-              }))}
-            />
-            <button
-              type="button"
-              className="btn-add"
-              onClick={addProject}
-            >
-              <Icon name="plus" /> Add
-            </button>
-          </div>
-        </div>
-
-        {/* Experience Section */}
-        <div className="form-section full-width experience-section">
-          <h4>Experience</h4>
-          {editData.experience.map((exp, index) => (
-            <div key={exp.id} className="form-row">
-              <input
-                type="text"
-                placeholder="Title"
-                value={exp.title}
-                onChange={(e) => handleExperienceChange(index, 'title', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Company"
-                value={exp.company}
-                onChange={(e) => handleExperienceChange(index, 'company', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Start Date"
-                value={exp.startDate}
-                onChange={(e) => handleExperienceChange(index, 'startDate', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="End Date"
-                value={exp.endDate}
-                onChange={(e) => handleExperienceChange(index, 'endDate', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Location"
-                value={exp.location}
-                onChange={(e) => handleExperienceChange(index, 'location', e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn-remove"
-                onClick={() => removeExperience(index)}
-              >
-                <Icon name="close" />
-              </button>
-            </div>
-          ))}
-
-          <div className="form-row">
-            <input
-              type="text"
-              placeholder="Title"
-              value={editData.newExperience.title}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newExperience: { ...prev.newExperience, title: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="Company"
-              value={editData.newExperience.company}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newExperience: { ...prev.newExperience, company: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="Start Date"
-              value={editData.newExperience.startDate}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newExperience: { ...prev.newExperience, startDate: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="End Date"
-              value={editData.newExperience.endDate}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newExperience: { ...prev.newExperience, endDate: e.target.value }
-              }))}
-            />
-            <input
-                type="text"
-                placeholder="Location"
-                value={editData.newExperience.location}
-                onChange={(e) => setEditData(prev => ({
-                  ...prev,
-                  newExperience: { ...prev.newExperience, location: e.target.value }
-                }))}
-            />
-            <button
-              type="button"
-              className="btn-add"
-              onClick={addExperience}
-            >
-              <Icon name="plus" /> Add
-            </button>
-          </div>
-        </div>
-
-        {/* Education Section */}
-        <div className="form-section full-width education-section">
-          <h4>Education</h4>
-          {editData.education.map((edu, index) => (
-            <div key={edu.id} className="form-row">
-              <input
-                type="text"
-                placeholder="School"
-                value={edu.school}
-                onChange={(e) => handleEducationChange(index, 'school', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Degree"
-                value={edu.degree}
-                onChange={(e) => handleEducationChange(index, 'degree', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Field of Study"
-                value={edu.field}
-                onChange={(e) => handleEducationChange(index, 'field', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Start Year"
-                value={edu.startYear}
-                onChange={(e) => handleEducationChange(index, 'startYear', e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="End Year"
-                value={edu.endYear}
-                onChange={(e) => handleEducationChange(index, 'endYear', e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn-remove"
-                onClick={() => removeEducation(index)}
-              >
-                <Icon name="close" />
-              </button>
-            </div>
-          ))}
-
-          <div className="form-row">
-            <input
-              type="text"
-              placeholder="School"
-              value={editData.newEducation.school}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newEducation: { ...prev.newEducation, school: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="Degree"
-              value={editData.newEducation.degree}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newEducation: { ...prev.newEducation, degree: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="Field of Study"
-              value={editData.newEducation.field}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newEducation: { ...prev.newEducation, field: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="Start Year"
-              value={editData.newEducation.startYear}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newEducation: { ...prev.newEducation, startYear: e.target.value }
-              }))}
-            />
-            <input
-              type="text"
-              placeholder="End Year"
-              value={editData.newEducation.endYear}
-              onChange={(e) => setEditData(prev => ({
-                ...prev,
-                newEducation: { ...prev.newEducation, endYear: e.target.value }
-              }))}
-            />
-            <button
-              type="button"
-              className="btn-add"
-              onClick={addEducation}
-            >
-              <Icon name="plus" /> Add
-            </button>
-          </div>
-        </div>
-
-        {/* Skills Section */}
-        <div className="form-section full-width">
-          <h4>Skills</h4>
-          <div className="skills-edit">
-            {editData.skills.map((skill, index) => (
-              <span key={index} className="skill-tag">
-                {skill}
-                <button
-                  type="button"
-                  className="skill-remove"
-                  onClick={() => removeSkill(index)}
-                >
-                  <Icon name="close" />
-                </button>
-              </span>
-            ))}
-          </div>
-          <div className="skill-input-container">
-            <input
-              type="text"
-              placeholder="Add a skill"
-              value={editData.newSkill}
-              onChange={(e) => handleInputChange('newSkill', e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && addSkill()}
-            />
-            <button
-              type="button"
-              className="btn-add-skill"
-              onClick={addSkill}
-            >
-              <Icon name="plus" /> Add Skill
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="form-actions">
-        <button className="btn-save" onClick={handleSave} disabled={isUploading}>
-          {isUploading ? 'Saving...' : 'Save Changes'}
-        </button>
-        <button className="btn-cancel" onClick={() => {
-          cleanupPreviewURLs();
-          setImagePreview('');
-          setBannerPreview('');
-          setIsEditing(false);
-        }} disabled={isUploading}>
-          Cancel
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="profile-container">
       <div className="profile-content">
@@ -1227,7 +942,11 @@ const Profile = () => {
         <div className="profile-header">
           <div className="profile-banner">
             <img
-              src={isEditing && bannerPreview ? bannerPreview : (profileData.bannerImage || DEFAULT_BANNER)}
+              src={
+                isEditing && bannerPreview
+                  ? bannerPreview
+                  : profileData.bannerImage || DEFAULT_BANNER
+              }
               alt="Banner"
               className="banner-image"
               onError={(e) => {
@@ -1239,7 +958,10 @@ const Profile = () => {
             />
             {isEditing && (
               <div className="banner-upload-overlay">
-                <label htmlFor="banner-image-upload" className="image-upload-btn banner-upload-btn">
+                <label
+                  htmlFor="banner-image-upload"
+                  className="image-upload-btn banner-upload-btn"
+                >
                   <Icon name="camera" /> Change Banner
                 </label>
                 <input
@@ -1254,7 +976,11 @@ const Profile = () => {
             <div className="profile-image-container">
               <div className="profile-image-wrapper">
                 <img
-                  src={isEditing && imagePreview ? imagePreview : (profileData.profileImage || DEFAULT_PROFILE_IMG)}
+                  src={
+                    isEditing && imagePreview
+                      ? imagePreview
+                      : profileData.profileImage || DEFAULT_PROFILE_IMG
+                  }
                   alt={profileData.name}
                   className="profile-image"
                   onError={(e) => {
@@ -1266,7 +992,10 @@ const Profile = () => {
                 />
                 {isEditing && (
                   <div className="image-upload-container">
-                    <label htmlFor="profile-image-upload" className="image-upload-btn">
+                    <label
+                      htmlFor="profile-image-upload"
+                      className="image-upload-btn"
+                    >
                       <Icon name="camera" /> Change Photo
                     </label>
                     <input
@@ -1276,7 +1005,9 @@ const Profile = () => {
                       onChange={handleImageUpload}
                       className="image-upload-input"
                     />
-                    {isUploading && <div className="uploading-text">Uploading...</div>}
+                    {isUploading && (
+                      <div className="uploading-text">Uploading...</div>
+                    )}
                   </div>
                 )}
               </div>
@@ -1302,10 +1033,25 @@ const Profile = () => {
                       bannerImage: profileData.bannerImage,
                       email: profileData.email,
                       phone: profileData.phone,
-                      newSkill: '',
-                      newExperience: { title: '', company: '', startDate: '', endDate: '', location: '', description: '', current: false },
-                      newProject: { title: '', description: '', link: '' },
-                      newEducation: { school: '', degree: '', field: '', startYear: '', endYear: '', description: '' }
+                      newSkill: "",
+                      newExperience: {
+                        title: "",
+                        company: "",
+                        startDate: "",
+                        endDate: "",
+                        location: "",
+                        description: "",
+                        current: false,
+                      },
+                      newProject: { title: "", description: "", link: "" },
+                      newEducation: {
+                        school: "",
+                        degree: "",
+                        field: "",
+                        startYear: "",
+                        endYear: "",
+                        description: "",
+                      },
                     });
                     setIsEditing(true);
                   }}
@@ -1318,30 +1064,71 @@ const Profile = () => {
 
           <div className="profile-info">
             {isEditing ? (
-              <EditForm />
+              <EditForm
+                editData={editData}
+                setEditData={setEditData}
+                handleInputChange={handleInputChange}
+                handleExperienceChange={handleExperienceChange}
+                handleEducationChange={handleEducationChange}
+                handleProjectChange={handleProjectChange}
+                addExperience={addExperience}
+                addEducation={addEducation}
+                addProject={addProject}
+                addSkill={addSkill}
+                removeExperience={removeExperience}
+                removeEducation={removeEducation}
+                removeProject={removeProject}
+                removeSkill={removeSkill}
+                handleSave={handleSave}
+                isUploading={isUploading}
+                onCancel={() => {
+                  cleanupPreviewURLs();
+                  setImagePreview("");
+                  setBannerPreview("");
+                  setIsEditing(false);
+                }}
+              />
             ) : (
               <>
-                <h1 className="profile-name">{profileData.name || 'User Name'}</h1>
-                <p className="profile-headline">{profileData.headline || 'Your professional headline'}</p>
+                <h1 className="profile-name">
+                  {profileData.name || "User Name"}
+                </h1>
+                <p className="profile-headline">
+                  {profileData.headline || "Your professional headline"}
+                </p>
                 <div className="profile-location">
-                  <Icon name="map-marker" /> {profileData.location || 'Location not specified'}
+                  <Icon name="map-marker" />{" "}
+                  {profileData.location || "Location not specified"}
                 </div>
                 {profileData.website && (
                   <div className="profile-website">
-                    <Icon name="link" /> <a href={profileData.website} target="_blank" rel="noopener noreferrer">{profileData.website}</a>
+                    <Icon name="link" />{" "}
+                    <a
+                      href={profileData.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {profileData.website}
+                    </a>
                   </div>
                 )}
                 <div className="profile-stats">
                   <div className="stat">
-                    <span className="stat-number">{profileData.connections}+</span>
+                    <span className="stat-number">
+                      {profileData.connections}+
+                    </span>
                     <span className="stat-label">connections</span>
                   </div>
                   <div className="stat">
-                    <span className="stat-number">{profileData.profileViews}</span>
+                    <span className="stat-number">
+                      {profileData.profileViews}
+                    </span>
                     <span className="stat-label">profile views</span>
                   </div>
                   <div className="stat">
-                    <span className="stat-number">{profileData.postImpressions}</span>
+                    <span className="stat-number">
+                      {profileData.postImpressions}
+                    </span>
                     <span className="stat-label">post impressions</span>
                   </div>
                 </div>
@@ -1351,7 +1138,11 @@ const Profile = () => {
                   <button className="btn-cv" onClick={() => setShowCV(true)}>
                     <Icon name="file-alt" /> CV Profile
                   </button>
-                  <button className="icon-btn share-btn" onClick={handleShareProfile} title="Share profile">
+                  <button
+                    className="icon-btn share-btn"
+                    onClick={handleShareProfile}
+                    title="Share profile"
+                  >
                     <Icon name="share" /> Share
                   </button>
 
@@ -1369,17 +1160,26 @@ const Profile = () => {
                         <div className="more-dropdown-item">
                           <Icon name="paper-plane" /> Send profile in a message
                         </div>
-                        <div className="more-dropdown-item" onClick={generateProfileSummary}>
+                        <div
+                          className="more-dropdown-item"
+                          onClick={generateProfileSummary}
+                        >
                           <Icon name="robot" /> AI Profile Summary
                         </div>
-                        <div className="more-dropdown-item" onClick={() => window.print()}>
+                        <div
+                          className="more-dropdown-item"
+                          onClick={() => window.print()}
+                        >
                           <Icon name="file-pdf" /> Save as PDF
                         </div>
                         <div className="more-dropdown-item">
                           <Icon name="info-circle" /> About this profile
                         </div>
                         <div className="more-dropdown-divider"></div>
-                        <div className="more-dropdown-item" onClick={handleSignOut}>
+                        <div
+                          className="more-dropdown-item"
+                          onClick={handleSignOut}
+                        >
                           <Icon name="sign-out" /> Sign Out
                         </div>
                         <div className="more-dropdown-item">
@@ -1408,26 +1208,50 @@ const Profile = () => {
                 <div className="section-header">
                   <h3>About</h3>
                 </div>
-                <p>{profileData.about || 'No about information available.'}</p>
+                <p>{profileData.about || "No about information available."}</p>
               </div>
 
               {/* Projects Section */}
               <div className="profile-section">
                 <div className="section-header">
-                  <h3><Icon name="project" /> Projects</h3>
+                  <h3>
+                    <Icon name="project" /> Projects
+                  </h3>
                 </div>
                 {profileData.projects && profileData.projects.length > 0 ? (
                   profileData.projects.map((proj, index) => (
                     <div key={proj.id || index} className="experience-item">
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
                         <h4>{proj.title}</h4>
                         {proj.link && (
-                          <a href={proj.link} target="_blank" rel="noopener noreferrer" className="project-link" style={{ fontSize: '12px', color: 'var(--primary-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <a
+                            href={proj.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="project-link"
+                            style={{
+                              fontSize: "12px",
+                              color: "var(--primary-green)",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
                             <Icon name="link" size={12} /> View
                           </a>
                         )}
                       </div>
-                      {proj.description && <p className="description" style={{ marginTop: '4px' }}>{proj.description}</p>}
+                      {proj.description && (
+                        <p className="description" style={{ marginTop: "4px" }}>
+                          {proj.description}
+                        </p>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -1438,15 +1262,21 @@ const Profile = () => {
               {/* Experience Section */}
               <div className="profile-section">
                 <div className="section-header">
-                  <h3><Icon name="building" /> Experience</h3>
+                  <h3>
+                    <Icon name="building" /> Experience
+                  </h3>
                 </div>
                 {profileData.experience.length > 0 ? (
                   profileData.experience.map((exp, index) => (
                     <div key={exp.id || index} className="experience-item">
                       <h4>{exp.title}</h4>
                       <p className="company">{exp.company}</p>
-                      <p className="duration">{exp.startDate} - {exp.endDate} · {exp.location}</p>
-                      {exp.description && <p className="description">{exp.description}</p>}
+                      <p className="duration">
+                        {exp.startDate} - {exp.endDate} · {exp.location}
+                      </p>
+                      {exp.description && (
+                        <p className="description">{exp.description}</p>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -1457,15 +1287,23 @@ const Profile = () => {
               {/* Education Section */}
               <div className="profile-section">
                 <div className="section-header">
-                  <h3><Icon name="graduation-cap" /> Education</h3>
+                  <h3>
+                    <Icon name="graduation-cap" /> Education
+                  </h3>
                 </div>
                 {profileData.education.length > 0 ? (
                   profileData.education.map((edu, index) => (
                     <div key={edu.id || index} className="education-item">
                       <h4>{edu.school}</h4>
-                      <p className="degree">{edu.degree} in {edu.field}</p>
-                      <p className="year">{edu.startYear} - {edu.endYear}</p>
-                      {edu.description && <p className="description">{edu.description}</p>}
+                      <p className="degree">
+                        {edu.degree} in {edu.field}
+                      </p>
+                      <p className="year">
+                        {edu.startYear} - {edu.endYear}
+                      </p>
+                      {edu.description && (
+                        <p className="description">{edu.description}</p>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -1476,35 +1314,128 @@ const Profile = () => {
               {/* Certifications Section (New) */}
               <div className="profile-section">
                 <div className="section-header">
-                  <h3><Icon name="certificate" /> Licenses & Certifications</h3>
+                  <h3>
+                    <Icon name="certificate" /> Licenses & Certifications
+                  </h3>
                 </div>
                 <div className="certifications-list">
                   {/* Mock Data for Demonstration */}
-                  <div className="education-item" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '48px', height: '48px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', flexShrink: 0 }}>
+                  <div
+                    className="education-item"
+                    style={{
+                      display: "flex",
+                      gap: "12px",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "48px",
+                        height: "48px",
+                        background: "#f3f4f6",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "4px",
+                        flexShrink: 0,
+                      }}
+                    >
                       <Icon name="star" color="#f59e0b" />
                     </div>
                     <div>
-                      <h4 style={{ marginBottom: '4px', fontSize: '16px' }}>Advanced React Patterns</h4>
-                      <p className="company" style={{ marginBottom: '2px' }}>TechAcademy Inc.</p>
-                      <p className="duration" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Issued Jan 2026</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+                      <h4 style={{ marginBottom: "4px", fontSize: "16px" }}>
+                        Advanced React Patterns
+                      </h4>
+                      <p className="company" style={{ marginBottom: "2px" }}>
+                        TechAcademy Inc.
+                      </p>
+                      <p
+                        className="duration"
+                        style={{
+                          fontSize: "13px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
+                        Issued Jan 2026
+                      </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          marginTop: "6px",
+                        }}
+                      >
                         <Icon name="check-circle" size={14} color="#3B82F6" />
-                        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-secondary)' }}>Verified by Connectimi</span>
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "600",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          Verified by Connectimi
+                        </span>
                       </div>
                     </div>
                   </div>
-                  <div className="education-item" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', marginTop: '16px' }}>
-                    <div style={{ width: '48px', height: '48px', background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', flexShrink: 0 }}>
+                  <div
+                    className="education-item"
+                    style={{
+                      display: "flex",
+                      gap: "12px",
+                      alignItems: "flex-start",
+                      marginTop: "16px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "48px",
+                        height: "48px",
+                        background: "#f3f4f6",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "4px",
+                        flexShrink: 0,
+                      }}
+                    >
                       <Icon name="star" color="#f59e0b" />
                     </div>
                     <div>
-                      <h4 style={{ marginBottom: '4px', fontSize: '16px' }}>Enterprise Security Fundamentals</h4>
-                      <p className="company" style={{ marginBottom: '2px' }}>SecureNet Global</p>
-                      <p className="duration" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Issued Dec 2025</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+                      <h4 style={{ marginBottom: "4px", fontSize: "16px" }}>
+                        Enterprise Security Fundamentals
+                      </h4>
+                      <p className="company" style={{ marginBottom: "2px" }}>
+                        SecureNet Global
+                      </p>
+                      <p
+                        className="duration"
+                        style={{
+                          fontSize: "13px",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
+                        Issued Dec 2025
+                      </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          marginTop: "6px",
+                        }}
+                      >
                         <Icon name="check-circle" size={14} color="#3B82F6" />
-                        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-secondary)' }}>Verified by Connectimi</span>
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "600",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          Verified by Connectimi
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -1519,7 +1450,9 @@ const Profile = () => {
                 <div className="skills-container">
                   {profileData.skills.length > 0 ? (
                     profileData.skills.map((skill, index) => (
-                      <span key={index} className="skill-tag">{skill}</span>
+                      <span key={index} className="skill-tag">
+                        {skill}
+                      </span>
                     ))
                   ) : (
                     <p>No skills added yet.</p>
@@ -1550,7 +1483,8 @@ const Profile = () => {
                     onClick={generateProfileSummary}
                     disabled={isSummarizing || !isSpeechSupported}
                   >
-                    <Icon name="robot" /> {isSummarizing ? 'Generating...' : 'Listen to Profile'}
+                    <Icon name="robot" />{" "}
+                    {isSummarizing ? "Generating..." : "Listen to Profile"}
                   </button>
                   <p className="ai-description">
                     Get an AI-generated podcast-style summary of your profile
@@ -1575,7 +1509,9 @@ const Profile = () => {
           </div>
         )}
       </div>
-      {showCV && <CVModal profileData={profileData} onClose={() => setShowCV(false)} />}
+      {showCV && (
+        <CVModal profileData={profileData} onClose={() => setShowCV(false)} />
+      )}
     </div>
   );
 };
