@@ -64,33 +64,41 @@ const Courses = () => {
 
     return (
         <div className="courses-container">
-            <header className="courses-header">
-                <h1>Available Courses</h1>
-                <p>Select a course to view its roadmap and start your journey.</p>
-            </header>
+            <div className="courses-hero">
+                <div className="courses-hero-content">
+                    <h1>Unlock Your Potential</h1>
+                    <p>Master in-demand skills with our expert-led, project-based courses future today.</p>
+                </div>
+            </div>
 
-            <div className="courses-grid">
-                {courses.map(course => (
-                    <div key={course.id} className="course-card">
-                        <div className={`course-type-badge type-${course.type.toLowerCase()}`}>
-                            {course.type}
+            <div className="courses-grid-wrapper">
+                <div className="courses-header" style={{ display: 'none' }}>
+                    {/* Kept for compatibility but hidden */}
+                </div>
+
+                <div className="courses-grid">
+                    {courses.map(course => (
+                        <div key={course.id} className="course-card">
+                            <div className={`course-type-badge type-${course.type.toLowerCase()}`}>
+                                {course.type}
+                            </div>
+                            <h3 className="course-title">{course.title}</h3>
+                            <p className="course-desc">{course.desc}</p>
+
+                            <div className="course-meta">
+                                <span><Icon name="clock" size={14} /> {course.duration}</span>
+                                <span><Icon name="chart-bar" size={14} /> {course.level}</span>
+                            </div>
+
+                            <button
+                                className="see-roadmap-btn"
+                                onClick={() => handleSeeRoadmap(course.id)}
+                            >
+                                See Roadmap
+                            </button>
                         </div>
-                        <h3 className="course-title">{course.title}</h3>
-                        <p className="course-desc">{course.desc}</p>
-
-                        <div className="course-meta">
-                            <span><Icon name="clock" size={14} /> {course.duration}</span>
-                            <span><Icon name="chart-bar" size={14} /> {course.level}</span>
-                        </div>
-
-                        <button
-                            className="see-roadmap-btn"
-                            onClick={() => handleSeeRoadmap(course.id)}
-                        >
-                            See Roadmap
-                        </button>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     );

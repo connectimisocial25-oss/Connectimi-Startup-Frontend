@@ -61,7 +61,7 @@ const Navbar = () => {
                             size={24}
                             className="nav-profile-img"
                         />
-                        <Icon name="caret-down" size={12} />
+                        <div className="nav-icon-badge">3</div>
                     </div>
                     <span className="nav-label">Me</span>
                     {isDropdownOpen && (
@@ -72,6 +72,7 @@ const Navbar = () => {
                             <div className="dropdown-item" onClick={() => navigate('/notifications')}>
                                 <Icon name="bell" />
                                 Notifications
+                                <span className="dropdown-badge">3 New</span>
                             </div>
                             <div className="dropdown-item" onClick={toggleTheme}>
                                 <Icon name={theme === 'dark' ? 'sun' : 'moon'} />

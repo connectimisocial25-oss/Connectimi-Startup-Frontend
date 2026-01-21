@@ -71,7 +71,9 @@
     border-radius: 4px;
     position: relative;
     transition: all 0.2s;
-    width: 115px;
+    width: auto;
+    /* Let it fit content, or keep fixed if strictly needed */
+    min-width: 80px;
 }
 
 .nav-item:hover {
@@ -89,10 +91,12 @@
 .nav-item.active::after {
     content: '';
     position: absolute;
-    bottom: -2px;
-    width: 100%;
+    bottom: 0px;
+    width: 60%;
+    /* Not full width, looks cleaner */
     height: 2px;
     background-color: var(--primary-green);
+    border-radius: 2px 2px 0 0;
 }
 
 .nav-icon {
@@ -216,4 +220,36 @@
 
 .signout-item svg {
     color: #d32f2f;
+}
+
+/* Notification Badges */
+.nav-icon-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #d11124;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    height: 16px;
+    min-width: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--nav-bg);
+    /* Match nav bg to create 'cutout' effect */
+    padding: 0 3px;
+    z-index: 10;
+}
+
+.dropdown-badge {
+    background-color: #d11124;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: auto;
+    /* Push to the right */
 }
