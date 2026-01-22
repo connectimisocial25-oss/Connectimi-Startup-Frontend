@@ -1,5 +1,4 @@
-/* ================= NAVBAR ================= */
-
+/* Navbar.css */
 .navbar {
     position: fixed;
     top: 0;
@@ -14,15 +13,15 @@
     z-index: 1000;
 }
 
-/* ================= LEFT SECTION ================= */
-
 .navbar-left {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
-/* Search bar */
+.linkedin-logo {
+    cursor: pointer;
+}
 
 .search-bar {
     position: relative;
@@ -35,7 +34,6 @@
     left: 12px;
     color: var(--text-secondary);
     z-index: 1;
-    pointer-events: none;
 }
 
 .search-input {
@@ -43,11 +41,12 @@
     height: 34px;
     padding: 0 10px 0 40px;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: var(--bg-color);
     color: var(--text-primary);
     font-size: 14px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.3s;
+    position: relative;
 }
 
 .search-input:focus {
@@ -57,15 +56,12 @@
     box-shadow: 0 0 0 5px rgba(22, 163, 74, 0.2);
 }
 
-/* ================= CENTER SECTION ================= */
-
 .navbar-center {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 25px;
 }
 
-/* IMPORTANT FIX: stop shaking */
 .nav-item {
     display: flex;
     flex-direction: column;
@@ -90,28 +86,26 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Active state */
-
 .nav-item.active {
     color: var(--primary-green);
-/* -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0);
-box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0); */
     background: radial-gradient(circle, white 20%, #16a34a18 80%);
 }
 
-/* underline without layout shift */
+.dark .nav-item.active {
+    color: white;
+    background: var(--primary-green);
+}
+
 .nav-item.active::after {
     content: '';
     position: absolute;
     bottom: -6px;
-    left: 0;
     width: 100%;
+    /* Not full width, looks cleaner */
     height: 2px;
     background-color: var(--primary-green);
-    border-radius: 2px;
+    border-radius: 2px 2px 0 0;
 }
-
-/* ================= ICON FIX (NO SHAKE) ================= */
 
 .nav-icon {
     display: flex;
@@ -119,80 +113,87 @@ box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0); */
     justify-content: center;
     font-size: 20px;
     color: var(--text-secondary);
-
-    /* prevent shaking */
-    height: 22px;
-    width: 22px;
-    line-height: 1;
+    position: relative;
 }
 
 .nav-item.active .nav-icon {
     color: var(--primary-green);
 }
 
-/* Avatar fix */
+.dark .nav-item.active .nav-icon {
+    color: white;
+}
 
 .nav-profile-img {
     width: 24px;
     height: 24px;
     border-radius: 50%;
     object-fit: cover;
-    display: block;
+    margin-right: 4px;
 }
-
-/* Label fix */
 
 .nav-label {
     font-size: 12px;
     margin-top: 4px;
     color: #666;
     font-weight: 400;
-    line-height: 1;
-    white-space: nowrap;
 }
 
 .nav-item.active .nav-label {
     color: var(--primary-green);
-    /* font-weight: 600; */
+    /* font-weight: 700; */
 }
 
-/* ================= BADGE FIX ================= */
-
-.nav-icon-badge {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background-color: #d11124;
+.dark .nav-item.active .nav-label {
     color: white;
-    font-size: 10px;
-    font-weight: 700;
-    height: 16px;
-    min-width: 16px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--nav-bg);
-    padding: 0 4px;
+    /* font-weight: 700; */
 }
-
-/* ================= DROPDOWN ================= */
 
 .me-dropdown {
     position: relative;
 }
 
+/* Dropdown Menu */
 .dropdown-menu {
     position: absolute;
-    top: 110%;
+    top: 100%;
     right: 0;
     width: 300px;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 10px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 1001;
-    animation: fadeIn 0.15s ease-out;
+    margin-top: 8px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.dropdown-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.dropdown-profile-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+    border: 2px solid var(--primary-green);
+}
+
+.dropdown-header h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dropdown-header p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
 }
 
 .dropdown-item {
@@ -200,10 +201,10 @@ box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0); */
     font-size: 14px;
     color: var(--text-primary);
     cursor: pointer;
+    transition: background-color 0.2s;
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: background-color 0.15s ease;
 }
 
 .dropdown-item:hover {
@@ -214,17 +215,11 @@ box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0); */
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.dropdown-badge {
-    background-color: #d11124;
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: auto;
+.dropdown-divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 8px 0;
 }
-
-/* Sign out */
 
 .signout-item {
     color: #d32f2f;
@@ -240,15 +235,38 @@ box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0); */
     color: #ff8a80;
 }
 
-/* ================= ANIMATION ================= */
+.signout-item svg {
+    color: #d32f2f;
+}
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-4px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Notification Badges */
+.nav-icon-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #d11124;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    height: 16px;
+    min-width: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--nav-bg);
+    /* Match nav bg to create 'cutout' effect */
+    padding: 0 3px;
+    z-index: 10;
+}
+
+.dropdown-badge {
+    background-color: #d11124;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: auto;
+    /* Push to the right */
 }
