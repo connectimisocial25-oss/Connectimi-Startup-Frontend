@@ -1,4 +1,5 @@
-/* Navbar.css */
+/* ================= NAVBAR ================= */
+
 .navbar {
     position: fixed;
     top: 0;
@@ -13,15 +14,15 @@
     z-index: 1000;
 }
 
+/* ================= LEFT SECTION ================= */
+
 .navbar-left {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
-.linkedin-logo {
-    cursor: pointer;
-}
+/* Search bar */
 
 .search-bar {
     position: relative;
@@ -34,6 +35,7 @@
     left: 12px;
     color: var(--text-secondary);
     z-index: 1;
+    pointer-events: none;
 }
 
 .search-input {
@@ -41,39 +43,43 @@
     height: 34px;
     padding: 0 10px 0 40px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: var(--bg-color);
     color: var(--text-primary);
     font-size: 14px;
-    transition: all 0.3s;
-    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-input:focus {
     outline: none;
     background-color: white;
     border-color: var(--primary-green);
-    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+    box-shadow: 0 0 0 5px rgba(22, 163, 74, 0.2);
 }
+
+/* ================= CENTER SECTION ================= */
 
 .navbar-center {
     display: flex;
     align-items: center;
-    gap: 25px;
+    gap: 22px;
 }
 
+/* IMPORTANT FIX: stop shaking */
 .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 6px 10px;
+    border-radius: 6px;
     position: relative;
-    transition: all 0.2s;
-    width: auto;
-    /* Let it fit content, or keep fixed if strictly needed */
-    width: 115px;
+    min-width: 80px; /* fixed width prevents movement */
+    text-align: center;
+
+    /* avoid layout shift */
+    transition: background-color 0.15s ease, color 0.15s ease;
+    will-change: transform;
 }
 
 .nav-item:hover {
@@ -84,20 +90,28 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Active state */
+
 .nav-item.active {
     color: var(--primary-green);
+/* -webkit-box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0);
+box-shadow: 0px 10px 13px -7px #000000, 0px 0px 50px -5px rgba(0,0,0,0); */
+    background: radial-gradient(circle, white 20%, #16a34a18 80%);
 }
 
+/* underline without layout shift */
 .nav-item.active::after {
     content: '';
     position: absolute;
-    bottom: 0px;
+    bottom: -6px;
+    left: 0;
     width: 100%;
-    /* Not full width, looks cleaner */
     height: 2px;
     background-color: var(--primary-green);
-    border-radius: 2px 2px 0 0;
+    border-radius: 2px;
 }
+
+/* ================= ICON FIX (NO SHAKE) ================= */
 
 .nav-icon {
     display: flex;
@@ -105,78 +119,80 @@
     justify-content: center;
     font-size: 20px;
     color: var(--text-secondary);
-    position: relative;
+
+    /* prevent shaking */
+    height: 22px;
+    width: 22px;
+    line-height: 1;
 }
 
 .nav-item.active .nav-icon {
     color: var(--primary-green);
 }
 
+/* Avatar fix */
+
 .nav-profile-img {
     width: 24px;
     height: 24px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 4px;
+    display: block;
 }
+
+/* Label fix */
 
 .nav-label {
     font-size: 12px;
     margin-top: 4px;
     color: #666;
     font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 .nav-item.active .nav-label {
     color: var(--primary-green);
-    font-weight: 700;
+    /* font-weight: 600; */
 }
+
+/* ================= BADGE FIX ================= */
+
+.nav-icon-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #d11124;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    height: 16px;
+    min-width: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--nav-bg);
+    padding: 0 4px;
+}
+
+/* ================= DROPDOWN ================= */
 
 .me-dropdown {
     position: relative;
 }
 
-/* Dropdown Menu */
 .dropdown-menu {
     position: absolute;
-    top: 100%;
+    top: 110%;
     right: 0;
     width: 300px;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     z-index: 1001;
-    margin-top: 8px;
-    animation: fadeIn 0.2s ease-out;
-}
-
-.dropdown-header {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.dropdown-profile-img {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    margin-right: 12px;
-    object-fit: cover;
-    border: 2px solid var(--primary-green);
-}
-
-.dropdown-header h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.dropdown-header p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-top: 4px;
+    animation: fadeIn 0.15s ease-out;
 }
 
 .dropdown-item {
@@ -184,10 +200,10 @@
     font-size: 14px;
     color: var(--text-primary);
     cursor: pointer;
-    transition: background-color 0.2s;
     display: flex;
     align-items: center;
     gap: 10px;
+    transition: background-color 0.15s ease;
 }
 
 .dropdown-item:hover {
@@ -198,11 +214,17 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.dropdown-divider {
-    height: 1px;
-    background-color: #e0e0e0;
-    margin: 8px 0;
+.dropdown-badge {
+    background-color: #d11124;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: auto;
 }
+
+/* Sign out */
 
 .signout-item {
     color: #d32f2f;
@@ -218,38 +240,15 @@
     color: #ff8a80;
 }
 
-.signout-item svg {
-    color: #d32f2f;
-}
+/* ================= ANIMATION ================= */
 
-/* Notification Badges */
-.nav-icon-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #d11124;
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    height: 16px;
-    min-width: 16px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--nav-bg);
-    /* Match nav bg to create 'cutout' effect */
-    padding: 0 3px;
-    z-index: 10;
-}
-
-.dropdown-badge {
-    background-color: #d11124;
-    color: white;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: auto;
-    /* Push to the right */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
