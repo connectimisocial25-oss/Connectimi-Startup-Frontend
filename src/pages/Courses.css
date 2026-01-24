@@ -2,7 +2,7 @@
     /* margin: 30px auto; */
     /* padding-top: 52px; */
     margin-top: 5rem;
-    min-height: 100vh;
+    min-height: calc(100vh - 5rem);
 }
 
 .courses-hero {
@@ -33,7 +33,7 @@
     color: white;
     text-align: center;
     /* Center text */
-    animation: fadeIn 0.8s ease-out;
+    animation: fadeInUp 0.8s ease-out;
 }
 
 .courses-hero-content h1 {
@@ -203,7 +203,7 @@
     box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
-@keyframes fadeIn {
+@keyframes fadeInUp {
     from {
         opacity: 0;
         transform: translateY(20px);

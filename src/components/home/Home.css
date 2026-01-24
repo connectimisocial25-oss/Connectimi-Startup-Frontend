@@ -20,7 +20,6 @@
 }
 
 /* --- Common Panel Styles --- */
-.left-sidebar-panel,
 .right-sidebar-panel {
     background: var(--card-bg);
     border-radius: 16px;
@@ -28,6 +27,25 @@
     overflow: hidden;
     padding: 20px 0;
     height: fit-content;
+}
+
+.left-sidebar-panel{
+    /* background: var(--card-bg); */
+    border-radius: 16px;
+    /* border: 1px solid var(--border-color); */
+    overflow: hidden;
+    padding: 20px 0;
+    height: fit-content;
+}
+
+.left-sidebar-details{
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    /* padding: 20px 0; */
+    height: fit-content;
+    margin-top: 20px;
 }
 
 .sidebar-section {
