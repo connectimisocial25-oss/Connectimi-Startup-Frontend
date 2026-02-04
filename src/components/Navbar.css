@@ -60,6 +60,8 @@
     display: flex;
     align-items: center;
     gap: 25px;
+    position: relative;
+    /* For absolute positioning of indicator */
 }
 
 .nav-item {
@@ -70,7 +72,8 @@
     padding: 6px 10px;
     border-radius: 6px;
     position: relative;
-    min-width: 80px; /* fixed width prevents movement */
+    min-width: 80px;
+    /* fixed width prevents movement */
     text-align: center;
 
     /* avoid layout shift */
@@ -105,6 +108,8 @@
     height: 2px;
     background-color: var(--primary-green);
     border-radius: 2px 2px 0 0;
+    /* Hide static bar, we'll use mouse-indicator instead */
+    display: none;
 }
 
 .nav-icon {
@@ -269,4 +274,20 @@
     border-radius: 12px;
     margin-left: auto;
     /* Push to the right */
+}
+
+/* Mouse-Following Indicator Bar */
+.mouse-indicator {
+    position: absolute;
+    bottom: -6px;
+    height: 2px;
+    background-color: var(--primary-green);
+    border-radius: 2px 2px 0 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.dark .mouse-indicator {
+    background-color: var(--primary-green);
 }

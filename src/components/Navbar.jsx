@@ -14,12 +14,71 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navbarRef = useRef(null);
+  const navItemsRef = useRef([]);
+  const [indicatorStyle, setIndicatorStyle] = useState({
+    width: 0,
+    left: 0,
+    opacity: 0,
+  });
 
   useEffect(() => {
     animateNavbarIn(navbarRef.current);
   }, []);
 
+  // Update indicator to active item on mount and route change
+  useEffect(() => {
+    updateIndicatorToActive();
+  }, [location.pathname]);
+
   const isActive = (path) => location.pathname === path;
+
+  // Get the index of the currently active nav item
+  const getActiveIndex = () => {
+    if (isActive("/home")) return 0;
+    if (isActive("/mynetwork")) return 1;
+    if (isActive("/work")) return 2;
+    if (location.pathname.startsWith("/courses")) return 3;
+    return -1; // No active item (e.g., on profile page)
+  };
+
+  // Update indicator to the active item position
+  const updateIndicatorToActive = () => {
+    const activeIndex = getActiveIndex();
+    if (activeIndex >= 0) {
+      const navItem = navItemsRef.current[activeIndex];
+      if (navItem) {
+        const { offsetLeft, offsetWidth } = navItem;
+        setIndicatorStyle({
+          width: offsetWidth,
+          left: offsetLeft,
+          opacity: 1,
+        });
+      }
+    } else {
+      // No active item in main nav, hide the indicator
+      setIndicatorStyle((prev) => ({
+        ...prev,
+        opacity: 0,
+      }));
+    }
+  };
+
+  const handleMouseEnter = (index) => {
+    const navItem = navItemsRef.current[index];
+    if (navItem) {
+      const { offsetLeft, offsetWidth } = navItem;
+      setIndicatorStyle({
+        width: offsetWidth,
+        left: offsetLeft,
+        opacity: 1,
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    // Return to active item instead of hiding
+    updateIndicatorToActive();
+  };
 
   return (
     <nav className="navbar" ref={navbarRef}>
@@ -31,10 +90,12 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="navbar-center">
+      <div className="navbar-center" onMouseLeave={handleMouseLeave}>
         <div
+          ref={(el) => (navItemsRef.current[0] = el)}
           className={`nav-item ${isActive("/home") ? "active" : ""}`}
           onClick={() => navigate("/home")}
+          onMouseEnter={() => handleMouseEnter(0)}
         >
           <div className="nav-icon">
             <Icon name="home" />
@@ -43,8 +104,10 @@ const Navbar = () => {
         </div>
 
         <div
+          ref={(el) => (navItemsRef.current[1] = el)}
           className={`nav-item ${isActive("/mynetwork") ? "active" : ""}`}
           onClick={() => navigate("/mynetwork")}
+          onMouseEnter={() => handleMouseEnter(1)}
         >
           <div className="nav-icon">
             <Icon name="user-friends" />
@@ -53,8 +116,10 @@ const Navbar = () => {
         </div>
 
         <div
+          ref={(el) => (navItemsRef.current[2] = el)}
           className={`nav-item ${isActive("/work") ? "active" : ""}`}
           onClick={() => navigate("/work")}
+          onMouseEnter={() => handleMouseEnter(2)}
         >
           <div className="nav-icon">
             <Icon name="briefcase" />
@@ -62,8 +127,10 @@ const Navbar = () => {
           <span className="nav-label">Work</span>
         </div>
         <div
+          ref={(el) => (navItemsRef.current[3] = el)}
           className={`nav-item ${location.pathname.startsWith("/courses") ? "active" : ""}`}
           onClick={() => navigate("/courses")}
+          onMouseEnter={() => handleMouseEnter(3)}
         >
           <div className="nav-icon">
             <Icon name="course" />
@@ -72,8 +139,10 @@ const Navbar = () => {
         </div>
 
         <div
+          ref={(el) => (navItemsRef.current[4] = el)}
           className="nav-item me-dropdown"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          onMouseEnter={() => handleMouseEnter(4)}
         >
           <div className="nav-icon">
             <Avatar
@@ -115,6 +184,16 @@ const Navbar = () => {
             </div>
           )}
         </div>
+
+        {/* Animated Mouse-Following Indicator */}
+        <div
+          className="mouse-indicator"
+          style={{
+            width: `${indicatorStyle.width}px`,
+            left: `${indicatorStyle.left}px`,
+            opacity: indicatorStyle.opacity,
+          }}
+        />
       </div>
     </nav>
   );
