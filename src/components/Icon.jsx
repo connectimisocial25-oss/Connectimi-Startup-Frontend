@@ -76,7 +76,8 @@ const iconMap = {
   'arrow-right': FiArrowRight,
   'chart-line': FiTrendingUp,
   'map-marker-alt': FiMapPin,
-  'project': FiLayers
+  'project': FiLayers,
+  'user': FiUser
 };
 
 export default function Icon({ name, size = 16, className = '', ...rest }) {

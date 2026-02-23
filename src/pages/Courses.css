@@ -2,38 +2,31 @@
     /* margin: 30px auto; */
     /* padding-top: 52px; */
     margin-top: 5rem;
-    min-height: calc(100vh - 5rem);
+    min-height: 100vh;
 }
 
 .courses-hero {
     position: relative;
     width: 62.5%;
-    /* Resized width */
     margin: 0 auto 40px;
-    /* Centered */
     height: 250px;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1951&q=80');
     background-size: cover;
     background-position: center;
     border-radius: 20px;
-    /* Curved edges */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    /* Soft shadow */
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Centered content */
     padding: 0 5%;
     overflow: hidden;
 }
 
 .courses-hero-content {
     max-width: 800px;
-    /* Increased max-width for better centering */
     color: white;
     text-align: center;
-    /* Center text */
-    animation: fadeInUp 0.8s ease-out;
+    animation: fadeIn 0.8s ease-out;
 }
 
 .courses-hero-content h1 {
@@ -52,7 +45,6 @@
 }
 
 .courses-header {
-    /* Removed or kept as hidden if needed, but likely replaced by hero */
     display: none;
 }
 
@@ -102,7 +94,6 @@
     border-color: var(--primary-green);
 }
 
-/* Subtle gradient overlay on hover */
 .course-card::before {
     content: '';
     position: absolute;
@@ -203,7 +194,7 @@
     box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 }
 
-@keyframes fadeInUp {
+@keyframes fadeIn {
     from {
         opacity: 0;
         transform: translateY(20px);
@@ -212,5 +203,32 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .courses-hero {
+        width: 100%;
+        height: auto;
+        padding: 40px 20px;
+        margin-bottom: 30px;
+        border-radius: 0;
+    }
+
+    .courses-hero-content h1 {
+        font-size: 32px;
+    }
+
+    .courses-grid-wrapper {
+        padding: 0 16px 40px;
+    }
+
+    .courses-grid {
+        gap: 20px;
+        grid-template-columns: 1fr;
+    }
+
+    .course-card {
+        padding: 24px;
     }
 }

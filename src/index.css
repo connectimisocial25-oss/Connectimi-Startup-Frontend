@@ -122,3 +122,10 @@ body {
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   background-color: transparent;
 }
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 70px;
+    /* Space for fixed bottom navbar */
+  }
+}

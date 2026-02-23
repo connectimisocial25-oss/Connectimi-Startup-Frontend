@@ -283,3 +283,19 @@
         grid-column: 1 / -1;
     }
 }
+
+@media (max-width: 768px) {
+    .work-content {
+        padding: 0 16px;
+        flex-direction: column;
+    }
+
+    .work-sidebar {
+        width: 100%;
+    }
+
+    .filter-card {
+        position: static;
+        margin-bottom: 24px;
+    }
+}

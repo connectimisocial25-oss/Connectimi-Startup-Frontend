@@ -158,7 +158,6 @@
     color: white;
     padding: 10px 24px;
     border-radius: 4px;
-    /* Flatter more like a header box */
     font-weight: 700;
     font-size: 16px;
     display: inline-block;
@@ -248,5 +247,20 @@
     .network-sidebar-card {
         position: static;
         margin-bottom: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .network-content {
+        padding: 0 16px;
+    }
+
+    .suggestions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modern-teal-badge {
+        width: 100%;
+        text-align: center;
     }
 }

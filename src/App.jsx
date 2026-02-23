@@ -16,26 +16,16 @@ import Courses from "./pages/Courses";
 import CourseRoadmap from "./pages/CourseRoadmap";
 
 import Navbar from "./components/Navbar";
-import { useEffect, useRef } from "react";
-import { animatePageIn } from "./utils/gsapAnimations";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const layoutRef = useRef(null);
   const showHeader = !['/', '/signup', '/forgot-password', '/organization'].includes(location.pathname);
 
-  useEffect(() => {
-    // Animate on route change
-    if (layoutRef.current) {
-      animatePageIn(layoutRef.current.querySelector('main') || layoutRef.current);
-    }
-  }, [location.pathname]);
-
   return (
-    <div ref={layoutRef}>
+    <>
       {showHeader && <Navbar />}
-      <main>{children}</main>
-    </div>
+      {children}
+    </>
   );
 };
 

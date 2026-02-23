@@ -52,8 +52,8 @@
 }
 
 .timeline-item.unlocked .timeline-marker {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
     color: white;
 }
 
@@ -73,7 +73,7 @@
 
 .timeline-item.unlocked .timeline-content:hover {
     transform: translateX(5px);
-    border-color: var(--primary-color);
+    border-color: var(--primary-green);
 }
 
 .timeline-item.locked .timeline-content {
@@ -129,7 +129,7 @@
 }
 
 .btn-start {
-    background-color: var(--primary-color);
+    background-color: var(--primary-green);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -148,10 +148,11 @@
     background: rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     backdrop-filter: blur(2px);
     z-index: 2;
+    padding-right: 2rem;
 }
 
 .lock-message {
@@ -167,7 +168,7 @@
     margin-top: 4rem;
     padding: 2rem;
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
-    border: 1px solid var(--primary-color);
+    border: 1px solid var(--primary-green);
     border-radius: 12px;
     text-align: center;
 }
@@ -178,7 +179,7 @@
 }
 
 .unlock-btn {
-    background-color: var(--primary-color);
+    background-color: var(--primary-green);
     color: white;
     border: none;
     padding: 0.8rem 2rem;
@@ -193,7 +194,7 @@
 }
 
 .unlock-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--primary-green-hover);
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
 }
