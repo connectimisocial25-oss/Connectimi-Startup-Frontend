@@ -1,20 +1,44 @@
 .roadmap-container {
-    padding: 100px 2rem 2rem;
-    max-width: 1000px;
+    padding: 120px 2rem 100px;
+    max-width: 900px;
     margin: 0 auto;
     color: var(--text-primary);
-    min-height: calc(100vh - 64px);
+    min-height: 100vh;
 }
 
 .roadmap-header {
-    margin-bottom: 3rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 4rem;
+    text-align: center;
+}
+
+.roadmap-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--primary-green);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .roadmap-header h1 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+}
+
+.course-meta {
+    display: flex;
+    gap: 2rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    justify-content: center;
+    font-weight: 600;
 }
 
 .course-meta {
@@ -27,59 +51,74 @@
 /* Timeline/Modules */
 .roadmap-timeline {
     position: relative;
-    padding-left: 2rem;
-    border-left: 2px solid var(--border-color);
 }
 
 .timeline-item {
-    margin-bottom: 3rem;
-    position: relative;
+    margin-bottom: 4rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.timeline-marker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .timeline-marker {
-    position: absolute;
-    left: -2.6rem;
-    top: 0;
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background-color: var(--bg-secondary);
+    background-color: var(--card-bg);
     border: 2px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    font-weight: 800;
+    font-size: 18px;
+    z-index: 2;
+    transition: all 0.3s ease;
+    color: var(--text-secondary);
+}
+
+.timeline-line {
+    width: 2px;
+    flex-grow: 1;
+    background: var(--border-color);
+    margin: 10px 0;
 }
 
 .timeline-item.unlocked .timeline-marker {
     background-color: var(--primary-green);
     border-color: var(--primary-green);
     color: white;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
 }
 
 .timeline-item.locked .timeline-marker {
-    background-color: var(--bg-secondary);
-    border-color: #666;
-    color: #666;
+    background-color: var(--bg-color);
+    border-color: var(--border-color);
+    opacity: 0.5;
 }
 
 .timeline-content {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 1.5rem;
-    transition: transform 0.2s;
+    flex-grow: 1;
+    border-radius: 24px;
+    padding: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .timeline-item.unlocked .timeline-content:hover {
-    transform: translateX(5px);
+    transform: translateX(10px) translateY(-5px);
     border-color: var(--primary-green);
+    box-shadow: var(--glass-shadow);
 }
 
-.timeline-item.locked .timeline-content {
-    opacity: 0.7;
-    position: relative;
-    overflow: hidden;
+.content-locked {
+    opacity: 0.6;
 }
 
 .module-header {
@@ -132,45 +171,55 @@
     background-color: var(--primary-green);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    padding: 12px 24px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-start:hover {
+    background-color: var(--primary-green-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 /* Paywall Overlay */
 .paywall-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    backdrop-filter: blur(2px);
-    z-index: 2;
-    padding-right: 2rem;
-}
-
-.lock-message {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    z-index: 10;
+}
+
+.lock-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-primary);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
 }
 
 /* Unlock CTA */
 .unlock-cta-container {
-    margin-top: 4rem;
-    padding: 2rem;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
-    border: 1px solid var(--primary-green);
-    border-radius: 12px;
+    margin-top: 6rem;
+    padding: 4rem 2rem;
+    border-radius: 32px;
     text-align: center;
+    border: 1px solid var(--primary-green);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05));
 }
 
 .unlock-cta-container h2 {

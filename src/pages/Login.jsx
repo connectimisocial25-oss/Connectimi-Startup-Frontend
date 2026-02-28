@@ -1,17 +1,25 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
 import "./Auth.css";
 
-function Login() {
+export function LoginForm({ onToggle, compact = false }) {
   const navigate = useNavigate();
-  const [accountType, setAccountType] = useState("personal"); // 'personal' or 'organization'
+  const [accountType, setAccountType] = useState("personal");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    gsap.fromTo(formRef.current.children,
+      { y: 10, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: "power2.out" }
+    );
+  }, [accountType]);
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!email || !password) return;
-    // In a real app you'd call your auth API here, passing accountType
     if (accountType === 'organization') {
       navigate("/organization");
     } else {
@@ -20,15 +28,89 @@ function Login() {
   }
 
   return (
+    <div className={`auth-form-wrapper ${compact ? 'compact' : ''}`}>
+      <div className="auth-toggle">
+        <button
+          type="button"
+          className={`toggle-btn ${accountType === "organization" ? "active" : ""}`}
+          onClick={() => setAccountType("organization")}
+        >
+          Organization
+        </button>
+        <button
+          type="button"
+          className={`toggle-btn ${accountType === "personal" ? "active" : ""}`}
+          onClick={() => setAccountType("personal")}
+        >
+          Personal
+        </button>
+      </div>
+
+      <form className="auth-form-content" onSubmit={handleSubmit} ref={formRef}>
+        <div className="auth-field">
+          <input
+            type="email"
+            className="auth-input"
+            placeholder={accountType === "organization" ? "Work Email" : "Email or Phone"}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="auth-field">
+          <input
+            type="password"
+            className="auth-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <div style={{ textAlign: "left" }}>
+          <Link to="/forgot-password" style={{ color: "var(--emerald-500)", fontWeight: "700", textDecoration: "none", fontSize: "14px" }}>
+            Forgot password?
+          </Link>
+        </div>
+
+        <button className="auth-submit-btn" type="submit">
+          Sign In
+        </button>
+      </form>
+
+      {!compact && (
+        <div className="auth-footer">
+          New to Connectimi?
+          <button onClick={onToggle} className="auth-link-btn">Join now</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Login() {
+  const navigate = useNavigate();
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    gsap.fromTo(cardRef.current,
+      { y: 40, opacity: 0, scale: 0.95 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
+    );
+  }, []);
+
+  return (
     <div className="auth-container">
-      <div className="auth-card">
+      <div className="auth-card" ref={cardRef}>
         <div className="auth-header">
           <div className="auth-logo">
-            <div
+             <div
               style={{
-                width: "48px",
-                height: "48px",
-                backgroundColor: "var(--primary-green)",
+                width: "60px",
+                height: "60px",
+                backgroundColor: "#10b981",
                 WebkitMaskImage: "url(/Connectimi_logo.png)",
                 maskImage: "url(/Connectimi_logo.png)",
                 WebkitMaskSize: "contain",
@@ -42,65 +124,11 @@ function Login() {
               aria-label="Connectimi Logo"
             />
           </div>
-          <h1 className="auth-title">Sign in</h1>
+          <h1 className="auth-title">Welcome Back</h1>
           <p className="auth-subtitle">Stay updated on your professional world</p>
         </div>
 
-        <div className="auth-toggle">
-          <button
-            type="button"
-            className={`toggle-btn ${accountType === "organization" ? "active" : ""}`}
-            onClick={() => setAccountType("organization")}
-          >
-            Organization
-          </button>
-          <button
-            type="button"
-            className={`toggle-btn ${accountType === "personal" ? "active" : ""}`}
-            onClick={() => setAccountType("personal")}
-          >
-            Personal
-          </button>
-        </div>
-
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="auth-field">
-            <input
-              type="email"
-              className="auth-input"
-              placeholder={accountType === "organization" ? "Work Email" : "Email or Phone"}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="auth-field">
-            <input
-              type="password"
-              className="auth-input"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <div style={{ textAlign: "left" }}>
-            <Link to="/forgot-password" style={{ color: "var(--primary-blue)", fontWeight: "600", textDecoration: "none", fontSize: "14px" }}>
-              Forgot password?
-            </Link>
-          </div>
-
-          <button className="auth-submit-btn" type="submit">
-            Sign in
-          </button>
-        </form>
-
-        <div className="auth-footer">
-          New to Connectimi?
-          <Link to="/signup" className="auth-link">Join now</Link>
-        </div>
+        <LoginForm onToggle={() => navigate("/signup")} />
       </div>
     </div>
   );

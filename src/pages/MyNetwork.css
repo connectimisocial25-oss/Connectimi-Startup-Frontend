@@ -1,43 +1,52 @@
 .network-container {
-    margin-top: 5rem;
-    margin-bottom: 3rem;
-    /* margin: 30px auto; */
+    padding-top: 100px;
+    padding-bottom: 60px;
     min-height: 100vh;
-    background-color: var(--bg-color);
-    /* padding-top: 52px; */
-    --modern-teal: var(--primary-green);
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.dark .network-container {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .network-content {
-    max-width: 1128px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
-    gap: 24px;
-    color: var(--text-primary);
+    gap: 32px;
 }
 
 .network-sidebar {
-    width: 300px;
+    width: 280px;
     flex-shrink: 0;
 }
 
 .network-sidebar-card {
-    background: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 0 0 1px var(--border-color);
-    border: 1px solid var(--border-color);
-    overflow: hidden;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
     position: sticky;
-    top: 76px;
+    top: 100px;
+}
+
+.dark .network-sidebar-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .sidebar-title {
     padding: 16px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
     color: var(--text-primary);
-    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
 }
 
 .sidebar-item {
@@ -47,22 +56,41 @@
     gap: 12px;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.2s;
-    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 16px;
+    margin-bottom: 4px;
 }
 
 .sidebar-item:hover {
-    background-color: #f3f3f3;
+    background: rgba(16, 185, 129, 0.08);
     color: var(--primary-green);
+    transform: translateX(4px);
 }
 
-.dark .sidebar-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+.sidebar-item.active {
+    background: var(--primary-green);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
 }
 
 .sidebar-count {
     margin-left: auto;
-    color: #666;
+    font-size: 0.8rem;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.dark .sidebar-count {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-item.active .sidebar-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
 .network-main {
@@ -71,173 +99,239 @@
 
 /* Invitations Section */
 .invitations-section {
-    background: var(--card-bg);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 24px;
-    box-shadow: 0 0 1px var(--border-color);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+}
+
+.dark .invitations-section {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .section-header {
-    padding: 16px;
+    padding: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark .section-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .section-header h2 {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 800;
     color: var(--text-primary);
 }
 
 .see-all-btn {
     background: transparent;
     border: none;
-    color: var(--modern-teal);
-    font-weight: 600;
+    color: var(--primary-green);
+    font-weight: 700;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+}
+
+.see-all-btn:hover {
+    opacity: 0.7;
 }
 
 .invitation-card {
-    padding: 16px;
+    padding: 20px 24px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    border-bottom: 1px solid var(--border-color);
+    gap: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    transition: background 0.2s;
+}
+
+.invitation-card:hover {
+    background: rgba(16, 185, 129, 0.02);
+}
+
+.invite-info {
+    flex: 1;
 }
 
 .invite-name {
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-primary);
+    font-size: 1.05rem;
 }
 
 .invite-role {
-    font-size: 13px;
+    font-size: 0.9rem;
     color: var(--text-secondary);
+    margin-top: 2px;
 }
 
-.accept-btn,
-.ignore-btn {
-    background: var(--modern-teal);
+.accept-btn {
+    background: var(--primary-green);
     border: none;
     color: white;
-    padding: 8px 24px;
-    border-radius: 30px;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.accept-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+.ignore-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px 20px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.accept-btn:hover,
+.dark .ignore-btn {
+    background: rgba(255, 255, 255, 0.05);
+}
+
 .ignore-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
 }
 
 .suggestions-section {
-    background: var(--card-bg);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    padding: 24px;
-    position: relative;
-    box-shadow: 0 0 1px var(--border-color);
+    padding: 8px 0;
+}
+
+.modern-teal-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--primary-green);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 24px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .suggestions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-    padding-top: 20px;
-}
-
-.modern-teal-badge {
-    background-color: var(--modern-teal);
-    color: white;
-    padding: 10px 24px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 16px;
-    display: inline-block;
-    margin-bottom: 24px;
-    letter-spacing: 0.5px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
 }
 
 .suggestion-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
     overflow: hidden;
     text-align: center;
-    position: relative;
     padding-bottom: 24px;
-    transition: transform 0.2s;
-    box-shadow: 0 0 1px var(--border-color);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+.dark .suggestion-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .suggestion-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    border-color: rgba(16, 185, 129, 0.3);
 }
 
 .suggestion-banner {
-    height: 70px;
-    background-color: var(--modern-teal);
+    height: 80px;
+    background: linear-gradient(45deg, var(--primary-green), #34d399);
+    opacity: 0.8;
 }
 
 .suggestion-avatar {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    border: 4px solid #ffffff;
-    margin-top: -55px;
-    object-fit: cover;
-    background-color: #eee;
+    margin-top: -55px !important;
+    border: 6px solid white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.dark .suggestion-avatar {
+    border-color: #1e293b;
+}
+
+.suggestion-info {
+    padding: 16px;
+    min-height: 100px;
 }
 
 .suggestion-name {
-    font-weight: 600;
+    font-weight: 800;
     color: var(--text-primary);
-    font-size: 16px;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
 }
 
 .suggestion-role {
-    font-size: 13px;
+    font-size: 0.85rem;
     color: var(--text-secondary);
-    height: 38px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-bottom: 12px;
 }
 
 .connect-btn {
-    width: calc(100% - 32px);
-    margin: 0 16px;
-    background: transparent;
-    border: 1px solid var(--modern-teal);
-    color: var(--modern-teal);
-    padding: 8px;
-    border-radius: 30px;
-    font-weight: 600;
+    width: calc(100% - 48px);
+    margin: 0 24px;
+    background: white;
+    border: 2px solid var(--primary-green);
+    color: var(--primary-green);
+    padding: 10px;
+    border-radius: 14px;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .connect-btn {
+    background: transparent;
 }
 
 .connect-btn:hover {
-    background-color: var(--border-color);
-    border-width: 2px;
-    padding: 7px;
+    background: var(--primary-green);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
 /* Responsive */
 @media (max-width: 992px) {
     .network-content {
         flex-direction: column;
+        gap: 20px;
     }
 
     .network-sidebar {
@@ -246,21 +340,87 @@
 
     .network-sidebar-card {
         position: static;
-        margin-bottom: 24px;
+        margin-bottom: 0;
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+        gap: 8px;
+        white-space: nowrap;
+    }
+
+    .sidebar-title {
+        display: none;
+    }
+
+    .sidebar-item {
+        margin-bottom: 0;
+        padding: 8px 16px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-count {
+        margin-left: 6px;
     }
 }
 
 @media (max-width: 768px) {
+    .network-container {
+        padding-top: 80px;
+        padding-bottom: 80px;
+    }
+
     .network-content {
-        padding: 0 16px;
+        padding: 0 12px;
+    }
+
+    .invitations-section {
+        border-radius: 16px;
+    }
+
+    .section-header {
+        padding: 16px;
+    }
+
+    .invitation-card {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .invite-actions {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
     }
 
     .suggestions-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
     }
 
-    .modern-teal-badge {
-        width: 100%;
-        text-align: center;
+    .suggestion-card {
+        border-radius: 16px;
+        padding-bottom: 16px;
+    }
+
+    .suggestion-info {
+        padding: 12px 8px;
+        min-height: 80px;
+    }
+
+    .suggestion-name {
+        font-size: 0.95rem;
+    }
+
+    .suggestion-role {
+        font-size: 0.75rem;
+    }
+
+    .connect-btn {
+        width: calc(100% - 24px);
+        margin: 0 12px;
+        padding: 8px;
+        font-size: 0.8rem;
     }
 }

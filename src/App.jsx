@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -8,7 +9,6 @@ import Profile from "./pages/Profile";
 import Work from "./pages/Work";
 import MyNetwork from "./pages/MyNetwork";
 import Notifications from "./pages/Notifications";
-import Course from "./pages/Course";
 import OrganizationProfile from "./pages/OrganizationProfile";
 
 
@@ -19,7 +19,7 @@ import Navbar from "./components/Navbar";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const showHeader = !['/', '/signup', '/forgot-password', '/organization'].includes(location.pathname);
+  const showHeader = !['/', '/login', '/signup', '/forgot-password', '/organization'].includes(location.pathname);
 
   return (
     <>
@@ -35,7 +35,8 @@ function App() {
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/home" element={<Home />} />
@@ -43,7 +44,6 @@ function App() {
             <Route path="/work" element={<Work />} />
             <Route path="/mynetwork" element={<MyNetwork />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route path="/course" element={<Course />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:courseId" element={<CourseRoadmap />} />
             <Route path="/organization" element={<OrganizationProfile />} />

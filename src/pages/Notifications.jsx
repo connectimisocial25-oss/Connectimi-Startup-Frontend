@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
 import Connectimi_logo from '../components/Connectimi_logo';
+import gsap from 'gsap';
 import './Notifications.css';
 
 // Import Profile.css to get shared variables if they aren't global
@@ -12,6 +13,34 @@ import './Profile.css';
 const Notifications = ({ embedded = false }) => {
     const navigate = useNavigate();
     const { theme } = useTheme();
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.from('.notifications-page-header', {
+                y: -30,
+                opacity: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            });
+            gsap.from('.notification-card', {
+                opacity: 0,
+                y: 20,
+                stagger: 0.08,
+                duration: 0.6,
+                ease: 'power2.out',
+                delay: 0.2
+            });
+            gsap.from('.promoted-section', {
+                opacity: 0,
+                scale: 0.95,
+                duration: 0.8,
+                ease: 'back.out(1.7)',
+                delay: 0.4
+            });
+        }, containerRef);
+        return () => ctx.revert();
+    }, []);
 
     // Mock Notifications Data
     const notifications = [
@@ -23,8 +52,8 @@ const Notifications = ({ embedded = false }) => {
             read: false,
             userRole: 'company',
             icon: 'briefcase',
-            iconBg: '#e7f3ff',
-            iconColor: '#0a66c2',
+            iconBg: 'rgba(16, 185, 129, 0.1)',
+            iconColor: '#10B981',
             group: 'New'
         },
         {
@@ -45,8 +74,8 @@ const Notifications = ({ embedded = false }) => {
             read: true,
             userRole: 'company',
             icon: 'eye',
-            iconBg: '#fff7e6',
-            iconColor: '#d69e2e',
+            iconBg: 'rgba(16, 185, 129, 0.1)',
+            iconColor: '#10B981',
             group: 'Earlier'
         },
         {
@@ -67,8 +96,8 @@ const Notifications = ({ embedded = false }) => {
             read: true,
             userRole: 'company',
             icon: 'trending-up',
-            iconBg: '#f2f2f2',
-            iconColor: '#333333',
+            iconBg: 'rgba(16, 185, 129, 0.1)',
+            iconColor: '#10B981',
             group: 'Earlier'
         }
     ];
@@ -80,7 +109,7 @@ const Notifications = ({ embedded = false }) => {
     };
 
     return (
-        <div className="notifications-container">
+        <div className="notifications-container" ref={containerRef}>
             <div className="notifications-wrapper">
                 <header className="notifications-page-header">
                     <h1>Notifications</h1>
@@ -126,7 +155,7 @@ const Notifications = ({ embedded = false }) => {
                                                             src={notification.image}
                                                             alt=""
                                                             role={notification.userRole}
-                                                            size={48}
+                                                            size={56}
                                                             className="notification-avatar"
                                                         />
                                                     ) : (
@@ -137,7 +166,7 @@ const Notifications = ({ embedded = false }) => {
                                                                 color: notification.iconColor
                                                             }}
                                                         >
-                                                            <Icon name={notification.icon} size={20} />
+                                                            <Icon name={notification.icon} size={24} />
                                                         </div>
                                                     )}
                                                     {/* Role Icon Badger - Optional, can be added if needed */}

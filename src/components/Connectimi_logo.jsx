@@ -32,14 +32,14 @@ const Connectimi_logo = () => {
 
       <p
         style={{
-          fontSize: "20px",
-          fontWeight: "700",
-          color: "var(--primary-green)",
+          fontSize: "22px",
+          fontWeight: "800",
+          color: "var(--text-primary)",
           margin: 0,
-          letterSpacing: "0.5px",
+          letterSpacing: "-0.5px",
         }}
       >
-        Connectimi
+        Connect<span style={{ color: "var(--primary-green)" }}>imi</span>
       </p>
     </div>
   );

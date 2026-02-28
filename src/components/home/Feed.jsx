@@ -1,13 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Avatar from '../Avatar';
 import Icon from '../Icon';
+import gsap from 'gsap';
 
 const Feed = () => {
+    const feedRef = useRef(null);
+    const modalRef = useRef(null);
     // State for managing "See More" modal
     const [selectedInsight, setSelectedInsight] = useState(null);
-    const [commentInput, setCommentInput] = useState('');
 
     // Initial data with 'likes' count
+    useEffect(() => {
+        const cards = feedRef.current.querySelectorAll('.insight-card');
+        const shareCard = feedRef.current.querySelector('.share-insight-card');
+
+        gsap.fromTo(shareCard,
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+        );
+
+        gsap.fromTo(cards,
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
+        );
+    }, []);
+
+    useEffect(() => {
+        if (selectedInsight && modalRef.current) {
+            gsap.fromTo(modalRef.current,
+                { scale: 0.95, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.4, ease: 'power2.out' }
+            );
+        }
+    }, [selectedInsight]);
+
     const [insights, setInsights] = useState([
         {
             id: 1,
@@ -82,7 +108,7 @@ const Feed = () => {
     };
 
     return (
-        <main className="feed-container">
+        <main className="feed-container" ref={feedRef}>
             {/* Create Post Area */}
             <div className="share-insight-card">
                 <div className="share-header">
@@ -120,7 +146,7 @@ const Feed = () => {
                                 <p>
                                     {truncateText(insight.takeaway, 100)}
                                     <span
-                                        style={{ color: '#22c55e', cursor: 'pointer', fontWeight: '500', marginLeft: '4px' }}
+                                        style={{ color: 'var(--primary-green)', cursor: 'pointer', fontWeight: '500', marginLeft: '4px' }}
                                         onClick={() => openProjectModal(insight)}
                                     >
                                         See More...
@@ -162,35 +188,39 @@ const Feed = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    backdropFilter: 'blur(8px)',
                     zIndex: 2000,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     padding: '20px'
                 }} onClick={closeProjectModal}>
-                    <div style={{
-                        backgroundColor: 'var(--card-bg)',
-                        borderRadius: '12px',
-                        maxWidth: '900px',
+                    <div ref={modalRef} style={{
+                        backgroundColor: 'var(--glass-bg)',
+                        backdropFilter: 'blur(16px)',
+                        borderRadius: '32px',
+                        border: '1px solid var(--glass-border)',
+                        maxWidth: '960px',
                         width: '100%',
                         maxHeight: '90vh',
                         display: 'flex',
                         flexDirection: 'column',
                         overflowY: 'auto',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.2)'
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                        position: 'relative'
                     }} onClick={e => e.stopPropagation()}>
 
                         {/* 1. Modal Header Title */}
-                        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2 style={{ fontSize: '18px', fontWeight: '600', color: 'var(--text-primary)', margin: 0 }}>{selectedInsight.title}</h2>
-                            <button onClick={closeProjectModal} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: 'var(--text-secondary)' }}>
-                                <Icon name="close" />
+                        <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                            <h2 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)', margin: 0, fontFamily: 'Satoshi' }}>{selectedInsight.title}</h2>
+                            <button onClick={closeProjectModal} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)', transition: 'all 0.2s' }}>
+                                <Icon name="close" size={18} />
                             </button>
                         </div>
 
                         {/* 2. Full Width Image Banner */}
-                        <div style={{ width: '100%', height: '280px', backgroundColor: 'var(--bg-color)', position: 'relative' }}>
+                        <div style={{ width: '100%', height: '320px', position: 'relative', overflow: 'hidden' }}>
                             <img
                                 src={selectedInsight.image}
                                 alt={selectedInsight.title}
@@ -219,7 +249,7 @@ const Feed = () => {
                                 <div>
                                     <h3 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '8px', textTransform: 'uppercase' }}>Key Takeaway</h3>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        <span style={{ fontSize: '11px', fontWeight: '700', color: '#16a34a', textTransform: 'uppercase' }}>KEY RESULT:</span>
+                                        <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--primary-green)', textTransform: 'uppercase' }}>KEY RESULT:</span>
                                         <p style={{ fontSize: '15px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
                                             {selectedInsight.takeaway}
                                         </p>
@@ -240,7 +270,7 @@ const Feed = () => {
 
                                 {/* Message Button */}
                                 <button style={{
-                                    backgroundColor: '#22c55e', /* Green color */
+                                    backgroundColor: 'var(--primary-green)', /* Green color */
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '24px',
@@ -254,7 +284,7 @@ const Feed = () => {
                                     gap: '8px',
                                     width: '100%',
                                     marginBottom: '24px',
-                                    boxShadow: '0 4px 12px rgba(34, 197, 94, 0.3)'
+                                    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
                                 }}>
                                     <Icon name="comment-dots" /> Message Owner
                                 </button>

@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import gsap from 'gsap';
 import Icon from '../components/Icon';
 import PaymentModal from '../components/PaymentModal';
 import './CourseRoadmap.css';
 
 const CourseRoadmap = () => {
     const { courseId } = useParams();
+    const timelineRef = useRef(null);
+    const headerRef = useRef(null);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
@@ -33,31 +36,57 @@ const CourseRoadmap = () => {
         // You might want to show a success toast here
     };
 
+    useEffect(() => {
+        const tl = gsap.timeline();
+
+        tl.fromTo(headerRef.current,
+            { opacity: 0, y: -20 },
+            { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
+        );
+
+        tl.fromTo('.timeline-item',
+            { opacity: 0, x: -20 },
+            {
+                opacity: 1,
+                x: 0,
+                duration: 0.5,
+                stagger: 0.15,
+                ease: 'power2.out'
+            },
+            "-=0.4"
+        );
+    }, []);
+
     return (
         <div className="roadmap-container">
-            <header className="roadmap-header">
-                <h1>{courseData.title}</h1>
-                <div className="course-meta">
-                    <span><Icon name="clock" size={14} /> {courseData.duration}</span>
-                    <span><Icon name="book" size={14} /> 5 Modules</span>
-                    <span><Icon name="user-friends" size={14} /> 1.2k Students</span>
+            <header className="roadmap-header" ref={headerRef}>
+                <div className="roadmap-header-content">
+                    <span className="roadmap-badge">Course Roadmap</span>
+                    <h1>{courseData.title}</h1>
+                    <div className="course-meta">
+                        <span><Icon name="clock" size={14} /> {courseData.duration}</span>
+                        <span><Icon name="book" size={14} /> 5 Modules</span>
+                        <span><Icon name="user-friends" size={14} /> 1.2k Students</span>
+                    </div>
                 </div>
             </header>
 
-            <div className="roadmap-timeline">
+            <div className="roadmap-timeline" ref={timelineRef}>
                 {courseData.modules.map((module, index) => {
-                    // Logic: If enrolled, everything unlocks. Otherwise respect 'locked' property.
                     const isLocked = !isEnrolled && module.locked;
 
                     return (
                         <div key={module.id} className={`timeline-item ${isLocked ? 'locked' : 'unlocked'}`}>
-                            <div className="timeline-marker">
-                                {module.status === 'completed' ? <Icon name="check" size={12} /> :
-                                    isLocked ? <Icon name="lock" size={12} /> :
-                                        <span>{index + 1}</span>}
+                            <div className="timeline-marker-container">
+                                <div className="timeline-marker">
+                                    {module.status === 'completed' ? <Icon name="check" size={12} /> :
+                                        isLocked ? <Icon name="lock" size={12} /> :
+                                            <span>{index + 1}</span>}
+                                </div>
+                                {index < courseData.modules.length - 1 && <div className="timeline-line"></div>}
                             </div>
 
-                            <div className="timeline-content">
+                            <div className={`timeline-content glass-morphism ${isLocked ? 'content-locked' : ''}`}>
                                 <div className="module-header">
                                     <h3>{module.title}</h3>
                                     <span className={`status-badge ${module.status}`}>
@@ -69,14 +98,17 @@ const CourseRoadmap = () => {
                                 {!isLocked && (
                                     <div className="module-actions">
                                         <button className="btn-start">
-                                            {module.status === 'completed' ? 'Review' : 'Start Learning'}
+                                            {module.status === 'completed' ? 'Review' : 'Start Learning'} <Icon name="arrow-right" size={12} />
                                         </button>
                                     </div>
                                 )}
 
                                 {isLocked && (
                                     <div className="paywall-overlay">
-                                        <span className="lock-message"><Icon name="lock" /> Premium Content</span>
+                                        <div className="lock-indicator">
+                                            <Icon name="lock" size={24} />
+                                            <span>Premium Content</span>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -86,7 +118,7 @@ const CourseRoadmap = () => {
             </div>
 
             {!isEnrolled && (
-                <div className="unlock-cta-container">
+                <div className="unlock-cta-container glass-morphism">
                     <h2>Ready to Master the Full Stack?</h2>
                     <p>Unlock the remaining modules, including Real-time features and Deployment.</p>
                     <br />

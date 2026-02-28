@@ -1,67 +1,66 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import gsap from 'gsap';
 import { useTheme } from '../context/ThemeContext';
 import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
-import Connectimi_logo from '../components/Connectimi_logo';
 import './MyNetwork.css';
 import Messaging from './Messaging';
+
 const MyNetwork = () => {
     const navigate = useNavigate();
-    const { theme } = useTheme(); // toggleTheme removed
-    const [activeTab, setActiveTab] = useState('connections');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [activeChat, setActiveChat] = useState(1);
-    const [messageInput, setMessageInput] = useState('');
+    const location = useLocation();
+    const { theme } = useTheme();
 
-    const conversations = [
-        {
-            id: 1,
-            name: "Sarah Miller",
-            lastMessage: "Hey, are you free for a call tomorrow?",
-            date: "Oct 24",
-            avatar: "https://i.pravatar.cc/150?u=sarah",
-            role: "professional"
-        },
-        {
-            id: 2,
-            name: "TechCorp",
-            lastMessage: "Your application has been received.",
-            date: "Oct 22",
-            avatar: "https://i.pravatar.cc/150?u=alex",
-            role: "company"
-        },
-        {
-            id: 3,
-            name: "Dr. Aris",
-            lastMessage: "The project looks promising. Let's discuss further.",
-            date: "Oct 20",
-            avatar: "https://i.pravatar.cc/150?u=aris",
-            role: "professor"
+    const initialTab = location.state?.tab || new URLSearchParams(location.search).get('tab') || 'connections';
+    const [activeTab, setActiveTab] = useState(initialTab);
+
+    useEffect(() => {
+        const tab = location.state?.tab || new URLSearchParams(location.search).get('tab') || 'connections';
+        if (tab !== activeTab) {
+            setActiveTab(tab);
         }
-    ];
+    }, [location.search, location.state]);
 
-    const messages = [
-        { id: 1, text: "Hi there!", sent: false, time: "10:00 AM" },
-        { id: 2, text: "Hello! How can I help you?", sent: true, time: "10:05 AM" },
-        { id: 3, text: "I wanted to ask about the upcoming project.", sent: false, time: "10:10 AM" },
-        { id: 4, text: "Sure, let's talk about it.", sent: true, time: "10:15 AM" }
-    ];
+    const mainContentRef = useRef(null);
+    const sidebarRef = useRef(null);
+    const suggestionsRef = useRef([]);
 
-    const activeUser = conversations.find(c => c.id === activeChat);
+    useEffect(() => {
+        const tl = gsap.timeline();
+        tl.fromTo(sidebarRef.current,
+            { x: -30, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
+        );
+        tl.fromTo(mainContentRef.current,
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+            "-=0.6"
+        );
+    }, []);
+
+    useEffect(() => {
+        if (activeTab !== 'messaging' && suggestionsRef.current.length > 0) {
+            gsap.fromTo(suggestionsRef.current,
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.2 }
+            );
+        }
+    }, [activeTab]);
+
     const invitations = [
         {
             id: 2,
             name: "Michael Chen",
             role: "Product Manager at InnovateSoft",
-            userRole: "company", // Testing square shape
+            userRole: "company",
             avatar: "https://i.pravatar.cc/150?u=michael"
         },
         {
             id: 1,
             name: "Sarah Miller",
             role: "Software Engineer at TechCorp",
-            userRole: "professional", // Testing round shape
+            userRole: "professional",
             avatar: "https://i.pravatar.cc/150?u=sarah"
         }
     ];
@@ -85,7 +84,7 @@ const MyNetwork = () => {
             id: 103,
             name: "James Bond",
             role: "Security Analyst",
-            userRole: "professor", // Testing hexagon
+            userRole: "professor",
             avatar: "https://i.pravatar.cc/150?u=james"
         },
         {
@@ -114,56 +113,40 @@ const MyNetwork = () => {
     return (
         <div className="network-container">
             <div className="network-content">
-                <aside className="network-sidebar">
+                <aside className="network-sidebar" ref={sidebarRef}>
                     <div className="network-sidebar-card">
-                        <div className="sidebar-title">Manage my connections</div>
-                        <div 
-                            className={`sidebar-item ${activeTab === 'connections' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('connections')}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            <Icon name="users" />
-                            <span>Connections</span>
-                            <span className="sidebar-count">482</span>
-                        </div>
-                        <div 
-                            className={`sidebar-item ${activeTab === 'messaging' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('messaging')}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            <Icon name="comment-dots" />
-                            <span>Messaging</span>
-                        </div>
-                        <div className="sidebar-item">
-                            <Icon name="user-circle" size={18} />
-                            <span>Following & followers</span>
-                        </div>
-                        <div className="sidebar-item">
-                            <Icon name="users" />
-                            <span>Groups</span>
-                            <span className="sidebar-count">12</span>
-                        </div>
-                        <div className="sidebar-item">
-                            <Icon name="calendar-alt" />
-                            <span>Events</span>
-                            <span className="sidebar-count">2</span>
-                        </div>
-                        <div className="sidebar-item">
-                            <Icon name="newspaper" />
-                            <span>Newsletter</span>
-                            <span className="sidebar-count">5</span>
-                        </div>
-                        <div className="sidebar-item">
-                            <Icon name="hashtag" />
-                            <span>Hashtags</span>
-                            <span className="sidebar-count">24</span>
-                        </div>
+                        <div className="sidebar-title">Manage Network</div>
+                        {[
+                            { id: 'connections', label: 'Connections', icon: 'users', count: 482 },
+                            { id: 'messaging', label: 'Messaging', icon: 'comment-dots' },
+                            { id: 'following', label: 'Following & Followers', icon: 'user-circle' },
+                            { id: 'groups', label: 'Groups', icon: 'users', count: 12 },
+                            { id: 'events', label: 'Events', icon: 'calendar-alt', count: 2 },
+                            { id: 'newsletter', label: 'Newsletter', icon: 'newspaper', count: 5 },
+                            { id: 'hashtags', label: 'Hashtags', icon: 'hashtag', count: 24 }
+                        ].map(item => (
+                            <div
+                                key={item.id}
+                                className={`sidebar-item ${activeTab === item.id ? 'active' : ''}`}
+                                onClick={() => {
+                                    if (item.id === 'connections') {
+                                        navigate('/mynetwork');
+                                    } else {
+                                        navigate(`/mynetwork?tab=${item.id}`);
+                                    }
+                                }}
+                            >
+                                <Icon name={item.icon} />
+                                <span>{item.label}</span>
+                                {item.count && <span className="sidebar-count">{item.count}</span>}
+                            </div>
+                        ))}
                     </div>
                 </aside>
 
-                <main className="network-main">
+                <main className="network-main" ref={mainContentRef}>
                     {activeTab === 'messaging' ? (
-                        <Messaging />
+                        <Messaging embedded={true} />
                     ) : (
                         <>
                             <section className="invitations-section">
@@ -179,14 +162,13 @@ const MyNetwork = () => {
                                             role={invite.userRole}
                                             size={56}
                                             className="invite-avatar"
-                                            style={{ borderRadius: 'unset' }} // Components handles shape class, need to unset inline style if it conflicts or let class take over. Avatar component adds class.
                                         />
                                         <div className="invite-info">
                                             <div className="invite-name">{invite.name}</div>
                                             <div className="invite-role">{invite.role}</div>
                                         </div>
-                                        <div className="invite-actions" style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
-                                            <button className="ignore-btn" style={{ background: 'transparent', color: 'var(--text-secondary)' }}>Ignore</button>
+                                        <div className="invite-actions" style={{ display: 'flex', gap: '12px' }}>
+                                            <button className="ignore-btn">Ignore</button>
                                             <button className="accept-btn">Accept</button>
                                         </div>
                                     </div>
@@ -194,10 +176,14 @@ const MyNetwork = () => {
                             </section>
 
                             <section className="suggestions-section">
-                                <div className="modern-teal-badge">PEOPLE YOU MAY KNOW</div>
+                                <div className="modern-teal-badge">NETWORK SUGGESTIONS FOR YOU</div>
                                 <div className="suggestions-grid">
-                                    {suggestions.map(person => (
-                                        <div key={person.id} className="suggestion-card">
+                                    {suggestions.map((person, index) => (
+                                        <div
+                                            key={person.id}
+                                            className="suggestion-card"
+                                            ref={el => suggestionsRef.current[index] = el}
+                                        >
                                             <div className="suggestion-banner"></div>
                                             <Avatar
                                                 src={person.avatar}
@@ -206,7 +192,7 @@ const MyNetwork = () => {
                                                 size={110}
                                                 className="suggestion-avatar"
                                             />
-                                            <div className="suggestion-info" style={{ padding: '0 16px' }}>
+                                            <div className="suggestion-info">
                                                 <div className="suggestion-name">{person.name}</div>
                                                 <div className="suggestion-role">{person.role}</div>
                                             </div>

@@ -33,9 +33,9 @@ const LeftSidebar = () => {
               {user.name}
             </h3>
             <p className="sidebar-profile-role">
-              {user.role}{" "}
-              <span className="highlight-text">@{user.company}</span>
+              {user.role}
             </p>
+            <p className="highlight-text" style={{ fontSize: '12px' }}>@{user.company}</p>
             <p className="sidebar-profile-sub">{user.stack}</p>
           </div>
         </div>

@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import Icon from '../components/Icon';
-import Connectimi_logo from '../components/Connectimi_logo';
+import gsap from 'gsap';
 import './Work.css';
-import './Profile.css'; // Utilizing Navbar styles from Profile
 
 const Work = () => {
     const navigate = useNavigate();
-    const { theme } = useTheme(); // toggleTheme only used in Navbar
+    const { theme } = useTheme();
     const [activeTab, setActiveTab] = useState('fulltime');
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
@@ -16,6 +15,33 @@ const Work = () => {
         jobType: 'all',
         experienceLevel: 'all'
     });
+
+    const sidebarRef = useRef(null);
+    const mainRef = useRef(null);
+    const listRef = useRef(null);
+
+    useEffect(() => {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.8 } });
+
+        tl.fromTo(sidebarRef.current,
+            { x: -50, opacity: 0 },
+            { x: 0, opacity: 1 }
+        )
+        .fromTo(mainRef.current,
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1 },
+            "-=0.6"
+        );
+    }, []);
+
+    useEffect(() => {
+        if (listRef.current) {
+            gsap.fromTo(listRef.current.children,
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: 'power2.out' }
+            );
+        }
+    }, [activeTab, searchQuery, filters]);
 
     const fullTimeWork = [
         {
@@ -199,59 +225,75 @@ const Work = () => {
         });
     };
 
-
+    const renderWorkCard = (workItem) => (
+        <div key={workItem.id} className="work-card">
+            <img src={workItem.logo} alt={workItem.company} className="work-logo" />
+            <div className="work-details">
+                <div className="work-title">
+                    {workItem.title}
+                    <span className="time-posted">{workItem.posted}</span>
+                </div>
+                <div className="work-company">{workItem.company}</div>
+                <div className="work-meta">
+                    <span><Icon name="briefcase" size={14} style={{marginRight: '6px'}} /> {workItem.requiredExperience}</span>
+                    <span><Icon name="map-pin" size={14} style={{marginRight: '6px'}} /> {workItem.location} ({workItem.locationType})</span>
+                    <span><Icon name="clock" size={14} style={{marginRight: '6px'}} /> {workItem.jobType}</span>
+                    {workItem.type && (
+                        <span className={`badge ${workItem.type === 'Paid' ? 'badge-paid' : 'badge-unpaid'}`}>
+                            {workItem.type}
+                        </span>
+                    )}
+                    {workItem.budget && <span className="badge badge-paid">{workItem.budget}</span>}
+                    {workItem.duration && <span><Icon name="calendar" size={14} style={{marginRight: '6px'}} /> {workItem.duration}</span>}
+                </div>
+                {workItem.description && (
+                    <div className="work-description" style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '12px', lineHeight: '1.6' }}>
+                        {workItem.description}
+                    </div>
+                )}
+            </div>
+            <button className="apply-btn">{activeTab === 'internship' ? 'Easy Apply' : 'Apply Now'}</button>
+        </div>
+    );
 
     return (
         <div className="work-container">
-
             <div className="work-content">
-                <aside className="work-sidebar">
+                <aside className="work-sidebar" ref={sidebarRef}>
                     <div className="filter-card">
-                        <div className="search-container" style={{ marginBottom: '16px' }}>
-                            <div className="search-bar" style={{ width: '100%', background: 'var(--bg-color)', border: '1px solid var(--border-color)' }}>
-                                <Icon name="search" className="search-icon" />
+                        <div className="filter-group">
+                            <label>Search Opportunities</label>
+                            <div className="search-wrapper" style={{ position: 'relative' }}>
                                 <input
                                     type="text"
-                                    placeholder="Search work"
-                                    className="search-input"
+                                    placeholder="Keywords, companies..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    style={{ width: '100%' }}
                                 />
                             </div>
                         </div>
-                        <h3 className="filter-title">Filters</h3>
 
+                        <h3 className="filter-title">Refine Search</h3>
 
                         <div className="filter-group">
-                            <label>Location</label>
+                            <label>Location Preference</label>
                             <select name="location" value={filters.location} onChange={handleFilterChange}>
-                                <option value="all">Any Location</option>
-                                <option value="remote">Remote</option>
+                                <option value="all">Anywhere</option>
+                                <option value="remote">Fully Remote</option>
                                 <option value="on-site">On-site</option>
                                 <option value="hybrid">Hybrid</option>
                             </select>
                         </div>
 
                         <div className="filter-group">
-                            <label>Work Type</label>
-                            <select name="jobType" value={filters.jobType} onChange={handleFilterChange}>
-                                <option value="all">Any Type</option>
-                                <option value="full-time">Full-time</option>
-                                <option value="internship">Internship</option>
-                                <option value="freelance">Freelance</option>
-                            </select>
-                        </div>
-
-                        <div className="filter-group">
                             <label>Experience Level</label>
                             <select name="experienceLevel" value={filters.experienceLevel} onChange={handleFilterChange}>
-                                <option value="all">Any Level</option>
-                                <option value="freshers">Entry Level (Freshers)</option>
+                                <option value="all">All Experience Levels</option>
+                                <option value="freshers">Entry Level</option>
                                 <option value="1_year">1+ Year</option>
                                 <option value="2_5_years">2–5 Years</option>
                                 <option value="5_plus_years">5+ Years</option>
-                                <option value="10_plus_years">10+ Years</option>
+                                <option value="10_plus_years">Senior / Lead</option>
                             </select>
                         </div>
 
@@ -263,115 +305,55 @@ const Work = () => {
                                 experienceLevel: 'all'
                             })}
                         >
-                            Reset Filters
+                            Clear All Filters
                         </button>
                     </div>
                 </aside>
 
-                <div className="work-main">
+                <div className="work-main" ref={mainRef}>
                     <div className="work-tabs">
                         <button
                             className={`work-tab ${activeTab === 'fulltime' ? 'active' : ''}`}
                             onClick={() => setActiveTab('fulltime')}
                         >
-                            Full Time Work
+                            Full-time Roles
                         </button>
                         <button
                             className={`work-tab ${activeTab === 'internship' ? 'active' : ''}`}
                             onClick={() => setActiveTab('internship')}
                         >
-                            Internships / Part Time
+                            Internships
                         </button>
                         <button
                             className={`work-tab ${activeTab === 'freelancing' ? 'active' : ''}`}
                             onClick={() => setActiveTab('freelancing')}
                         >
-                            Freelancing
+                            Freelance Projects
                         </button>
                     </div>
 
-                    <div className="work-list">
+                    <div className="work-list" ref={listRef}>
                         {activeTab === 'fulltime' && (
-                            // Full Time Work List
                             getFilteredWork(fullTimeWork).length > 0 ? (
-                                getFilteredWork(fullTimeWork).map(workItem => (
-                                    <div key={workItem.id} className="work-card">
-                                        <img src={workItem.logo} alt={workItem.company} className="work-logo" />
-                                        <div className="work-details">
-                                            <div className="work-title">
-                                                {workItem.title} <span className="time-posted">• {workItem.posted}</span>
-                                            </div>
-                                            <div className="work-company">{workItem.company}</div>
-                                            <div className="work-meta">
-                                                <span>{workItem.requiredExperience}</span>
-                                                <span>• {workItem.location} ({workItem.locationType})</span>
-                                                <span>• {workItem.jobType}</span>
-                                            </div>
-                                        </div>
-                                        <button className="apply-btn">Apply</button>
-                                    </div>
-                                ))
+                                getFilteredWork(fullTimeWork).map(renderWorkCard)
                             ) : (
-                                <div className="no-work-message">No full-time work matches your filters.</div>
+                                <div className="no-work-message">No full-time roles found matching your criteria.</div>
                             )
                         )}
 
                         {activeTab === 'internship' && (
-                            // Internships List
                             getFilteredWork(internships).length > 0 ? (
-                                getFilteredWork(internships).map(workItem => (
-                                    <div key={workItem.id} className="work-card">
-                                        <img src={workItem.logo} alt={workItem.company} className="work-logo" />
-                                        <div className="work-details">
-                                            <div className="work-title">
-                                                {workItem.title} <span className="time-posted">• {workItem.posted}</span>
-                                            </div>
-                                            <div className="work-company">{workItem.company}</div>
-                                            <div className="work-meta">
-                                                <span>{workItem.requiredExperience}</span>
-                                                <span>• {workItem.location} ({workItem.locationType})</span>
-                                                <span>• {workItem.jobType}</span>
-                                                <span className={`badge ${workItem.type === 'Paid' ? 'badge-paid' : 'badge-unpaid'}`}>
-                                                    • {workItem.type}
-                                                </span>
-                                                <span>• {workItem.duration}</span>
-                                            </div>
-                                        </div>
-                                        <button className="apply-btn">Easy Apply</button>
-                                    </div>
-                                ))
+                                getFilteredWork(internships).map(renderWorkCard)
                             ) : (
-                                <div className="no-work-message">No internships match your filters.</div>
+                                <div className="no-work-message">No internships found matching your criteria.</div>
                             )
                         )}
 
                         {activeTab === 'freelancing' && (
-                            // Freelancing List
                             getFilteredWork(freelancingWork).length > 0 ? (
-                                getFilteredWork(freelancingWork).map(workItem => (
-                                    <div key={workItem.id} className="work-card">
-                                        <img src={workItem.logo} alt={workItem.company} className="work-logo" />
-                                        <div className="work-details">
-                                            <div className="work-title">
-                                                {workItem.title} <span className="time-posted">• {workItem.posted}</span>
-                                            </div>
-                                            <div className="work-company">{workItem.company}</div>
-                                            <div className="work-meta">
-                                                <span>{workItem.requiredExperience}</span>
-                                                <span>• {workItem.location} ({workItem.locationType})</span>
-                                                <span>• {workItem.jobType}</span>
-                                                <span className="badge badge-paid">• {workItem.budget}</span>
-                                                <span>• {workItem.duration}</span>
-                                            </div>
-                                            <div className="work-description" style={{ fontSize: '13px', color: '#666', marginTop: '4px' }}>
-                                                {workItem.description}
-                                            </div>
-                                        </div>
-                                        <button className="apply-btn">Apply</button>
-                                    </div>
-                                ))
+                                getFilteredWork(freelancingWork).map(renderWorkCard)
                             ) : (
-                                <div className="no-work-message">No freelancing work matches your filters.</div>
+                                <div className="no-work-message">No freelance projects found matching your criteria.</div>
                             )
                         )}
                     </div>
