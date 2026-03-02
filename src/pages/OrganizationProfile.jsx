@@ -22,8 +22,9 @@ const OrganizationProfile = () => {
         description: "Leading innovator in enterprise software solutions and cloud computing. We empower businesses to build better futures through technology.",
         logo: "https://via.placeholder.com/150",
         courses: [
-            { id: 1, title: "React for Enterprise", students: 1240, rating: 4.8, revenue: "$12,400", isVerified: true, isBoosted: false },
-            { id: 2, title: "Advancing Cloud Security", students: 850, rating: 4.9, revenue: "$8,500", isVerified: true, isBoosted: false }
+            { id: 1, title: "Be a master in spoken English", students: 1240, rating: 4.8, revenue: "$12,400", isVerified: true, isBoosted: false },
+            { id: 2, title: "How to create your resume", students: 850, rating: 4.9, revenue: "$8,500", isVerified: true, isBoosted: false },
+            { id: 3, title: "How to crack any interview", students: 1100, rating: 4.7, revenue: "$11,000", isVerified: true, isBoosted: false }
         ]
     });
 
@@ -144,8 +145,8 @@ const OrganizationProfile = () => {
                         <button
                             className={`toggle-btn ${course.isBoosted ? 'active' : ''}`}
                             onClick={() => {
-                                const updated = orgData.courses.map(c => c.id === course.id ? {...c, isBoosted: !c.isBoosted} : c);
-                                setOrgData({...orgData, courses: updated});
+                                const updated = orgData.courses.map(c => c.id === course.id ? { ...c, isBoosted: !c.isBoosted } : c);
+                                setOrgData({ ...orgData, courses: updated });
                             }}
                         >
                             {course.isBoosted ? 'Active' : 'Boost Now'}
@@ -213,7 +214,7 @@ const OrganizationProfile = () => {
                         <h2>Add New Course</h2>
                         <div className="form-group-modern">
                             <label>Course Title</label>
-                            <input type="text" value={newCourse.title} onChange={e => setNewCourse({...newCourse, title: e.target.value})} />
+                            <input type="text" value={newCourse.title} onChange={e => setNewCourse({ ...newCourse, title: e.target.value })} />
                         </div>
                         <div className="modal-actions">
                             <button className="profile-btn" onClick={() => setIsAddCourseModalOpen(false)}>Cancel</button>
