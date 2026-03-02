@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import Icon from '../components/Icon';
 import PaymentModal from '../components/PaymentModal';
+import { coursesData } from '../data/coursesData';
 import './CourseRoadmap.css';
 
 const CourseRoadmap = () => {
@@ -12,20 +13,12 @@ const CourseRoadmap = () => {
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-    // Mock specific course data for demo
-    // In a real app, fetch based on courseId
-    const courseData = {
-        title: "Building a Full-Stack Social Network",
-        description: "Zero to Mastery: Create a complete platform with React, Node.js, and MongoDB.",
-        duration: "12 Weeks",
-        modules: [
-            { id: 1, title: "Part 1: Backend Architecture & API Design", desc: "Setup Node.js server, Express routes, and MongoDB schemas.", status: "completed", locked: false },
-            { id: 2, title: "Part 2: Frontend Fundamentals & Auth", desc: "React setup, Redux for state, and JWT Authentication flows.", status: "inprogress", locked: false },
-            { id: 3, title: "Part 3: Advanced UI Components", desc: "Building the Feed, Profile, and dynamic interactions.", status: "upcoming", locked: false },
-            { id: 4, title: "Part 4: Real-time Features (WebSocket)", desc: "Implementing chat and notifications with Socket.io.", status: "upcoming", locked: true },
-            { id: 5, title: "Part 5: Deployment & CD/CI", desc: "Deploying to cloud (AWS/Heroku) and setting up pipelines.", status: "upcoming", locked: true }
-        ]
-    };
+    // Get specific course data based on courseId
+    const courseData = coursesData.find(c => c.id === courseId);
+
+    if (!courseData) {
+        return <div className="roadmap-container"><h1>Course not found</h1></div>;
+    }
 
     const handleUnlockClick = () => {
         setIsPaymentModalOpen(true);
@@ -63,9 +56,10 @@ const CourseRoadmap = () => {
                 <div className="roadmap-header-content">
                     <span className="roadmap-badge">Course Roadmap</span>
                     <h1>{courseData.title}</h1>
+                    <p className="roadmap-description">{courseData.description}</p>
                     <div className="course-meta">
                         <span><Icon name="clock" size={14} /> {courseData.duration}</span>
-                        <span><Icon name="book" size={14} /> 5 Modules</span>
+                        <span><Icon name="book" size={14} /> {courseData.modules.length} Modules</span>
                         <span><Icon name="user-friends" size={14} /> 1.2k Students</span>
                     </div>
                 </div>
@@ -119,8 +113,8 @@ const CourseRoadmap = () => {
 
             {!isEnrolled && (
                 <div className="unlock-cta-container glass-morphism">
-                    <h2>Ready to Master the Full Stack?</h2>
-                    <p>Unlock the remaining modules, including Real-time features and Deployment.</p>
+                    <h2>{courseData.ctaTitle || "Ready to Master this Course?"}</h2>
+                    <p>{courseData.ctaDescription || "Unlock the remaining modules and projects."}</p>
                     <br />
                     <button className="unlock-btn" onClick={handleUnlockClick}>
                         <Icon name="lock-open" /> Unlock Full Course Access
