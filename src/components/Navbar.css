@@ -194,12 +194,10 @@
     top: calc(100% + 12px);
     right: 0;
     width: 280px;
-    background: var(--glass-bg);
-    backdrop-filter: var(--backdrop-blur);
-    -webkit-backdrop-filter: var(--backdrop-blur);
-    border: 1px solid var(--glass-border);
+    background: var(--bg-color); /* Solid background */
+    border: 1px solid var(--border-color);
     border-radius: 20px;
-    box-shadow: var(--glass-shadow);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     z-index: 1001;
     overflow: hidden;
     animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);

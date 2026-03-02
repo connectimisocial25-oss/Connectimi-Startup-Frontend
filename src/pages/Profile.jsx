@@ -300,6 +300,9 @@ const Profile = () => {
             <button className="profile-btn" onClick={() => setShowCV(true)}>
               <Icon name="file-alt" /> CV Profile
             </button>
+            <button className="profile-btn" onClick={() => profileSummary ? speakText(profileSummary) : generateProfileSummary()} disabled={isSummarizing}>
+              <Icon name="play" /> AI Podcast
+            </button>
             <button className="profile-btn" onClick={() => setIsEditing(true)}>
               <Icon name="edit" /> Edit
             </button>
