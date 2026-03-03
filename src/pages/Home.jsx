@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import LeftSidebar from '../components/home/LeftSidebar';
 import Feed from '../components/home/Feed';
-import RightSidebar from '../components/home/RightSidebar';
 import '../components/home/Home.css';
 import { gsap } from 'gsap';
 
@@ -27,7 +26,6 @@ const Home = () => {
       <div className="home-content-grid">
         <LeftSidebar />
         <Feed />
-        <RightSidebar />
       </div>
     </div>
   );
