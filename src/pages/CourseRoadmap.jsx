@@ -127,7 +127,7 @@ const CourseRoadmap = () => {
                 onClose={() => setIsPaymentModalOpen(false)}
                 onPaymentSuccess={handlePaymentSuccess}
                 courseTitle={courseData.title}
-                price="49.99"
+                price="4,999"
             />
         </div>
     );

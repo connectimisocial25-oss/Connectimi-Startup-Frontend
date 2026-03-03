@@ -22,9 +22,9 @@ const OrganizationProfile = () => {
         description: "Leading innovator in enterprise software solutions and cloud computing. We empower businesses to build better futures through technology.",
         logo: "https://via.placeholder.com/150",
         courses: [
-            { id: 1, title: "Be a master in spoken English", students: 1240, rating: 4.8, revenue: "$12,400", isVerified: true, isBoosted: false },
-            { id: 2, title: "How to create your resume", students: 850, rating: 4.9, revenue: "$8,500", isVerified: true, isBoosted: false },
-            { id: 3, title: "How to crack any interview", students: 1100, rating: 4.7, revenue: "$11,000", isVerified: true, isBoosted: false }
+            { id: 1, title: "Speak with Impact: Master Spoken English for the Modern World", students: 1240, rating: 4.8, revenue: "₹49,999", isVerified: true, isBoosted: false },
+            { id: 2, title: "The Resume Lab: Transform Your Experience into a Job Magnet", students: 850, rating: 4.9, revenue: "₹14,999", isVerified: true, isBoosted: false },
+            { id: 3, title: "Interview Decoder: Your Blueprint to Cracking Top-Tier Companies", students: 1100, rating: 4.7, revenue: "₹34,999", isVerified: true, isBoosted: false }
         ]
     });
 
@@ -56,7 +56,7 @@ const OrganizationProfile = () => {
             title: newCourse.title,
             students: 0,
             rating: 0,
-            revenue: "$0",
+            revenue: "₹0",
             isVerified: newCourse.requestVerification,
             isBoosted: false
         };
@@ -128,12 +128,12 @@ const OrganizationProfile = () => {
             <div className="ads-dashboard-grid">
                 <div className="ads-stat-card-modern">
                     <span className="label">Total Revenue</span>
-                    <div className="value">$12,450.00</div>
+                    <div className="value">₹1,12,450.00</div>
                     <div className="trend positive"><Icon name="arrow-up" /> 15%</div>
                 </div>
                 <div className="ads-stat-card-modern">
                     <span className="label">Ad Spend</span>
-                    <div className="value">$1,200.00</div>
+                    <div className="value">₹12,200.00</div>
                     <div className="trend"><Icon name="arrow-up" /> 5%</div>
                 </div>
             </div>

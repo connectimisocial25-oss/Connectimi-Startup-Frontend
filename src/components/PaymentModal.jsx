@@ -150,7 +150,7 @@ const PaymentModal = ({ isOpen, onClose, onPaymentSuccess, courseTitle, price })
                             <div className="summary-item total">
                                 <span>Total Price</span>
                                 <div className="price-tag">
-                                    <span className="currency">$</span>
+                                    <span className="currency">₹</span>
                                     <span className="amount">{price}</span>
                                 </div>
                             </div>

@@ -137,6 +137,16 @@
     color: #9333ea;
 }
 
+.type-professional {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.type-mastery {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
 .course-title {
     font-size: 24px;
     font-weight: 800;

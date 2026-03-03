@@ -1,104 +1,53 @@
 export const coursesData = [
     {
-        id: 'web-basics',
-        title: "HTML/CSS Builder",
+        id: 'spoken-english',
+        title: "Speak with Impact: Master Spoken English for the Modern World",
         type: "Foundation",
-        description: "Build a static landing page component. Perfect for beginners starting their journey.",
-        duration: "2 Weeks",
-        level: "Beginner",
-        ctaTitle: "Ready to Build Your First Website?",
-        ctaDescription: "Unlock the final modules to master Responsive Design and complete your Final Project.",
-        modules: [
-            { id: 1, title: "Module 1: Introduction to HTML", desc: "Understanding tags, elements, and document structure.", status: "completed", locked: false },
-            { id: 2, title: "Module 2: Styling with CSS", desc: "Selectors, box model, and colors.", status: "inprogress", locked: false },
-            { id: 3, title: "Module 3: Layouts with Flexbox", desc: "Building responsive layouts using Flexbox.", status: "upcoming", locked: false },
-            { id: 4, title: "Module 4: Responsive Design", desc: "Media queries and mobile-first approach.", status: "upcoming", locked: true },
-            { id: 5, title: "Module 5: Final Project", desc: "Building a complete landing page.", status: "upcoming", locked: true }
-        ]
-    },
-    {
-        id: 'js-logic',
-        title: "JS Logic Calculator",
-        type: "Foundation",
-        description: "Create a functional calculator with JS. Understand DOM manipulation and logic.",
-        duration: "3 Weeks",
-        level: "Beginner",
-        ctaTitle: "Master JavaScript Logic!",
-        ctaDescription: "Get access to Event Handling and complex Calculator Logic modules.",
-        modules: [
-            { id: 1, title: "Module 1: JS Basics", desc: "Variables, data types, and operators.", status: "completed", locked: false },
-            { id: 2, title: "Module 2: Functions & Control Flow", desc: "If-else statements, loops, and reusable code.", status: "inprogress", locked: false },
-            { id: 3, title: "Module 3: DOM Manipulation", desc: "Selecting and updating elements in the browser.", status: "upcoming", locked: false },
-            { id: 4, title: "Module 4: Event Handling", desc: "Making the calculator interactive with clicks.", status: "upcoming", locked: true },
-            { id: 5, title: "Module 5: Calculator Logic", desc: "Implementing mathematical operations.", status: "upcoming", locked: true }
-        ]
-    },
-    {
-        id: 'react-intro',
-        title: "React To-Do List",
-        type: "Foundation",
-        description: "Simple state management app. Learn components, props, and state.",
-        duration: "3 Weeks",
-        level: "Intermediate",
-        ctaTitle: "Become a React Pro!",
-        ctaDescription: "Unlock Form Handling and Hooks to build dynamic, state-driven applications.",
-        modules: [
-            { id: 1, title: "Module 1: React Fundamentals", desc: "JSX, Components, and Props.", status: "completed", locked: false },
-            { id: 2, title: "Module 2: State Management", desc: "Using useState to manage data.", status: "inprogress", locked: false },
-            { id: 3, title: "Module 3: Lists & Keys", desc: "Rendering multiple items efficiently.", status: "upcoming", locked: false },
-            { id: 4, title: "Module 4: Form Handling", desc: "Capturing user input for new tasks.", status: "upcoming", locked: true },
-            { id: 5, title: "Module 5: Hooks & Effects", desc: "Understanding useEffect for lifecycle events.", status: "upcoming", locked: true }
-        ]
-    },
-    {
-        id: 'weather-app',
-        title: "Weather Dashboard",
-        type: "Integration",
-        description: "Fetch API data and visualize it. Master asynchronous JavaScript and APIs.",
+        description: "Master the art of professional communication, perfect your pronunciation, and gain the confidence to speak fluently in any setting.",
         duration: "4 Weeks",
+        level: "All Levels",
+        ctaTitle: "Ready to Speak Like a Pro?",
+        ctaDescription: "Unlock advanced modules on Public Speaking and Professional Presentation to complete your transformation.",
+        modules: [
+            { id: 1, title: "Module 1: The Foundations of Fluency", desc: "Building core vocabulary and understanding sentence structure.", status: "completed", locked: false },
+            { id: 2, title: "Module 2: Pronunciation & Phonics", desc: "Mastering sounds, rhythm, and intonation for clear communication.", status: "inprogress", locked: false },
+            { id: 3, title: "Module 3: Conversational Confidence", desc: "Real-world scenarios and spontaneous speaking exercises.", status: "upcoming", locked: false },
+            { id: 4, title: "Module 4: Public Speaking Mastery", desc: "Techniques for presenting to large audiences with impact.", status: "upcoming", locked: true },
+            { id: 5, title: "Module 5: Professional Networking", desc: "Mastering the art of small talk and professional introductions.", status: "upcoming", locked: true }
+        ]
+    },
+    {
+        id: 'resume-lab',
+        title: "The Resume Lab: Transform Your Experience into a Job Magnet",
+        type: "Professional",
+        description: "Learn the secrets of high-impact resumes. Optimize for ATS, showcase your achievements, and land more interviews with top-tier companies.",
+        duration: "2 Weeks",
         level: "Intermediate",
-        ctaTitle: "Integrate Real-World Data!",
-        ctaDescription: "Unlock Dynamic UI Updates and Location Services to finish your Weather Dashboard.",
+        ctaTitle: "Build Your Winning Resume!",
+        ctaDescription: "Unlock the final modules on Portfolio Building and Cover Letter Mastery to stand out from the crowd.",
         modules: [
-            { id: 1, title: "Module 1: Async JS & Promises", desc: "Understanding how to handle background tasks.", status: "completed", locked: false },
-            { id: 2, title: "Module 2: Working with APIs", desc: "Fetching data from OpenWeatherMap.", status: "inprogress", locked: false },
-            { id: 3, title: "Module 3: JSON & Data Parsing", desc: "Extracting useful info from API responses.", status: "upcoming", locked: false },
-            { id: 4, title: "Module 4: Dynamic UI Updates", desc: "Updating the dashboard based on weather data.", status: "upcoming", locked: true },
-            { id: 5, title: "Module 5: Location Services", desc: "Integrating browser geolocation.", status: "upcoming", locked: true }
+            { id: 1, title: "Module 1: The ATS Deep Dive", desc: "Understanding how Applicant Tracking Systems work and how to beat them.", status: "completed", locked: false },
+            { id: 2, title: "Module 2: Action-Oriented Bullet Points", desc: "Framing your experience using the STAR method for maximum impact.", status: "inprogress", locked: false },
+            { id: 3, title: "Module 3: Strategic Layout & Design", desc: "Creating a visually appealing and professional resume structure.", status: "upcoming", locked: false },
+            { id: 4, title: "Module 4: Digital Portfolio Integration", desc: "Connecting your resume to your online brand and projects.", status: "upcoming", locked: true },
+            { id: 5, title: "Module 5: The Cover Letter Playbook", desc: "Crafting personalized stories that compel recruiters to call you.", status: "upcoming", locked: true }
         ]
     },
     {
-        id: 'e-commerce-ui',
-        title: "E-Commerce UI",
-        type: "Integration",
-        description: "Product grid with cart functionality. Complex state management and routing.",
-        duration: "5 Weeks",
+        id: 'interview-decoder',
+        title: "Interview Decoder: Your Blueprint to Cracking Top-Tier Companies",
+        type: "Mastery",
+        description: "Navigate complex interview processes with ease. Master behavioral questions, technical rounds, and salary negotiations like a pro.",
+        duration: "6 Weeks",
         level: "Advanced",
-        ctaTitle: "Launch Your E-Commerce Store!",
-        ctaDescription: "Unlock Context API and Checkout Simulation to build a complete shopping experience.",
+        ctaTitle: "Ace Your Next Interview!",
+        ctaDescription: "Unlock Mock Interview sessions and the Ultimate Negotiation Playbook to land your dream offer.",
         modules: [
-            { id: 1, title: "Module 1: Advanced Components", desc: "Building reusable product cards and grids.", status: "completed", locked: false },
-            { id: 2, title: "Module 2: React Router", desc: "Implementing navigation between pages.", status: "inprogress", locked: false },
-            { id: 3, title: "Module 3: Cart Logic", desc: "Managing shopping cart state globally.", status: "upcoming", locked: false },
-            { id: 4, title: "Module 4: Context API", desc: "Using Context for theme and user data.", status: "upcoming", locked: true },
-            { id: 5, title: "Module 5: Checkout Simulation", desc: "Handling form validation and payment UI.", status: "upcoming", locked: true }
-        ]
-    },
-    {
-        id: 'full-stack-social',
-        title: "Social Network Platform",
-        type: "Capstone",
-        description: "Full MERN stack application with auth. The ultimate portfolio project.",
-        duration: "12 Weeks",
-        level: "Expert",
-        ctaTitle: "Build a Full-Stack Empire!",
-        ctaDescription: "Unlock Real-time features with Socket.io and master Cloud Deployment.",
-        modules: [
-            { id: 1, title: "Part 1: Backend Architecture & API Design", desc: "Setup Node.js server, Express routes, and MongoDB schemas.", status: "completed", locked: false },
-            { id: 2, title: "Part 2: Frontend Fundamentals & Auth", desc: "React setup, Redux for state, and JWT Authentication flows.", status: "inprogress", locked: false },
-            { id: 3, title: "Part 3: Advanced UI Components", desc: "Building the Feed, Profile, and dynamic interactions.", status: "upcoming", locked: false },
-            { id: 4, title: "Part 4: Real-time Features (WebSocket)", desc: "Implementing chat and notifications with Socket.io.", status: "upcoming", locked: true },
-            { id: 5, title: "Part 5: Deployment & CD/CI", desc: "Deploying to cloud (AWS/Heroku) and setting up pipelines.", status: "upcoming", locked: true }
+            { id: 1, title: "Module 1: Company & Role Research", desc: "How to strategically analyze companies and align your skills.", status: "completed", locked: false },
+            { id: 2, title: "Module 2: Behavioral Interview Mastery", desc: "Mastering the STAR method for storytelling and soft skills.", status: "inprogress", locked: false },
+            { id: 3, title: "Module 3: Technical & Case Interviews", desc: "Strategies for high-pressure technical and problem-solving rounds.", status: "upcoming", locked: false },
+            { id: 4, title: "Module 4: Mock Interview Lab", desc: "Practice sessions with real-world feedback and performance metrics.", status: "upcoming", locked: true },
+            { id: 5, title: "Module 5: Negotiation & Offer Closing", desc: "The art of negotiating salary, benefits, and equity.", status: "upcoming", locked: true }
         ]
     }
 ];
