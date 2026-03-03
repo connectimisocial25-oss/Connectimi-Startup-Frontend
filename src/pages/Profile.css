@@ -317,6 +317,20 @@
     opacity: 0;
 }
 
+.empty-msg {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+}
+
+.dark .empty-msg {
+    background: rgba(255, 255, 255, 0.02);
+}
+
 @media (max-width: 992px) {
     .grid-layout {
         grid-template-columns: 1fr;

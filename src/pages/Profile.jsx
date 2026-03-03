@@ -233,8 +233,98 @@ const Profile = () => {
 
   const handleInputChange = (field, value) => setEditData(prev => ({ ...prev, [field]: value }));
 
+  const handleExperienceChange = (index, field, value) => {
+    const updated = [...editData.experience];
+    updated[index] = { ...updated[index], [field]: value };
+    setEditData(prev => ({ ...prev, experience: updated }));
+  };
+
+  const handleEducationChange = (index, field, value) => {
+    const updated = [...editData.education];
+    updated[index] = { ...updated[index], [field]: value };
+    setEditData(prev => ({ ...prev, education: updated }));
+  };
+
+  const handleProjectChange = (index, field, value) => {
+    const updated = [...editData.projects];
+    updated[index] = { ...updated[index], [field]: value };
+    setEditData(prev => ({ ...prev, projects: updated }));
+  };
+
+  const addExperience = () => {
+    if (editData.newExperience.title && editData.newExperience.company) {
+      setEditData(prev => ({
+        ...prev,
+        experience: [...prev.experience, { ...prev.newExperience, id: Date.now() }],
+        newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false }
+      }));
+    }
+  };
+
+  const addEducation = () => {
+    if (editData.newEducation.school && editData.newEducation.degree) {
+      setEditData(prev => ({
+        ...prev,
+        education: [...prev.education, { ...prev.newEducation, id: Date.now() }],
+        newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" }
+      }));
+    }
+  };
+
+  const addProject = () => {
+    if (editData.newProject.title) {
+      setEditData(prev => ({
+        ...prev,
+        projects: [...prev.projects, { ...prev.newProject, id: Date.now() }],
+        newProject: { title: "", description: "", link: "" }
+      }));
+    }
+  };
+
+  const addSkill = () => {
+    if (editData.newSkill.trim()) {
+      setEditData(prev => ({
+        ...prev,
+        skills: [...prev.skills, prev.newSkill.trim()],
+        newSkill: ""
+      }));
+    }
+  };
+
+  const removeExperience = (index) => {
+    setEditData(prev => ({
+      ...prev,
+      experience: prev.experience.filter((_, i) => i !== index)
+    }));
+  };
+
+  const removeEducation = (index) => {
+    setEditData(prev => ({
+      ...prev,
+      education: prev.education.filter((_, i) => i !== index)
+    }));
+  };
+
+  const removeProject = (index) => {
+    setEditData(prev => ({
+      ...prev,
+      projects: prev.projects.filter((_, i) => i !== index)
+    }));
+  };
+
+  const removeSkill = (index) => {
+    setEditData(prev => ({
+      ...prev,
+      skills: prev.skills.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSave = async () => {
-    setProfileData({ ...editData });
+    const {
+      newSkill, newExperience, newProject, newEducation,
+      ...cleanData
+    } = editData;
+    setProfileData(cleanData);
     setIsEditing(false);
     cleanupPreviewURLs();
   };
@@ -243,14 +333,53 @@ const Profile = () => {
   const renderExperience = () => (
     <div className="glass-panel gsap-reveal">
       <h3 className="panel-title"><Icon name="building" /> Experience</h3>
-      {profileData.experience.map((exp, i) => (
-        <div key={i} className="exp-item">
-          <div className="exp-role">{exp.title}</div>
-          <div className="exp-org">{exp.company}</div>
-          <div className="exp-meta">{exp.startDate} - {exp.endDate} · {exp.location}</div>
-          <div className="exp-desc">{exp.description}</div>
-        </div>
-      ))}
+      {profileData.experience.length > 0 ? (
+        profileData.experience.map((exp, i) => (
+          <div key={i} className="exp-item">
+            <div className="exp-role">{exp.title}</div>
+            <div className="exp-org">{exp.company}</div>
+            <div className="exp-meta">{exp.startDate} - {exp.endDate} · {exp.location}</div>
+            {exp.description && <div className="exp-desc">{exp.description}</div>}
+          </div>
+        ))
+      ) : (
+        <p className="empty-msg">No experience listed</p>
+      )}
+    </div>
+  );
+
+  const renderProjects = () => (
+    <div className="glass-panel gsap-reveal">
+      <h3 className="panel-title"><Icon name="folder" /> Projects</h3>
+      {profileData.projects.length > 0 ? (
+        profileData.projects.map((proj, i) => (
+          <div key={i} className="exp-item">
+            <div className="exp-role">{proj.title}</div>
+            {proj.link && <a href={proj.link} className="exp-org" target="_blank" rel="noopener noreferrer">{proj.link}</a>}
+            {proj.description && <div className="exp-desc">{proj.description}</div>}
+          </div>
+        ))
+      ) : (
+        <p className="empty-msg">No projects listed</p>
+      )}
+    </div>
+  );
+
+  const renderEducation = () => (
+    <div className="glass-panel gsap-reveal">
+      <h3 className="panel-title"><Icon name="graduation-cap" /> Education</h3>
+      {profileData.education.length > 0 ? (
+        profileData.education.map((edu, i) => (
+          <div key={i} className="exp-item">
+            <div className="exp-role">{edu.school}</div>
+            <div className="exp-org">{edu.degree}{edu.field ? `, ${edu.field}` : ""}</div>
+            <div className="exp-meta">{edu.startYear} - {edu.endYear}</div>
+            {edu.description && <div className="exp-desc">{edu.description}</div>}
+          </div>
+        ))
+      ) : (
+        <p className="empty-msg">No education listed</p>
+      )}
     </div>
   );
 
@@ -303,7 +432,16 @@ const Profile = () => {
             <button className="profile-btn" onClick={() => profileSummary ? speakText(profileSummary) : generateProfileSummary()} disabled={isSummarizing}>
               <Icon name="play" /> AI Podcast
             </button>
-            <button className="profile-btn" onClick={() => setIsEditing(true)}>
+            <button className="profile-btn" onClick={() => {
+              setEditData({
+                ...profileData,
+                newSkill: "",
+                newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false },
+                newProject: { title: "", description: "", link: "" },
+                newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" },
+              });
+              setIsEditing(true);
+            }}>
               <Icon name="edit" /> Edit
             </button>
           </div>
@@ -317,6 +455,8 @@ const Profile = () => {
             <p className="about-text">{profileData.about}</p>
           </div>
           {renderExperience()}
+          {renderProjects()}
+          {renderEducation()}
           {renderSkills()}
         </div>
 
@@ -365,9 +505,20 @@ const Profile = () => {
 
       {isEditing && (
         <EditForm
-          editData={profileData}
+          editData={editData}
           setEditData={setEditData}
           handleInputChange={handleInputChange}
+          handleExperienceChange={handleExperienceChange}
+          handleEducationChange={handleEducationChange}
+          handleProjectChange={handleProjectChange}
+          addExperience={addExperience}
+          addEducation={addEducation}
+          addProject={addProject}
+          addSkill={addSkill}
+          removeExperience={removeExperience}
+          removeEducation={removeEducation}
+          removeProject={removeProject}
+          removeSkill={removeSkill}
           handleSave={handleSave}
           onCancel={() => setIsEditing(false)}
         />
