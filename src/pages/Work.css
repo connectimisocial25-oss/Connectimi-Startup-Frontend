@@ -67,18 +67,25 @@
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     font-size: 14px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08); /* Slightly more opaque */
     color: var(--text-main);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color-scheme: dark; /* Signals browser to use dark native controls */
+}
+
+/* Explicit option styling for broader browser support */
+.filter-group select option {
+    background-color: #0f172a; /* Slate-900 like color */
+    color: white;
 }
 
 .filter-group select:focus,
 .filter-group input:focus {
     outline: none;
     border-color: var(--primary-green);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
 }
 
 .reset-filters-btn {
