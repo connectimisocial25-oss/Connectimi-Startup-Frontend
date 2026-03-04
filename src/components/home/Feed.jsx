@@ -2,12 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import Avatar from '../Avatar';
 import Icon from '../Icon';
 import gsap from 'gsap';
+import { useAuth } from '../../context/AuthContext';
 
 const Feed = () => {
     const feedRef = useRef(null);
     const modalRef = useRef(null);
+    const { user } = useAuth();
+
     // State for managing "See More" modal
     const [selectedInsight, setSelectedInsight] = useState(null);
+    const [newPostContent, setNewPostContent] = useState("");
+    const fileInputRef = useRef(null);
+    const videoInputRef = useRef(null);
 
     // Initial data with 'likes' count
     useEffect(() => {
@@ -107,24 +113,83 @@ const Feed = () => {
         return text.substr(0, maxLength) + '...';
     };
 
+    const triggerFileSelect = () => fileInputRef.current.click();
+    const triggerVideoSelect = () => videoInputRef.current.click();
+
+    const handleCreatePost = (e) => {
+        e.preventDefault();
+        if (!newPostContent.trim()) return;
+
+        const newPost = {
+            id: Date.now(),
+            author: user ? `${user.firstName} ${user.lastName}` : 'Guest User',
+            authorImg: user?.profileImage || 'https://i.pravatar.cc/150?u=guest',
+            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+            title: 'My Latest Insight',
+            takeaway: newPostContent,
+            liked: false,
+            likes: 0,
+            comments: 0
+        };
+
+        setInsights([newPost, ...insights]);
+        setNewPostContent("");
+    };
+
     return (
         <main className="feed-container" ref={feedRef}>
             {/* Create Post Area */}
             <div className="share-insight-card">
-                <div className="share-header">
-                    <Avatar className="user-avatar-ring" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" size={48} />
+                <form className="share-header" onSubmit={handleCreatePost}>
+                    <Avatar
+                        className="user-avatar-ring"
+                        src={user?.profileImage || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"}
+                        size={48}
+                    />
                     <div className="share-input-wrapper">
-                        <span className="share-placeholder">Build Something meaningful....</span>
+                        <input
+                            type="text"
+                            className="share-input-field"
+                            placeholder="Build Something meaningful...."
+                            value={newPostContent}
+                            onChange={(e) => setNewPostContent(e.target.value)}
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                outline: 'none',
+                                color: 'var(--text-primary)',
+                                width: '100%',
+                                fontSize: '15px'
+                            }}
+                        />
                         <div className="share-actions-inline">
-                            <button className="btn-miing">Post</button>
+                            <button
+                                className="btn-miing"
+                                type="submit"
+                                disabled={!newPostContent.trim()}
+                                style={{ opacity: !newPostContent.trim() ? 0.5 : 1 }}
+                            >
+                                Post
+                            </button>
                         </div>
                     </div>
-                </div>
+                </form>
                 <div className="share-footer-actions">
-                    <button className="btn-icon-text"><Icon name="project" /> Project</button>
-                    <button className="btn-icon-text"><Icon name="image" /> Photo</button>
-                    <button className="btn-icon-text"><Icon name="video" /> Video</button>
-                    <button className="btn-icon-text"><Icon name="calendar" /> Event</button>
+                    <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept="image/*" />
+                    <input type="file" ref={videoInputRef} style={{ display: 'none' }} accept="video/*" />
+
+                    <button type="button" className="btn-icon-text" onClick={() => alert("Project creation coming soon!")}>
+                        <Icon name="project" style={{ color: '#3b82f6' }} /> Project
+                    </button>
+                    <button type="button" className="btn-icon-text" onClick={triggerFileSelect}>
+                        <Icon name="image" style={{ color: '#10b981' }} /> Photo
+                    </button>
+                    <button type="button" className="btn-icon-text" onClick={triggerVideoSelect}>
+                        <Icon name="video" style={{ color: '#8b5cf6' }} /> Video
+                    </button>
+                    <button type="button" className="btn-icon-text" onClick={() => alert("Event scheduling coming soon!")}>
+                        <Icon name="calendar" style={{ color: '#f59e0b' }} /> Event
+                    </button>
                     <div style={{ flex: 1 }}></div>
                 </div>
             </div>
