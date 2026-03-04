@@ -70,7 +70,7 @@ function AccountCompletion() {
                             width: '120px',
                             height: '120px',
                             borderRadius: '50%',
-                            background: 'rgba(255,255,255,0.05)',
+                            background: 'var(--surface-faint)',
                             border: '2px dashed var(--emerald-500)',
                             display: 'flex',
                             flexDirection: 'column',
@@ -193,9 +193,9 @@ function AccountCompletion() {
                             flexWrap: 'wrap',
                             gap: '10px',
                             padding: '15px',
-                            background: 'rgba(255,255,255,0.03)',
+                            background: 'var(--surface-faint)',
                             borderRadius: '16px',
-                            border: '1px solid rgba(255,255,255,0.05)'
+                            border: '1px solid var(--surface-border)'
                         }}>
                             {SUGGESTED_SKILLS.map(skill => (
                                 <button
