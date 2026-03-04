@@ -20,6 +20,7 @@
   --text-main: #0f172a;
   --text-muted: #64748b;
   --bg-main: #f8fafc;
+  color-scheme: light;
 }
 
 .dark {
@@ -41,6 +42,7 @@
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --bg-main: #020617;
+  color-scheme: dark;
 }
 
 * {
@@ -170,11 +172,15 @@ body {
 }
 
 /* Smooth transitions for all interactive elements */
-a, button, input, textarea {
+a,
+button,
+input,
+textarea {
   transition: all 0.3s ease-in-out;
 }
 
 /* Reset default browser invalid styles for better UX */
-input:invalid, textarea:invalid {
+input:invalid,
+textarea:invalid {
   box-shadow: none;
 }

@@ -67,17 +67,23 @@
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     font-size: 14px;
-    background: rgba(255, 255, 255, 0.08); /* Slightly more opaque */
+    background: rgba(15, 23, 42, 0.05);
+    /* Default subtle background */
     color: var(--text-main);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color-scheme: dark; /* Signals browser to use dark native controls */
 }
 
-/* Explicit option styling for broader browser support */
+.dark .filter-group select,
+.dark .filter-group input {
+    background: rgba(255, 255, 255, 0.08);
+    /* Lighter in dark mode */
+}
+
+/* Explicit option styling using theme variables */
 .filter-group select option {
-    background-color: #0f172a; /* Slate-900 like color */
-    color: white;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
 }
 
 .filter-group select:focus,
