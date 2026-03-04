@@ -51,11 +51,16 @@
 
 .auth-toggle {
     display: flex;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(15, 23, 42, 0.05);
+    /* Darker in light mode */
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     padding: 4px;
     margin-bottom: 32px;
+}
+
+.dark .auth-toggle {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .toggle-btn {
@@ -90,16 +95,25 @@
     border-radius: 14px;
     font-size: 16px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(15, 23, 42, 0.03);
+    /* Subtle dark for light mode */
     color: var(--text-main);
     box-sizing: border-box;
+}
+
+.dark .auth-input {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .auth-input:focus {
     outline: none;
     border-color: var(--emerald-500);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.05);
     box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.dark .auth-input:focus {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .auth-submit-btn {
