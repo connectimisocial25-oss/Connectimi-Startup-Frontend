@@ -178,3 +178,392 @@
         padding: 32px 24px;
     }
 }
+/* Account Completion Styles */
+.card-wide {
+    max-width: 800px;
+    width: 95%;
+}
+
+.photo-upload-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.photo-upload-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--surface-faint);
+    border: 2px dashed var(--emerald-500);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.photo-upload-hover:hover {
+    background: rgba(16, 185, 129, 0.05) !important;
+    border-style: solid !important;
+}
+
+.camera-icon {
+    font-size: 24px;
+    color: var(--emerald-500);
+    margin-bottom: 8px;
+}
+
+.add-photo-text {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.change-photo-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 12px;
+    padding: 4px 0;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.photo-upload-circle:hover .change-photo-overlay {
+    opacity: 1;
+}
+
+.field-label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 8px;
+    margin-left: 12px;
+    font-weight: 600;
+}
+
+.form-grid-completion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.completion-section {
+    text-align: left;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--emerald-500);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.item-card {
+    background: var(--surface-faint);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-main {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.item-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.btn-remove-item {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.add-item-box {
+    background: rgba(16, 185, 129, 0.03);
+    border: 1px dashed var(--emerald-500);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 10px;
+}
+
+.item-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.auth-input-small {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.btn-add-item {
+    background: transparent;
+    border: 1px solid var(--emerald-500);
+    color: var(--emerald-500);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    transition: all 0.2s;
+}
+
+.btn-add-item:hover {
+    background: var(--emerald-500);
+    color: white;
+}
+
+.skill-tag-completion {
+    background: var(--emerald-500);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btn-add-skill-icon {
+    width: 45px;
+    border-radius: 12px;
+    border: none;
+    background: var(--emerald-500);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.suggestions-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    background: var(--surface-faint);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+}
+
+.skill-suggestion-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: transparent;
+    color: var(--emerald-500);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.skill-suggestion-btn:disabled {
+    background: rgba(16, 185, 129, 0.1);
+    color: rgba(16, 185, 129, 0.5);
+    cursor: default;
+}
+
+.skill-suggestion-btn:hover:not(:disabled) {
+    background: rgba(16, 185, 129, 0.1);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+    .form-grid-completion {
+        grid-template-columns: 1fr;
+    }
+    .item-row {
+        flex-direction: column;
+    }
+}
+
+/* Success State Styles */
+.auth-success-state {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.success-icon-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.success-icon {
+    font-size: 64px;
+    color: var(--emerald-500);
+    filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.2));
+}
+
+.success-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.success-text {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+/* Cropper Modal Styles */
+.cropper-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.cropper-modal-content {
+    background: var(--bg-main);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 500px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--glass-border);
+}
+
+.cropper-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.cropper-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.btn-close-cropper {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    padding: 4px;
+}
+
+.cropper-container-wrapper {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    background: #000;
+}
+
+.cropper-controls {
+    padding: 24px;
+    background: var(--surface-faint);
+}
+
+.zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.zoom-control span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 45px;
+}
+
+.zoom-range {
+    flex: 1;
+    accent-color: var(--emerald-500);
+    cursor: pointer;
+}
+
+.btn-save-crop {
+    width: 100%;
+    background: var(--emerald-grad);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btn-save-crop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* Input with Icon patterns */
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-muted);
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.input-icon-padding {
+    padding-left: 48px !important;
+}

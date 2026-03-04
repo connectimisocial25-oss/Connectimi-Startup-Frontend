@@ -5,7 +5,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [verificationStep, setVerificationStep] = useState(null); // 'signup', 'verify-email', 'account-completion', 'active'
-  const [tempData, setTempData] = useState(null); // { firstName, lastName, email }
+  const [tempData, setTempData] = useState(null); // { firstName, lastName, email, password }
 
   // Check for existing session in localStorage
   useEffect(() => {
@@ -30,9 +30,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const completeAccount = (additionalData) => {
+    // Collect all profile data from additionalData and tempData
     const fullUser = {
       ...tempData,
-      ...additionalData,
+      // Core profile fields
+      headline: additionalData.headline || "",
+      location: additionalData.location || "",
+      phone: additionalData.phone || "",
+      website: additionalData.website || "",
+      about: additionalData.about || "",
+      skills: additionalData.skills || [],
+      profileImage: additionalData.profileImage || null,
+
+      // Detailed profile sections
+      experience: additionalData.experience || [],
+      projects: additionalData.projects || [],
+      education: additionalData.education || [],
+
       id: Math.random().toString(36).substr(2, 9),
       joinedAt: new Date().toISOString()
     };

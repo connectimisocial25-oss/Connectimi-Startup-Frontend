@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Auth.css";
 
 export function LoginForm({ onToggle, compact = false }) {
@@ -8,6 +9,7 @@ export function LoginForm({ onToggle, compact = false }) {
   const [accountType, setAccountType] = useState("personal");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -58,15 +60,39 @@ export function LoginForm({ onToggle, compact = false }) {
           />
         </div>
 
-        <div className="auth-field">
+        <div className="auth-field" style={{ position: 'relative' }}>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             className="auth-input"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            style={{ paddingRight: '45px' }}
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              position: 'absolute',
+              right: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '18px',
+              padding: '5px',
+              transition: 'color 0.2s ease'
+            }}
+            className="password-toggle-btn"
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
 
         <div style={{ textAlign: "left" }}>
