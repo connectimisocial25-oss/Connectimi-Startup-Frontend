@@ -1,15 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useAuth } from "../context/AuthContext";
 import "./Auth.css";
 
 export function SignupForm({ onToggle, compact = false }) {
   const navigate = useNavigate();
+  const { initiateSignup } = useAuth();
   const [accountType, setAccountType] = useState("personal");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -21,15 +22,10 @@ export function SignupForm({ onToggle, compact = false }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!firstName || !lastName || !email || !password) return;
+    if (!firstName || !lastName || !email) return;
 
-    navigate("/profile", {
-      state: {
-        newSignup: true,
-        firstName,
-        lastName
-      }
-    });
+    initiateSignup({ firstName, lastName, email, accountType });
+    navigate("/verify-email");
   }
 
   return (
@@ -86,19 +82,9 @@ export function SignupForm({ onToggle, compact = false }) {
           />
         </div>
 
-        <div className="auth-field">
-          <input
-            type="password"
-            className="auth-input"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
 
         <p style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center", margin: "10px 0", lineHeight: "1.5" }}>
-          By clicking Create Account, you agree to the <span style={{color: 'var(--emerald-500)', fontWeight: 600}}>User Agreement</span>, <span style={{color: 'var(--emerald-500)', fontWeight: 600}}>Privacy Policy</span>, and <span style={{color: 'var(--emerald-500)', fontWeight: 600}}>Cookie Policy</span>.
+          By clicking Create Account, you agree to the <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>User Agreement</span>, <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>Privacy Policy</span>, and <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>Cookie Policy</span>.
         </p>
 
         <button className="auth-submit-btn" type="submit">
@@ -132,7 +118,7 @@ function Signup() {
       <div className="auth-card" ref={cardRef}>
         <div className="auth-header">
           <div className="auth-logo">
-             <div
+            <div
               style={{
                 width: "60px",
                 height: "60px",
