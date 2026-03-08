@@ -315,6 +315,7 @@
     .landing-left {
         display: none;
     }
+
     .landing-right {
         flex: 1;
         padding: 20px;
@@ -326,12 +327,15 @@
         padding: 24px 16px;
         border-radius: 24px;
     }
+
     .form-row-grid {
         grid-template-columns: 1fr;
     }
+
     .auth-header-minimal h2 {
         font-size: 24px;
     }
+
     .landing-submit-btn {
         padding: 14px;
     }

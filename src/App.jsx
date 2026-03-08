@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import Landing from "./pages/Landing";
@@ -10,19 +10,26 @@ import Profile from "./pages/Profile";
 import Work from "./pages/Work";
 import MyNetwork from "./pages/MyNetwork";
 import Notifications from "./pages/Notifications";
-import OrganizationProfile from "./pages/OrganizationProfile";
 import VerifyEmail from "./pages/VerifyEmail";
 import AccountCompletion from "./pages/AccountCompletion";
-
 
 import Courses from "./pages/Courses";
 import CourseRoadmap from "./pages/CourseRoadmap";
 
 import Navbar from "./components/Navbar";
 
+// Organization Components
+import OrganizationLayout from "./organization/OrganizationLayout";
+import OrgFeed from "./organization/pages/OrgFeed";
+import OrgProfile from "./organization/pages/OrgProfile";
+import OrgMessages from "./organization/pages/OrgMessages";
+import OrgAlerts from "./organization/pages/OrgAlerts";
+import OrgCourses from "./organization/pages/OrgCourses";
+import OrgAds from "./organization/pages/OrgAds";
+
 const Layout = ({ children }) => {
   const location = useLocation();
-  const showHeader = !['/', '/login', '/signup', '/forgot-password', '/organization', '/verify-email', '/account-completion'].includes(location.pathname);
+  const showHeader = !['/', '/login', '/signup', '/forgot-password', '/verify-email', '/account-completion'].includes(location.pathname) && !location.pathname.startsWith('/organization');
 
   return (
     <>
@@ -52,7 +59,17 @@ function App() {
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/courses/:courseId" element={<CourseRoadmap />} />
-              <Route path="/organization" element={<OrganizationProfile />} />
+
+              {/* Organization Routes */}
+              <Route path="/organization" element={<OrganizationLayout />}>
+                <Route index element={<Navigate to="/organization/feed" replace />} />
+                <Route path="feed" element={<OrgFeed />} />
+                <Route path="profile" element={<OrgProfile />} />
+                <Route path="messages" element={<OrgMessages />} />
+                <Route path="alerts" element={<OrgAlerts />} />
+                <Route path="courses" element={<OrgCourses />} />
+                <Route path="ads" element={<OrgAds />} />
+              </Route>
             </Routes>
           </Layout>
         </BrowserRouter>

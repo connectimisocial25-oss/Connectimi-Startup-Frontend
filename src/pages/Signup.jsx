@@ -25,9 +25,18 @@ export function SignupForm({ onToggle, compact = false }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!firstName || !lastName || !email || !password) return;
 
-    initiateSignup({ firstName, lastName, email, password, accountType });
+    // Validation: for organization, only firstName (repurposed for Org Name) is required
+    // for personal, both firstName and lastName are required
+    if (accountType === "personal") {
+      if (!firstName || !lastName || !email || !password) return;
+      initiateSignup({ firstName, lastName, email, password, accountType });
+    } else {
+      if (!firstName || !email || !password) return;
+      // For organization, we treat firstName as the Organization Name and leave lastName empty
+      initiateSignup({ firstName, lastName: "", email, password, accountType });
+    }
+
     navigate("/verify-email");
   }
 
@@ -51,28 +60,41 @@ export function SignupForm({ onToggle, compact = false }) {
       </div>
 
       <form className="auth-form-content" onSubmit={handleSubmit} ref={formRef}>
-        <div className="form-row">
+        {accountType === "personal" ? (
+          <div className="form-row">
+            <div className="auth-field">
+              <input
+                type="text"
+                className="auth-input"
+                placeholder="First name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="auth-field">
+              <input
+                type="text"
+                className="auth-input"
+                placeholder="Last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+        ) : (
           <div className="auth-field">
             <input
               type="text"
               className="auth-input"
-              placeholder="First name"
+              placeholder="Organization name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
             />
           </div>
-          <div className="auth-field">
-            <input
-              type="text"
-              className="auth-input"
-              placeholder="Last name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+        )}
 
         <div className="auth-field">
           <input
