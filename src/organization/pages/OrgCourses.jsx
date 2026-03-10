@@ -33,7 +33,7 @@ const OrgCourses = () => {
             <div className="org-glass-card fade-in">
                 <div className="section-header-flex">
                     <h2>Course Catalog</h2>
-                    <button className="profile-btn primary" onClick={() => setIsAddCourseModalOpen(true)}>
+                    <button className="new-course-apply-btn" onClick={() => setIsAddCourseModalOpen(true)}>
                         <Icon name="plus" /> New Course
                     </button>
                 </div>

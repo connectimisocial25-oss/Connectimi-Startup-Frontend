@@ -96,7 +96,7 @@ const OrganizationNavbar = () => {
                         </div>
                     ))}
 
-                    <div className={`nav-item me-dropdown`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                    <div className={`nav-item me-dropdown ${isActive('/organization/profile') ? 'active' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <div className="nav-icon">
                             <Avatar
                                 src="https://via.placeholder.com/150"
@@ -132,7 +132,7 @@ const OrganizationNavbar = () => {
                     <div className="mobile-search-trigger">
                         <Icon name="search" />
                     </div>
-                    <div className={`nav-item me-dropdown`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                    <div className={`nav-item me-dropdown ${isActive('/organization/profile') ? 'active' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <Avatar
                             src="https://via.placeholder.com/150"
                             alt="Organization"

@@ -25,8 +25,15 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Reusing styles from OrganizationProfile.css or defining necessary ones */
@@ -216,6 +223,27 @@
     transform: scale(1.02);
 }
 
+.new-course-apply-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 14px;
+    border: none;
+    color: white;
+    background: var(--emerald-grad);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.new-course-apply-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
 .ads-dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -374,6 +402,7 @@
     .org-page-container {
         padding: 20px 16px;
     }
+
     .org-profile-header {
         flex-direction: column;
         align-items: center;
