@@ -5,6 +5,7 @@ import "./Profile.css";
 import CVModal from "../components/CVModal";
 import EditForm from "../components/editProfile";
 import { gsap } from "gsap";
+import { useAuth } from "../context/AuthContext";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80";
 const DEFAULT_PROFILE_IMG = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
@@ -127,7 +128,26 @@ const Profile = () => {
     };
   }, []); // Empty dependency array to ensure animation runs only once on mount
 
+  const { user: authUser, updateUser: updateAuthUser } = useAuth();
+
   const fetchProfileData = async () => {
+    if (authUser) {
+      setProfileData({
+        ...authUser,
+        name: authUser.name || `${authUser.firstName} ${authUser.lastName}`,
+        profileImage: authUser.profileImage || DEFAULT_PROFILE_IMG,
+        bannerImage: authUser.bannerImage || DEFAULT_BANNER,
+        experience: authUser.experience || [],
+        projects: authUser.projects || [],
+        education: authUser.education || [],
+        skills: authUser.skills || [],
+        connections: authUser.connections || 543,
+        profileViews: authUser.profileViews || 1287,
+        postImpressions: authUser.postImpressions || 3256,
+      });
+      return;
+    }
+
     // Simulated API call (keeping the original mock structure)
     const mockData = {
       name: "Alex Johnson",
@@ -325,6 +345,7 @@ const Profile = () => {
       ...cleanData
     } = editData;
     setProfileData(cleanData);
+    updateAuthUser(cleanData);
     setIsEditing(false);
     cleanupPreviewURLs();
   };

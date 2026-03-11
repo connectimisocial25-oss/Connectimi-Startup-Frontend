@@ -1,0 +1,328 @@
+.edit-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.edit-form-content {
+    background: var(--bg-main);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 24px;
+    border: 1px solid var(--surface-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.edit-form-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--surface-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-form-header h3 {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: var(--text-main);
+}
+
+.form-grid {
+    padding: 32px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.edit-images-preview {
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 2.5rem;
+  height: 200px;
+}
+
+.edit-banner-preview {
+  height: 160px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  border: 2px dashed var(--surface-border);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.edit-banner-preview:hover {
+  border-color: var(--emerald-500);
+}
+
+.edit-avatar-preview {
+  position: absolute;
+  bottom: 0;
+  left: 2rem;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-main);
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.edit-avatar-preview:hover {
+  transform: scale(1.05);
+}
+
+.edit-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  gap: 5px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.edit-banner-preview:hover .edit-image-overlay,
+.edit-avatar-preview:hover .edit-image-overlay {
+  opacity: 1;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: var(--surface-faint);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--emerald-500);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.form-section {
+    margin-top: 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--surface-border);
+}
+
+.form-section h4 {
+    margin-bottom: 16px;
+    color: var(--text-main);
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.edit-tag {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--emerald-500);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-tag button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    padding: 0;
+}
+
+.tag-input-group {
+    display: flex;
+    gap: 12px;
+}
+
+.tag-input-group input {
+    flex: 1;
+    background: var(--surface-faint);
+    border: 1px solid var(--surface-border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: var(--text-main);
+}
+
+.add-btn {
+    background: var(--emerald-500);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.edit-services-list {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.edit-service-card {
+    background: var(--surface-faint);
+    border: 1px solid var(--surface-border);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+}
+
+.service-inputs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.service-inputs input {
+    font-weight: 600;
+}
+
+.remove-service-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    align-self: flex-start;
+    padding: 8px;
+}
+
+.new-service-form {
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px dashed var(--emerald-500);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.new-service-form h5 {
+    margin: 0;
+    color: var(--emerald-500);
+}
+
+.add-service-btn {
+    background: var(--emerald-500);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.form-actions {
+    padding: 24px 32px;
+    border-top: 1px solid var(--surface-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+.btn-cancel {
+    background: var(--surface-faint);
+    color: var(--text-main);
+    border: 1px solid var(--surface-border);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-save {
+    background: var(--emerald-500);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+}

@@ -22,6 +22,7 @@ import Navbar from "./components/Navbar";
 import OrganizationLayout from "./organization/OrganizationLayout";
 import OrgFeed from "./organization/pages/OrgFeed";
 import OrgProfile from "./organization/pages/OrgProfile";
+import OrgAccountCompletion from "./organization/pages/OrgAccountCompletion";
 import OrgMessages from "./organization/pages/OrgMessages";
 import OrgAlerts from "./organization/pages/OrgAlerts";
 import OrgCourses from "./organization/pages/OrgCourses";
@@ -29,7 +30,7 @@ import OrgAds from "./organization/pages/OrgAds";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const showHeader = !['/', '/login', '/signup', '/forgot-password', '/verify-email', '/account-completion'].includes(location.pathname) && !location.pathname.startsWith('/organization');
+  const showHeader = !['/', '/login', '/signup', '/forgot-password', '/verify-email', '/account-completion', '/org-account-completion'].includes(location.pathname) && !location.pathname.startsWith('/organization');
 
   return (
     <>
@@ -52,6 +53,7 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/account-completion" element={<AccountCompletion />} />
+              <Route path="/org-account-completion" element={<OrgAccountCompletion />} />
               <Route path="/home" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/work" element={<Work />} />

@@ -35,17 +35,23 @@ export const AuthProvider = ({ children }) => {
       ...tempData,
       // Core profile fields
       headline: additionalData.headline || "",
+      industry: additionalData.industry || "",
       location: additionalData.location || "",
       phone: additionalData.phone || "",
       website: additionalData.website || "",
       about: additionalData.about || "",
       skills: additionalData.skills || [],
+      specialties: additionalData.specialties || [],
+      companySize: additionalData.companySize || "",
+      foundedDate: additionalData.foundedDate || "",
       profileImage: additionalData.profileImage || null,
+      bannerImage: additionalData.bannerImage || null,
 
       // Detailed profile sections
       experience: additionalData.experience || [],
       projects: additionalData.projects || [],
       education: additionalData.education || [],
+      services: additionalData.services || [],
 
       id: Math.random().toString(36).substr(2, 9),
       joinedAt: new Date().toISOString()
@@ -71,6 +77,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("connectimi_user", JSON.stringify(mockUser));
   };
 
+  const updateUser = (updatedData) => {
+    const newUser = { ...user, ...updatedData };
+    setUser(newUser);
+    localStorage.setItem("connectimi_user", JSON.stringify(newUser));
+  };
+
   const logout = () => {
     setUser(null);
     setVerificationStep(null);
@@ -87,7 +99,8 @@ export const AuthProvider = ({ children }) => {
       verifyEmail, 
       completeAccount, 
       login, 
-      logout 
+      logout,
+      updateUser
     }}>
       {children}
     </AuthContext.Provider>

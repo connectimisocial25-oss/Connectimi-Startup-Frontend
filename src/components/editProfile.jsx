@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import Icon from "./Icon";
 import "./editProfile.css";
+import ImageCropperModal from "./ImageCropperModal";
+import { FaCamera } from "react-icons/fa";
 
 const EditForm = ({
   editData,
@@ -21,12 +23,79 @@ const EditForm = ({
   isUploading,
   onCancel,
 }) => {
+  const [imageToCrop, setImageToCrop] = useState(null);
+  const [cropType, setCropType] = useState(null); // 'profile' or 'banner'
+  const profileInputRef = useRef(null);
+  const bannerInputRef = useRef(null);
+
+  const handleFileChange = (e, type) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageToCrop(reader.result);
+        setCropType(type);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const onCropSave = (croppedImage) => {
+    if (cropType === 'profile') {
+      handleInputChange('profileImage', croppedImage);
+    } else {
+      handleInputChange('bannerImage', croppedImage);
+    }
+    setImageToCrop(null);
+    setCropType(null);
+  };
+
   return (
     <div className="edit-form-overlay" onClick={onCancel}>
       <div className="edit-form-content" onClick={(e) => e.stopPropagation()}>
         <h3>Edit Profile Information</h3>
 
         <div className="form-grid">
+          {/* Image Upload Section */}
+          <div className="form-group full-width">
+            <label>Profile Branding</label>
+            <div className="edit-images-preview">
+              <div
+                className="edit-banner-preview"
+                style={{ backgroundImage: `url(${editData.bannerImage})` }}
+                onClick={() => bannerInputRef.current.click()}
+              >
+                <div className="edit-image-overlay">
+                  <FaCamera />
+                  <span>Change Banner</span>
+                </div>
+              </div>
+              <div
+                className="edit-avatar-preview"
+                style={{ backgroundImage: `url(${editData.profileImage})` }}
+                onClick={() => profileInputRef.current.click()}
+              >
+                <div className="edit-image-overlay">
+                  <FaCamera />
+                </div>
+              </div>
+            </div>
+            <input
+              type="file"
+              ref={profileInputRef}
+              onChange={(e) => handleFileChange(e, 'profile')}
+              accept="image/*"
+              style={{ display: 'none' }}
+            />
+            <input
+              type="file"
+              ref={bannerInputRef}
+              onChange={(e) => handleFileChange(e, 'banner')}
+              accept="image/*"
+              style={{ display: 'none' }}
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="edit-name">Full Name</label>
             <input
@@ -516,6 +585,20 @@ const EditForm = ({
           </button>
         </div>
       </div>
+
+      {imageToCrop && (
+        <ImageCropperModal
+          image={imageToCrop}
+          onCropComplete={onCropSave}
+          onClose={() => {
+            setImageToCrop(null);
+            setCropType(null);
+          }}
+          aspect={cropType === 'profile' ? 1 : 16 / 5}
+          shape={cropType === 'profile' ? 'round' : 'rect'}
+          title={`Crop ${cropType === 'profile' ? 'Profile Picture' : 'Banner Image'}`}
+        />
+      )}
     </div>
   );
 };

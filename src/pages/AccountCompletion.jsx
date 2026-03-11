@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
-import Cropper from 'react-easy-crop';
 import { useAuth } from "../context/AuthContext";
 import { FaCamera, FaTimes, FaPlus, FaTrash } from "react-icons/fa";
+import ImageCropperModal from "../components/ImageCropperModal";
 import "./Auth.css";
 
 const SUGGESTED_SKILLS = [
@@ -27,12 +27,11 @@ function AccountCompletion() {
     const [skills, setSkills] = useState([]);
     const [currentSkill, setCurrentSkill] = useState("");
 
-    // Profile Image
+    // Profile & Banner Images
     const [profileImage, setProfileImage] = useState(null);
+    const [bannerImage, setBannerImage] = useState(null);
     const [imageToCrop, setImageToCrop] = useState(null);
-    const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [cropType, setCropType] = useState(null); // 'profile' or 'banner'
     const [showCropper, setShowCropper] = useState(false);
 
     // Experience
@@ -54,7 +53,8 @@ function AccountCompletion() {
     });
 
     const cardRef = useRef(null);
-    const fileInputRef = useRef(null);
+    const profileInputRef = useRef(null);
+    const bannerInputRef = useRef(null);
 
     useEffect(() => {
         gsap.fromTo(cardRef.current,
@@ -118,58 +118,29 @@ function AccountCompletion() {
         setEducation(education.filter(edu => edu.id !== id));
     };
 
-    const handlePhotoClick = () => {
-        fileInputRef.current.click();
+    const handleImageClick = (type) => {
+        if (type === 'profile') profileInputRef.current.click();
+        else bannerInputRef.current.click();
     };
 
-    const onCropComplete = useCallback((_croppedArea, croppedAreaPixels) => {
-        setCroppedAreaPixels(croppedAreaPixels);
-    }, []);
-
-    const handleFileChange = (e) => {
+    const handleFileChange = (e, type) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImageToCrop(reader.result);
+                setCropType(type);
                 setShowCropper(true);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const createCroppedImage = async () => {
-        try {
-            const canvas = document.createElement('canvas');
-            const img = new Image();
-            img.src = imageToCrop;
-            await new Promise((resolve) => {
-                img.onload = resolve;
-            });
-
-            canvas.width = croppedAreaPixels.width;
-            canvas.height = croppedAreaPixels.height;
-            const ctx = canvas.getContext('2d');
-
-            ctx.drawImage(
-                img,
-                croppedAreaPixels.x,
-                croppedAreaPixels.y,
-                croppedAreaPixels.width,
-                croppedAreaPixels.height,
-                0,
-                0,
-                croppedAreaPixels.width,
-                croppedAreaPixels.height
-            );
-
-            const base64Image = canvas.toDataURL('image/jpeg');
-            setProfileImage(base64Image);
-            setShowCropper(false);
-            setImageToCrop(null);
-        } catch (e) {
-            console.error(e);
-        }
+    const handleCropSave = (croppedImage) => {
+        if (cropType === 'profile') setProfileImage(croppedImage);
+        else setBannerImage(croppedImage);
+        setShowCropper(false);
+        setImageToCrop(null);
     };
 
     const handleSubmit = (e) => {
@@ -182,6 +153,7 @@ function AccountCompletion() {
             about,
             skills,
             profileImage,
+            bannerImage,
             experience,
             projects,
             education
@@ -192,45 +164,14 @@ function AccountCompletion() {
     return (
         <div className="auth-container">
             {showCropper && (
-                <div className="cropper-modal-overlay">
-                    <div className="cropper-modal-content">
-                        <div className="cropper-header">
-                            <h3>Crop Profile Photo</h3>
-                            <button type="button" onClick={() => setShowCropper(false)} className="btn-close-cropper"><FaTimes /></button>
-                        </div>
-                        <div className="cropper-container-wrapper">
-                            <Cropper
-                                image={imageToCrop}
-                                crop={crop}
-                                zoom={zoom}
-                                aspect={1 / 1}
-                                onCropChange={setCrop}
-                                onCropComplete={onCropComplete}
-                                onZoomChange={setZoom}
-                                cropShape="round"
-                                showGrid={false}
-                            />
-                        </div>
-                        <div className="cropper-controls">
-                            <div className="zoom-control">
-                                <span>Zoom</span>
-                                <input
-                                    type="range"
-                                    value={zoom}
-                                    min={1}
-                                    max={3}
-                                    step={0.1}
-                                    aria-labelledby="Zoom"
-                                    onChange={(e) => setZoom(e.target.value)}
-                                    className="zoom-range"
-                                />
-                            </div>
-                            <button type="button" onClick={createCroppedImage} className="btn-save-crop">
-                                Apply Crop
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <ImageCropperModal
+                    image={imageToCrop}
+                    onCropComplete={handleCropSave}
+                    onClose={() => setShowCropper(false)}
+                    aspect={cropType === 'profile' ? 1 : 16 / 5}
+                    shape={cropType === 'profile' ? 'round' : 'rect'}
+                    title={`Crop ${cropType === 'profile' ? 'Profile Photo' : 'Banner Image'}`}
+                />
             )}
             <div className="auth-card card-wide" ref={cardRef}>
                 <div className="auth-header">
@@ -239,34 +180,72 @@ function AccountCompletion() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form-content">
-                    {/* Profile Photo */}
-                    <div className="photo-upload-container">
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                        />
+                    {/* Banner and Profile Upload */}
+                    <div className="org-upload-section" style={{ marginBottom: '40px' }}>
                         <div
-                            onClick={handlePhotoClick}
-                            className="photo-upload-circle photo-upload-hover"
+                            className="banner-upload-container"
+                            onClick={() => handleImageClick('banner')}
                             style={{
-                                background: profileImage ? `url(${profileImage})` : 'var(--surface-faint)',
+                                height: '180px',
+                                background: bannerImage ? `url(${bannerImage})` : 'var(--surface-faint)',
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
+                                borderRadius: '16px',
+                                border: '2px dashed var(--emerald-500)',
+                                position: 'relative',
+                                cursor: 'pointer',
+                                overflow: 'hidden',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}
                         >
-                            {!profileImage && (
-                                <>
+                            {!bannerImage && (
+                                <div style={{ textAlign: 'center' }}>
                                     <FaCamera className="camera-icon" />
-                                    <span className="add-photo-text">Add Photo</span>
-                                </>
+                                    <p className="add-photo-text">Add Banner Image</p>
+                                </div>
                             )}
-                            {profileImage && (
-                                <div className="change-photo-overlay">Change</div>
-                            )}
+                            {bannerImage && <div className="change-photo-overlay">Change Banner</div>}
                         </div>
+
+                        <div
+                            className="logo-upload-wrapper"
+                            style={{
+                                marginTop: '-60px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                position: 'relative',
+                                zIndex: 2
+                            }}
+                        >
+                            <div
+                                onClick={() => handleImageClick('profile')}
+                                className="photo-upload-circle photo-upload-hover"
+                                style={{
+                                    width: '120px',
+                                    height: '120px',
+                                    background: profileImage ? `url(${profileImage})` : 'var(--bg-main)',
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    border: '4px solid var(--bg-main)',
+                                    boxShadow: 'var(--premium-shadow)'
+                                }}
+                            >
+                                {!profileImage && (
+                                    <>
+                                        <FaCamera className="camera-icon" />
+                                        <span className="add-photo-text">Add Photo</span>
+                                    </>
+                                )}
+                                {profileImage && (
+                                    <div className="change-photo-overlay">Change</div>
+                                )}
+                            </div>
+                        </div>
+
+                        <input type="file" ref={profileInputRef} onChange={(e) => handleFileChange(e, 'profile')} accept="image/*" style={{ display: 'none' }} />
+                        <input type="file" ref={bannerInputRef} onChange={(e) => handleFileChange(e, 'banner')} accept="image/*" style={{ display: 'none' }} />
                     </div>
 
                     {/* Basic Info */}

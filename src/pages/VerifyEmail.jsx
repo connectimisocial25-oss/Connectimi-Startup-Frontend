@@ -18,7 +18,11 @@ function VerifyEmail() {
 
     const handleSimulateVerify = () => {
         verifyEmail();
-        navigate("/account-completion");
+        if (tempData?.accountType === "organization") {
+            navigate("/org-account-completion");
+        } else {
+            navigate("/account-completion");
+        }
     };
 
     return (
