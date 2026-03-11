@@ -67,6 +67,7 @@ body {
   color: var(--text-primary);
   transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-x: hidden;
+  user-select: none;
 }
 
 .glass-morphism {
