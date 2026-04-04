@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from './Icon';
 import './PaymentModal.css';
 
-const PaymentModal = ({ isOpen, onClose, onPaymentSuccess, courseTitle, price }) => {
+const PaymentModal = ({ isOpen, onClose, onPaymentSuccess, courseTitle, price, itemType = 'Course' }) => {
     if (!isOpen) return null;
 
     const [selectedMethod, setSelectedMethod] = React.useState('card');
@@ -123,8 +123,8 @@ const PaymentModal = ({ isOpen, onClose, onPaymentSuccess, courseTitle, price })
                             <Icon name="check" size={40} color="#fff" />
                         </div>
                         <h2>Payment Successful!</h2>
-                        <p>You have successfully enrolled in {courseTitle}.</p>
-                        <p className="redirect-msg">Redirecting to course...</p>
+                        <p>You have successfully paid for {courseTitle}.</p>
+                        <p className="redirect-msg">Redirecting...</p>
                     </div>
                 ) : processing ? (
                     <div className="payment-processing-view">
@@ -144,7 +144,7 @@ const PaymentModal = ({ isOpen, onClose, onPaymentSuccess, courseTitle, price })
 
                         <div className="order-summary">
                             <div className="summary-item">
-                                <span>Course</span>
+                                <span>{itemType}</span>
                                 <strong>{courseTitle}</strong>
                             </div>
                             <div className="summary-item total">

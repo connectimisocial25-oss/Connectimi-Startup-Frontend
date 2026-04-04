@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useTheme } from '../context/ThemeContext';
 import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
+import PaymentModal from '../components/PaymentModal';
 import './MyNetwork.css';
 import Messaging from './Messaging';
 
@@ -14,6 +15,10 @@ const MyNetwork = () => {
 
     const initialTab = location.state?.tab || new URLSearchParams(location.search).get('tab') || 'connections';
     const [activeTab, setActiveTab] = useState(initialTab);
+    
+    // Payment Modal State
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [selectedExpert, setSelectedExpert] = useState(null);
 
     useEffect(() => {
         const tab = location.state?.tab || new URLSearchParams(location.search).get('tab') || 'connections';
@@ -110,6 +115,62 @@ const MyNetwork = () => {
         }
     ];
 
+    const expertsData = [
+        {
+            id: 201,
+            name: "Sarah Jenkins",
+            role: "Senior UI/UX Designer at Figma",
+            userRole: "expert",
+            avatar: "https://i.pravatar.cc/150?u=sarahj",
+            fee: 899
+        },
+        {
+            id: 202,
+            name: "Alex Rivera",
+            role: "Full-Stack Web Developer",
+            userRole: "expert",
+            avatar: "https://i.pravatar.cc/150?u=alexr",
+            fee: 799
+        },
+        {
+            id: 203,
+            name: "Dr. Elena Rostova",
+            role: "AI Research Scientist",
+            userRole: "expert",
+            avatar: "https://i.pravatar.cc/150?u=elena",
+            fee: 1499
+        },
+        {
+            id: 204,
+            name: "Marcus Chen",
+            role: "Backend Architect & Scalability Expert",
+            userRole: "expert",
+            avatar: "https://i.pravatar.cc/150?u=marcus",
+            fee: 1199
+        },
+        {
+            id: 205,
+            name: "Chloe Vang",
+            role: "Professional Photographer & Retoucher",
+            userRole: "expert",
+            avatar: "https://i.pravatar.cc/150?u=chloe",
+            fee: 599
+        },
+        {
+            id: 206,
+            name: "David O'Connor",
+            role: "Business Development & Growth Consultant",
+            userRole: "expert",
+            avatar: "https://i.pravatar.cc/150?u=davidoc",
+            fee: 1299
+        }
+    ];
+
+    const handleConsultClick = (expert) => {
+        setSelectedExpert(expert);
+        setIsPaymentModalOpen(true);
+    };
+
     return (
         <div className="network-container">
             <div className="network-content">
@@ -118,6 +179,7 @@ const MyNetwork = () => {
                         <div className="sidebar-title">Manage Network</div>
                         {[
                             { id: 'connections', label: 'Connections', icon: 'users', count: 482 },
+                            { id: 'experts', label: 'Expert Consultations', icon: 'user-tie' },
                             { id: 'messaging', label: 'Messaging', icon: 'comment-dots' },
                             { id: 'following', label: 'Following & Followers', icon: 'user-circle' },
                             { id: 'groups', label: 'Groups', icon: 'users', count: 12 },
@@ -147,6 +209,36 @@ const MyNetwork = () => {
                 <main className="network-main" ref={mainContentRef}>
                     {activeTab === 'messaging' ? (
                         <Messaging embedded={true} />
+                    ) : activeTab === 'experts' ? (
+                        <section className="suggestions-section">
+                            <div className="modern-teal-badge">TOP EXPERTS FOR YOU</div>
+                            <div className="suggestions-grid">
+                                {expertsData.map((expert, index) => (
+                                    <div
+                                        key={expert.id}
+                                        className="suggestion-card"
+                                        ref={el => suggestionsRef.current[index] = el}
+                                    >
+                                        <div className="expert-banner"></div>
+                                        <Avatar
+                                            src={expert.avatar}
+                                            alt={expert.name}
+                                            role={expert.userRole}
+                                            size={110}
+                                            className="suggestion-avatar"
+                                        />
+                                        <div className="suggestion-info">
+                                            <div className="suggestion-name">{expert.name}</div>
+                                            <div className="suggestion-role">{expert.role}</div>
+                                            <div className="expert-fee">₹{expert.fee} / session</div>
+                                        </div>
+                                        <button className="consult-btn" onClick={() => handleConsultClick(expert)}>
+                                            <Icon name="comment" /> Consult Now
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
                     ) : (
                         <>
                             <section className="invitations-section">
@@ -207,6 +299,20 @@ const MyNetwork = () => {
                     )}
                 </main>
             </div>
+
+            {selectedExpert && (
+                <PaymentModal
+                    isOpen={isPaymentModalOpen}
+                    onClose={() => setIsPaymentModalOpen(false)}
+                    onPaymentSuccess={() => {
+                        console.log("Consultation booked with", selectedExpert.name);
+                        // Redirect to messaging or confirmation page logic here
+                    }}
+                    courseTitle={`Consultation with ${selectedExpert.name}`}
+                    price={selectedExpert.fee}
+                    itemType="Consultation"
+                />
+            )}
         </div>
     );
 };
