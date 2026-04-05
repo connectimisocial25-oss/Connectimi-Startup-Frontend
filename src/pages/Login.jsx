@@ -37,7 +37,7 @@ export function LoginForm({ onToggle, compact = false }) {
           className={`toggle-btn ${accountType === "organization" ? "active" : ""}`}
           onClick={() => setAccountType("organization")}
         >
-          Organization
+          Consultant
         </button>
         <button
           type="button"
