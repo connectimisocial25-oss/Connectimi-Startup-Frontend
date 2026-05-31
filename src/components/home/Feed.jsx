@@ -3,6 +3,7 @@ import Avatar from '../Avatar';
 import Icon from '../Icon';
 import gsap from 'gsap';
 import { useAuth } from '../../context/AuthContext';
+import API from '../../services/api';
 
 const Feed = () => {
     const feedRef = useRef(null);
@@ -14,22 +15,54 @@ const Feed = () => {
     const [newPostContent, setNewPostContent] = useState("");
     const fileInputRef = useRef(null);
     const videoInputRef = useRef(null);
+    const [insights, setInsights] = useState([]);
 
-    // Initial data with 'likes' count
+    const mapPostToInsight = (post, currentUserId) => ({
+        id: post._id,
+        author: post.author?.full_name || "Anonymous",
+        authorImg: post.author?.profile_picture || "https://i.pravatar.cc/150",
+        image: post.media?.[0]?.url || "https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+        title: post.title || "Solving User Friction",
+        takeaway: post.content || "",
+        liked: currentUserId ? post.likes?.includes(currentUserId) : false,
+        likes: post.likes?.length || 0,
+        comments: post.comments?.length || 0
+    });
+
+    // Load dynamic posts from feed
     useEffect(() => {
-        const cards = feedRef.current.querySelectorAll('.insight-card');
-        const shareCard = feedRef.current.querySelector('.share-insight-card');
+        const fetchFeed = async () => {
+            try {
+                const res = await API.get("/posts/feed");
+                const mapped = res.data.posts.map(p => mapPostToInsight(p, user?.id));
+                setInsights(mapped);
 
-        gsap.fromTo(shareCard,
-            { y: 20, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
-        );
+                // GSAP Animations after loading data
+                setTimeout(() => {
+                    const cards = feedRef.current?.querySelectorAll('.insight-card');
+                    const shareCard = feedRef.current?.querySelector('.share-insight-card');
 
-        gsap.fromTo(cards,
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
-        );
-    }, []);
+                    if (shareCard) {
+                        gsap.fromTo(shareCard,
+                            { y: 20, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
+                        );
+                    }
+
+                    if (cards && cards.length > 0) {
+                        gsap.fromTo(cards,
+                            { y: 30, opacity: 0 },
+                            { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out' }
+                        );
+                    }
+                }, 100);
+            } catch (err) {
+                console.error("Failed to load feed:", err.message);
+            }
+        };
+
+        fetchFeed();
+    }, [user]);
 
     useEffect(() => {
         if (selectedInsight && modalRef.current) {
@@ -40,64 +73,24 @@ const Feed = () => {
         }
     }, [selectedInsight]);
 
-    const [insights, setInsights] = useState([
-        {
-            id: 1,
-            author: 'Salic UX Research',
-            authorImg: 'https://i.pravatar.cc/150?u=salic',
-            image: 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            title: 'Solving User Friction in Fintech',
-            takeaway: 'We found that reducing steps by 20% increased retention by 50%. This was a significant finding in our recent study involving over 500 participants across various demographics. The key was to streamline the onboarding process without compromising security. We implemented a progressive profiling approach that allowed users to get value before committing to a full signup.',
-            liked: true,
-            likes: 42,
-            comments: 5
-        },
-        {
-            id: 2,
-            author: 'Skili UX Research',
-            authorImg: 'https://i.pravatar.cc/150?u=skili',
-            image: 'https://images.unsplash.com/photo-1555421689-d68471e189f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            title: 'Optimize Database Queries',
-            takeaway: 'We found that indexing tags dbs by 20% increased return by 54%. Database optimization is often overlooked in early stages but becomes critical at scale. By analyzing query execution plans, we identified bottlenecks that were slowing down the entire application.',
-            liked: false,
-            likes: 18,
-            comments: 2
-        },
-        {
-            id: 3,
-            author: 'John Doe',
-            authorImg: 'https://i.pravatar.cc/150?u=john',
-            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            title: 'Team Collaboration at Scale',
-            takeaway: 'Async communication is key for distributed teams. It allows deep work and reduces meeting fatigue. We recommend documentation-first culture.',
-            liked: false,
-            likes: 125,
-            comments: 34
-        },
-        {
-            id: 4,
-            author: 'Jane Smith',
-            authorImg: 'https://i.pravatar.cc/150?u=jane',
-            image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80',
-            title: 'The Future of AI Design',
-            takeaway: 'Generative UI will change how we build interfaces. Instead of static screens, we will design systems that adapt to user intent in real-time.',
-            liked: true,
-            likes: 89,
-            comments: 12
-        }
-    ]);
+    const handleLike = async (id) => {
+        try {
+            const res = await API.post(`/posts/${id}/like`);
+            const { liked, like_count } = res.data;
 
-    const handleLike = (id) => {
-        setInsights(insights.map(item => {
-            if (item.id === id) {
-                return {
-                    ...item,
-                    liked: !item.liked,
-                    likes: item.liked ? item.likes - 1 : item.likes + 1
-                };
-            }
-            return item;
-        }));
+            setInsights(insights.map(item => {
+                if (item.id === id) {
+                    return {
+                        ...item,
+                        liked,
+                        likes: like_count
+                    };
+                }
+                return item;
+            }));
+        } catch (err) {
+            console.error("Failed to toggle like:", err.message);
+        }
     };
 
     const openProjectModal = (insight) => {
@@ -109,6 +102,7 @@ const Feed = () => {
     };
 
     const truncateText = (text, maxLength) => {
+        if (!text) return "";
         if (text.length <= maxLength) return text;
         return text.substr(0, maxLength) + '...';
     };
@@ -116,24 +110,22 @@ const Feed = () => {
     const triggerFileSelect = () => fileInputRef.current.click();
     const triggerVideoSelect = () => videoInputRef.current.click();
 
-    const handleCreatePost = (e) => {
+    const handleCreatePost = async (e) => {
         e.preventDefault();
         if (!newPostContent.trim()) return;
 
-        const newPost = {
-            id: Date.now(),
-            author: user ? `${user.firstName} ${user.lastName}` : 'Guest User',
-            authorImg: user?.profileImage || 'https://i.pravatar.cc/150?u=guest',
-            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            title: 'My Latest Insight',
-            takeaway: newPostContent,
-            liked: false,
-            likes: 0,
-            comments: 0
-        };
+        try {
+            const res = await API.post("/posts", {
+                content: newPostContent,
+                type: "post"
+            });
 
-        setInsights([newPost, ...insights]);
-        setNewPostContent("");
+            const newPost = mapPostToInsight(res.data.post, user?.id);
+            setInsights([newPost, ...insights]);
+            setNewPostContent("");
+        } catch (err) {
+            console.error("Failed to create post:", err.message);
+        }
     };
 
     return (

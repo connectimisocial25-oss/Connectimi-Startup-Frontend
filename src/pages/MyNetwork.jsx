@@ -7,6 +7,7 @@ import Avatar from '../components/Avatar';
 import PaymentModal from '../components/PaymentModal';
 import './MyNetwork.css';
 import Messaging from './Messaging';
+import API from '../services/api';
 
 const MyNetwork = () => {
     const navigate = useNavigate();
@@ -53,67 +54,70 @@ const MyNetwork = () => {
         }
     }, [activeTab]);
 
-    const invitations = [
-        {
-            id: 2,
-            name: "Michael Chen",
-            role: "Product Manager at InnovateSoft",
-            userRole: "company",
-            avatar: "https://i.pravatar.cc/150?u=michael"
-        },
-        {
-            id: 1,
-            name: "Sarah Miller",
-            role: "Software Engineer at TechCorp",
-            userRole: "professional",
-            avatar: "https://i.pravatar.cc/150?u=sarah"
-        }
-    ];
+    const [invitations, setInvitations] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
 
-    const suggestions = [
-        {
-            id: 101,
-            name: "David Wilson",
-            role: "Full Stack Developer | React & Node.js",
-            userRole: "professional",
-            avatar: "https://i.pravatar.cc/150?u=david"
-        },
-        {
-            id: 102,
-            name: "Emily Blunt",
-            role: "UI/UX Designer at Creative Studio",
-            userRole: "company",
-            avatar: "https://i.pravatar.cc/150?u=emily"
-        },
-        {
-            id: 103,
-            name: "James Bond",
-            role: "Security Analyst",
-            userRole: "professor",
-            avatar: "https://i.pravatar.cc/150?u=james"
-        },
-        {
-            id: 104,
-            name: "Jessica Alba",
-            role: "Marketing Manager",
-            userRole: "professional",
-            avatar: "https://i.pravatar.cc/150?u=jessica"
-        },
-        {
-            id: 105,
-            name: "Iron Man",
-            role: "Genius, Billionaire, Philanthropist",
-            userRole: "company",
-            avatar: "https://i.pravatar.cc/150?u=ironman"
-        },
-        {
-            id: 106,
-            name: "Black Widow",
-            role: "Special Agent",
-            userRole: "professor",
-            avatar: "https://i.pravatar.cc/150?u=natasha"
+    const mapInvitation = (invite) => ({
+        id: invite._id,
+        name: invite.requester?.full_name || "Anonymous",
+        role: invite.requester?.headline || "Connectimi Member",
+        userRole: invite.requester?.role || "professional",
+        avatar: invite.requester?.profile_picture || "https://i.pravatar.cc/150"
+    });
+
+    const mapSuggestion = (sug) => ({
+        id: sug._id,
+        name: sug.full_name || "Anonymous",
+        role: sug.headline || "Connectimi Member",
+        userRole: sug.role || "professional",
+        avatar: sug.profile_picture || "https://i.pravatar.cc/150"
+    });
+
+    // Load active invitations and suggestions from API
+    useEffect(() => {
+        if (activeTab === 'connections') {
+            const loadNetworkData = async () => {
+                try {
+                    const [inviteRes, sugRes] = await Promise.all([
+                        API.get("/network/invitations"),
+                        API.get("/network/suggestions")
+                    ]);
+                    setInvitations(inviteRes.data.invitations.map(mapInvitation));
+                    setSuggestions(sugRes.data.suggestions.map(mapSuggestion));
+                } catch (err) {
+                    console.error("Failed to load network data:", err.message);
+                }
+            };
+            loadNetworkData();
         }
-    ];
+    }, [activeTab]);
+
+    const handleAcceptInvite = async (connectionId) => {
+        try {
+            await API.put(`/network/respond/${connectionId}`, { action: "accept" });
+            setInvitations(invitations.filter(i => i.id !== connectionId));
+        } catch (err) {
+            console.error("Failed to accept connection:", err.message);
+        }
+    };
+
+    const handleDeclineInvite = async (connectionId) => {
+        try {
+            await API.put(`/network/respond/${connectionId}`, { action: "decline" });
+            setInvitations(invitations.filter(i => i.id !== connectionId));
+        } catch (err) {
+            console.error("Failed to decline connection:", err.message);
+        }
+    };
+
+    const handleSendConnect = async (userId) => {
+        try {
+            await API.post(`/network/connect/${userId}`);
+            setSuggestions(suggestions.filter(s => s.id !== userId));
+        } catch (err) {
+            console.error("Failed to send connect request:", err.message);
+        }
+    };
 
     const expertsData = [
         {
@@ -244,7 +248,7 @@ const MyNetwork = () => {
                             <section className="invitations-section">
                                 <div className="section-header">
                                     <h2>Invitations</h2>
-                                    <button className="see-all-btn">See all 2</button>
+                                    <button className="see-all-btn">See all {invitations.length}</button>
                                 </div>
                                 {invitations.map(invite => (
                                     <div key={invite.id} className="invitation-card">
@@ -260,8 +264,8 @@ const MyNetwork = () => {
                                             <div className="invite-role">{invite.role}</div>
                                         </div>
                                         <div className="invite-actions" style={{ display: 'flex', gap: '12px' }}>
-                                            <button className="ignore-btn">Ignore</button>
-                                            <button className="accept-btn">Accept</button>
+                                            <button className="ignore-btn" onClick={() => handleDeclineInvite(invite.id)}>Ignore</button>
+                                            <button className="accept-btn" onClick={() => handleAcceptInvite(invite.id)}>Accept</button>
                                         </div>
                                     </div>
                                 ))}
@@ -288,7 +292,7 @@ const MyNetwork = () => {
                                                 <div className="suggestion-name">{person.name}</div>
                                                 <div className="suggestion-role">{person.role}</div>
                                             </div>
-                                            <button className="connect-btn">
+                                            <button className="connect-btn" onClick={() => handleSendConnect(person.id)}>
                                                 <Icon name="user-plus" /> Connect
                                             </button>
                                         </div>

@@ -143,22 +143,26 @@ function AccountCompletion() {
         setImageToCrop(null);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        completeAccount({
-            headline,
-            location,
-            phone,
-            website,
-            about,
-            skills,
-            profileImage,
-            bannerImage,
-            experience,
-            projects,
-            education
-        });
-        navigate("/home");
+        try {
+            await completeAccount({
+                headline,
+                location,
+                phone,
+                website,
+                about,
+                skills,
+                profileImage,
+                bannerImage,
+                experience,
+                projects,
+                education
+            });
+            navigate("/home");
+        } catch (err) {
+            alert(err.response?.data?.error || "Failed to complete account. Please check your fields.");
+        }
     };
 
     return (

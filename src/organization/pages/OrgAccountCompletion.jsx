@@ -122,22 +122,27 @@ function OrgAccountCompletion() {
         setImageToCrop(null);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        completeAccount({
-            industry,
-            location,
-            phone,
-            website,
-            about,
-            companySize,
-            foundedDate,
-            specialties,
-            profileImage: logoImage, // Mapping logo to profileImage for consistency
-            bannerImage,
-            services
-        });
-        navigate("/organization/feed");
+        try {
+            await completeAccount({
+                industry,
+                location,
+                phone,
+                website,
+                about,
+                companySize,
+                foundedDate,
+                specialties,
+                profileImage: logoImage, // Mapping logo to profileImage for consistency
+                bannerImage,
+                services,
+                role: "organization" // Inform backend that this is an organization
+            });
+            navigate("/organization/feed");
+        } catch (err) {
+            alert(err.response?.data?.error || "Failed to complete organization setup. Please check your fields.");
+        }
     };
 
     return (
