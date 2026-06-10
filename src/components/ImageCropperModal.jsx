@@ -1,15 +1,15 @@
-import React, { useState, useCallback } from 'react';
-import Cropper from 'react-easy-crop';
-import { FaTimes } from 'react-icons/fa';
-import './ImageCropperModal.css';
+import React, { useState, useCallback } from "react";
+import Cropper from "react-easy-crop";
+import { FaTimes } from "react-icons/fa";
+import "./ImageCropperModal.css";
 
 const ImageCropperModal = ({
   image,
   onCropComplete: onCropSave,
   onClose,
   aspect = 1,
-  shape = 'rect',
-  title = 'Crop Image'
+  shape = "rect",
+  title = "Crop Image",
 }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -23,22 +23,28 @@ const ImageCropperModal = ({
     setZoom(zoom);
   }, []);
 
-  const onCropCompleteInternal = useCallback((_croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  const onCropCompleteInternal = useCallback(
+    (_croppedArea, croppedAreaPixels) => {
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    [],
+  );
 
   const handleSave = async () => {
     try {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       const img = new Image();
+
       img.src = image;
+
       await new Promise((resolve) => {
         img.onload = resolve;
       });
 
       canvas.width = croppedAreaPixels.width;
       canvas.height = croppedAreaPixels.height;
-      const ctx = canvas.getContext('2d');
+
+      const ctx = canvas.getContext("2d");
 
       ctx.drawImage(
         img,
@@ -49,11 +55,21 @@ const ImageCropperModal = ({
         0,
         0,
         croppedAreaPixels.width,
-        croppedAreaPixels.height
+        croppedAreaPixels.height,
       );
 
-      const base64Image = canvas.toDataURL('image/jpeg');
-      onCropSave(base64Image);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            console.error("Failed to create blob");
+            return;
+          }
+
+          onCropSave(blob);
+        },
+        "image/jpeg",
+        0.9,
+      );
     } catch (e) {
       console.error("Error cropping image:", e);
     }
@@ -64,7 +80,9 @@ const ImageCropperModal = ({
       <div className="cropper-modal-content">
         <div className="cropper-header">
           <h3>{title}</h3>
-          <button type="button" onClick={onClose} className="btn-close-cropper"><FaTimes /></button>
+          <button type="button" onClick={onClose} className="btn-close-cropper">
+            <FaTimes />
+          </button>
         </div>
         <div className="cropper-container-wrapper">
           <Cropper

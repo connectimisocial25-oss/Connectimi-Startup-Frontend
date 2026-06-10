@@ -1,7 +1,8 @@
 import axios from "axios";
 
+const url = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 const API = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: `${url}/api/`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -18,7 +19,7 @@ API.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor to handle session expiration or global errors
@@ -32,7 +33,7 @@ API.interceptors.response.use(
       localStorage.removeItem("connectimi_user");
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default API;

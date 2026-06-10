@@ -3,34 +3,53 @@ import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Auth.css";
+import { useAuth } from "../context/AuthContext";
 
 export function LoginForm({ onToggle, compact = false }) {
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [accountType, setAccountType] = useState("personal");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
 
   useEffect(() => {
-    gsap.fromTo(formRef.current.children,
+    gsap.fromTo(
+      formRef.current.children,
       { y: 10, opacity: 0 },
-      { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: "power2.out" }
+      { y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: "power2.out" },
     );
   }, [accountType]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!email || !password) return;
-    if (accountType === 'organization') {
-      navigate("/organization");
-    } else {
-      navigate("/home");
+
+    setError("");
+    setLoading(true);
+
+    try {
+      await login(email, password, accountType); // pass accountType
+      // AuthContext.login sets the user + token
+      // navigate based on account type
+      if (accountType === "consultant") {
+        navigate("/organization");
+      } else {
+        navigate("/home");
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Login failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className={`auth-form-wrapper ${compact ? 'compact' : ''}`}>
+    <div className={`auth-form-wrapper ${compact ? "compact" : ""}`}>
       <div className="auth-toggle">
         <button
           type="button"
@@ -53,14 +72,16 @@ export function LoginForm({ onToggle, compact = false }) {
           <input
             type="email"
             className="auth-input"
-            placeholder={accountType === "organization" ? "Work Email" : "Email or Phone"}
+            placeholder={
+              accountType === "organization" ? "Work Email" : "Email or Phone"
+            }
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
 
-        <div className="auth-field" style={{ position: 'relative' }}>
+        <div className="auth-field" style={{ position: "relative" }}>
           <input
             type={showPassword ? "text" : "password"}
             className="auth-input"
@@ -68,26 +89,26 @@ export function LoginForm({ onToggle, compact = false }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ paddingRight: '45px' }}
+            style={{ paddingRight: "45px" }}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             style={{
-              position: 'absolute',
-              right: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '18px',
-              padding: '5px',
-              transition: 'color 0.2s ease'
+              position: "absolute",
+              right: "12px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "none",
+              border: "none",
+              color: "var(--text-muted)",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "18px",
+              padding: "5px",
+              transition: "color 0.2s ease",
             }}
             className="password-toggle-btn"
           >
@@ -95,21 +116,44 @@ export function LoginForm({ onToggle, compact = false }) {
           </button>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <p
+            style={{
+              color: "var(--error, #ef4444)",
+              fontSize: "14px",
+              margin: "0",
+            }}
+          >
+            {error}
+          </p>
+        )}
+
         <div style={{ textAlign: "left" }}>
-          <Link to="/forgot-password" style={{ color: "var(--emerald-500)", fontWeight: "700", textDecoration: "none", fontSize: "14px" }}>
+          <Link
+            to="/forgot-password"
+            style={{
+              color: "var(--emerald-500)",
+              fontWeight: "700",
+              textDecoration: "none",
+              fontSize: "14px",
+            }}
+          >
             Forgot password?
           </Link>
         </div>
 
-        <button className="auth-submit-btn" type="submit">
-          Sign In
+        <button className="auth-submit-btn" type="submit" disabled={loading}>
+          {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 
       {!compact && (
         <div className="auth-footer">
           New to Connectimi?
-          <button onClick={onToggle} className="auth-link-btn">Join now</button>
+          <button onClick={onToggle} className="auth-link-btn">
+            Join now
+          </button>
         </div>
       )}
     </div>
@@ -121,9 +165,10 @@ function Login() {
   const cardRef = useRef(null);
 
   useEffect(() => {
-    gsap.fromTo(cardRef.current,
+    gsap.fromTo(
+      cardRef.current,
       { y: 40, opacity: 0, scale: 0.95 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
+      { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" },
     );
   }, []);
 
@@ -132,7 +177,7 @@ function Login() {
       <div className="auth-card" ref={cardRef}>
         <div className="auth-header">
           <div className="auth-logo">
-             <div
+            <div
               style={{
                 width: "60px",
                 height: "60px",
@@ -151,7 +196,9 @@ function Login() {
             />
           </div>
           <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">Stay updated on your professional world</p>
+          <p className="auth-subtitle">
+            Stay updated on your professional world
+          </p>
         </div>
 
         <LoginForm onToggle={() => navigate("/signup")} />

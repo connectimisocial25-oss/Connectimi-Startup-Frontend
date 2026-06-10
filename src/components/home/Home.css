@@ -278,11 +278,17 @@
     font-size: 14px;
 }
 
-/* Insights Grid */
+/* ── Grid — 2 columns, cards flow naturally ── */
 .insights-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
+  columns: 2;
+  column-gap: 16px;
+}
+
+/* ── Responsive — single column on mobile ── */
+@media (max-width: 640px) {
+  .insights-grid {
+    columns: 1;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -291,24 +297,64 @@
     }
 }
 
+/* ── Base card ── */
 .insight-card {
-    background: var(--glass-bg);
-    backdrop-filter: var(--backdrop-blur);
-    -webkit-backdrop-filter: var(--backdrop-blur);
-    border-radius: 24px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-    position: relative;
+  break-inside: avoid;        /* prevents card splitting across columns */
+  margin-bottom: 16px;
+  display: inline-block;      /* required for column layout to work */
+  width: 100%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .insight-card:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Image card — fixed image height ── */
+.insight-card .insight-image-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.insight-card .insight-image {
+  width: 100%;
+  height: auto;           /* natural height, no fixed 200px */
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.insight-card:hover .insight-image {
+  transform: scale(1.03);
+}
+
+/* ── Text-only card — no image slot at all ── */
+.insight-card--text-only {
+  background: var(--glass-bg);
+}
+
+.insight-card--text-only .insight-body {
+  padding: 20px;
+}
+
+.insight-card--text-only .insight-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.insight-card--text-only .insight-takeaway p {
+  /* More text visible since no image competes for space */
+  -webkit-line-clamp: 4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .insight-header {
@@ -341,10 +387,6 @@
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.insight-card:hover .insight-image {
-    transform: scale(1.05);
-}
-
 .btn-arrow-overlay {
     position: absolute;
     bottom: 12px;
@@ -362,11 +404,12 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
+/* ── Body padding ── */
 .insight-body {
-    padding: 16px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .insight-title {
@@ -591,14 +634,13 @@
     }
 }
 
-/* --- New Feed Card Styles --- */
+/* ── Author footer ── */
 .insight-footer-author {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-top: 1px solid var(--border-color);
-    background-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--glass-border);
 }
 
 .insight-author-name {
@@ -608,38 +650,46 @@
 }
 
 .insight-actions-new {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .action-main-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.btn-like-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 4px;
+/* Like and Comment take equal space */
+.btn-like-text,
+.btn-comment-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.btn-like-text:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+.btn-like-text:hover,
+.btn-comment-box:hover {
+  background: var(--glass-border);
+  color: var(--text-primary);
 }
 
 .btn-like-text.active {
-    color: var(--primary-green);
+  color: var(--primary-green);
+  border-color: var(--primary-green);
 }
 
 .btn-comment-box {
@@ -662,25 +712,27 @@
     border-color: var(--text-secondary);
 }
 
+/* Share spans full width below Like + Comment */
 .btn-share-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 8px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .btn-share-center:hover {
-    color: var(--text-primary);
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 6px;
+  background: var(--glass-border);
+  color: var(--text-primary);
 }
 
 @media (max-width: 768px) {

@@ -18,12 +18,14 @@ export function transformProfileToBackend(data) {
   if (data.role !== undefined) payload.role = data.role;
   if (data.companySize !== undefined) payload.company_size = data.companySize;
   if (data.foundedDate !== undefined) {
-    payload.founded_date = data.foundedDate ? new Date(data.foundedDate).toISOString() : null;
+    payload.founded_date = data.foundedDate ? new Date(data.foundedDate) : null;
   }
   if (data.industry !== undefined) payload.industry = data.industry;
 
-  if (data.profileImage !== undefined) payload.profile_picture = data.profileImage;
-  if (data.profilePicture !== undefined) payload.profile_picture = data.profilePicture;
+  if (data.profileImage !== undefined)
+    payload.profile_picture = data.profileImage;
+  if (data.profilePicture !== undefined)
+    payload.profile_picture = data.profilePicture;
   if (data.bannerImage !== undefined) payload.banner_image = data.bannerImage;
 
   if (data.specialties !== undefined) payload.specialties = data.specialties;
@@ -35,7 +37,8 @@ export function transformProfileToBackend(data) {
       }
       return {
         skill_name: skill.skill_name || skill.skillName || "",
-        proficiency_level: skill.proficiency_level || skill.proficiencyLevel || "beginner",
+        proficiency_level:
+          skill.proficiency_level || skill.proficiencyLevel || "beginner",
       };
     });
   }
@@ -45,8 +48,8 @@ export function transformProfileToBackend(data) {
       title: exp.title,
       company: exp.company,
       location: exp.location || "",
-      start_date: exp.startDate ? new Date(exp.startDate).toISOString() : new Date().toISOString(),
-      end_date: exp.endDate ? new Date(exp.endDate).toISOString() : null,
+      start_date: exp.startDate ? exp.startDate : new Date(),
+      end_date: exp.endDate ? exp.endDate : null,
       description: exp.description || "",
     }));
   }
@@ -54,20 +57,22 @@ export function transformProfileToBackend(data) {
   if (data.projects !== undefined) {
     payload.projects = data.projects.map((proj) => ({
       project_name: proj.title || proj.projectName || "",
-      project_url: proj.link || proj.projectUrl || "",
+      project_url: proj.link || proj.projectUrl || undefined,
       description: proj.description || "",
     }));
   }
 
   if (data.education !== undefined) {
-    payload.educations = data.education.map((edu) => ({
-      school: edu.school,
-      degree: edu.degree || "",
-      field_of_study: edu.field || edu.fieldOfStudy || "",
-      start_date: edu.startYear ? new Date(`${edu.startYear}-01-01`).toISOString() : null,
-      end_date: edu.endYear ? new Date(`${edu.endYear}-01-01`).toISOString() : null,
-      description: edu.description || "",
-    }));
+    payload.educations = data.education
+      .filter((edu) => edu.school) // Only include educations with at least a school name
+      .map((edu) => ({
+        school: edu.school,
+        degree: edu.degree || "",
+        field_of_study: edu.field || edu.fieldOfStudy || "",
+        start_date: edu.startYear ? `${edu.startYear}` : null,
+        end_date: edu.endYear ? `${edu.endYear}` : null,
+        description: edu.description || "",
+      }));
   }
 
   if (data.urls !== undefined) payload.urls = data.urls;
@@ -88,6 +93,7 @@ export function transformProfileToFrontend(user) {
   return {
     id: user.id || user._id,
     email: user.email,
+    accountType: user.account_type || "",
     phone: user.phone || "",
     firstName,
     lastName,
