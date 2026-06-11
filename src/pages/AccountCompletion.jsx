@@ -141,7 +141,14 @@ function AccountCompletion() {
   // Education handlers
   const addEducation = () => {
     if (newEducation.school && newEducation.degree) {
-      setEducation([...education, { ...newEducation, id: Date.now() }]);
+      const newEdu = {
+        ...newEducation,
+        id: Date.now(),
+        start_date: parseInt(newEducation.startYear),
+        end_date: newEducation.endYear === "Present" ? "Present" : parseInt(newEducation.endYear) || null,
+      };
+
+      setEducation([...education, newEdu]);
       setNewEducation({
         school: "",
         degree: "",
@@ -210,7 +217,7 @@ function AccountCompletion() {
     } catch (err) {
       alert(
         err.response?.data?.error ||
-          "Failed to complete account. Please check your fields.",
+        "Failed to complete account. Please check your fields.",
       );
     }
   };
@@ -435,30 +442,53 @@ function AccountCompletion() {
                 />
               </div>
               <div className="item-row">
-                <input
-                  type="text"
-                  placeholder="Start"
-                  value={newExperience.startDate}
-                  onChange={(e) =>
-                    setNewExperience({
-                      ...newExperience,
-                      startDate: e.target.value,
-                    })
-                  }
-                  className="auth-input-small"
-                />
-                <input
-                  type="text"
-                  placeholder="End"
-                  value={newExperience.endDate}
-                  onChange={(e) =>
-                    setNewExperience({
-                      ...newExperience,
-                      endDate: e.target.value,
-                    })
-                  }
-                  className="auth-input-small"
-                />
+                <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "4px" }}>
+                  <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>START DATE</label>
+                  <input
+                    type="date"
+                    value={newExperience.startDate}
+                    onChange={(e) =>
+                      setNewExperience({
+                        ...newExperience,
+                        startDate: e.target.value,
+                      })
+                    }
+                    className="auth-input-small"
+                  />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "4px" }}>
+                  <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
+                    END DATE
+                    <span style={{ marginLeft: "10px", fontWeight: 400, fontSize: "11px" }}>
+                      <input
+                        type="checkbox"
+                        id="exp-present"
+                        checked={newExperience.endDate === "Present"}
+                        onChange={(e) =>
+                          setNewExperience({
+                            ...newExperience,
+                            endDate: e.target.checked ? "Present" : "",
+                          })
+                        }
+                        style={{ marginRight: "4px", cursor: "pointer" }}
+                      />
+                      Present
+                    </span>
+                  </label>
+                  <input
+                    type="date"
+                    value={newExperience.endDate === "Present" ? "" : newExperience.endDate}
+                    disabled={newExperience.endDate === "Present"}
+                    onChange={(e) =>
+                      setNewExperience({
+                        ...newExperience,
+                        endDate: e.target.value,
+                      })
+                    }
+                    className="auth-input-small"
+                    style={newExperience.endDate === "Present" ? { opacity: 0.4, cursor: "not-allowed" } : {}}
+                  />
+                </div>
               </div>
               <div className="item-row">
                 <input
@@ -579,7 +609,7 @@ function AccountCompletion() {
               <div className="item-row">
                 <input
                   type="text"
-                  placeholder="New School"
+                  placeholder="Institution Name"
                   value={newEducation.school}
                   onChange={(e) =>
                     setNewEducation({ ...newEducation, school: e.target.value })
@@ -597,30 +627,48 @@ function AccountCompletion() {
                 />
               </div>
               <div className="item-row">
-                <input
-                  type="text"
-                  placeholder="Start Year"
-                  value={newEducation.startYear}
-                  onChange={(e) =>
-                    setNewEducation({
-                      ...newEducation,
-                      startYear: e.target.value,
-                    })
-                  }
-                  className="auth-input-small"
-                />
-                <input
-                  type="text"
-                  placeholder="End Year"
-                  value={newEducation.endYear}
-                  onChange={(e) =>
-                    setNewEducation({
-                      ...newEducation,
-                      endYear: e.target.value,
-                    })
-                  }
-                  className="auth-input-small"
-                />
+                <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "4px" }}>
+                  <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>START YEAR</label>
+                  <select
+                    value={newEducation.startYear}
+                    onChange={(e) => setNewEducation({ ...newEducation, startYear: e.target.value })}
+                    className="auth-input-small"
+                  >
+                    <option value="">Select year</option>
+                    {Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: "4px" }}>
+                  <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
+                    END YEAR
+                    <span style={{ marginLeft: "10px", fontWeight: 400, fontSize: "11px" }}>
+                      <input
+                        type="checkbox"
+                        checked={newEducation.endYear === "Present"}
+                        onChange={(e) =>
+                          setNewEducation({ ...newEducation, endYear: e.target.checked ? "Present" : "" })
+                        }
+                        style={{ marginRight: "4px", cursor: "pointer" }}
+                      />
+                      Present
+                    </span>
+                  </label>
+                  <select
+                    value={newEducation.endYear === "Present" ? "" : newEducation.endYear}
+                    disabled={newEducation.endYear === "Present"}
+                    onChange={(e) => setNewEducation({ ...newEducation, endYear: e.target.value })}
+                    className="auth-input-small"
+                    style={newEducation.endYear === "Present" ? { opacity: 0.4, cursor: "not-allowed" } : {}}
+                  >
+                    <option value="">Select year</option>
+                    {Array.from({ length: new Date().getFullYear() - 1900 + 1 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div className="item-row">
                 <input
