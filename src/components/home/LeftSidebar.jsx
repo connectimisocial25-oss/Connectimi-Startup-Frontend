@@ -2,18 +2,13 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from "../Avatar";
 import Icon from "../Icon";
+import { useAuth } from "../../context/AuthContext";
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
+  const { user: authUser } = useAuth();
+  const user = authUser || JSON.parse(localStorage.getItem("connectimi_user") || "null");
 
-  const user = {
-    name: "Alex Johnson",
-    role: "Senior Software Engineer",
-    company: "TechCorp",
-    stack: "React • TypeScript • Engineer",
-    location: "San Francisco",
-    connections: "200+",
-  };
 
   return (
     <aside className="left-sidebar-panel">
@@ -30,13 +25,15 @@ const LeftSidebar = () => {
               className="sidebar-profile-name"
               onClick={() => navigate("/profile")}
             >
-              {user.name}
+              {`${user.firstName} ${user.lastName}`}
             </h3>
             <p className="sidebar-profile-role">
-              {user.role}
+              {user.headline}
             </p>
-            <p className="highlight-text" style={{ fontSize: '12px' }}>@{user.company}</p>
-            <p className="sidebar-profile-sub">{user.stack}</p>
+            {/* <p className="highlight-text" style={{ fontSize: '12px' }}>@{user.company}</p> */}
+            <p className="sidebar-profile-sub">
+              {user.skills?.slice(0, 3).join(" • ")}
+            </p>
           </div>
         </div>
       </div>
