@@ -8,13 +8,21 @@ import API from "../../services/api";
 const Feed = () => {
   const feedRef = useRef(null);
   const modalRef = useRef(null);
+  const postModalRef = useRef(null);
+  const postOverlayRef = useRef(null);
+  const postTextareaRef = useRef(null);
+  const likeRefs = useRef({});
   const { user } = useAuth();
 
   // State for managing "See More" modal
   const [selectedInsight, setSelectedInsight] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [postImages, setPostImages] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
   const videoInputRef = useRef(null);
+  const modalFileInputRef = useRef(null);
   const [insights, setInsights] = useState([]);
 
   // ─── Fixed mapper ─────────────────────────────────────────────
@@ -111,20 +119,31 @@ const Feed = () => {
 
   const handleLike = async (id) => {
     try {
+      // Micro-animation: scale the button on click
+      const btn = likeRefs.current[id];
+      if (btn) {
+        gsap.fromTo(
+          btn,
+          { scale: 1 },
+          {
+            scale: 1.35, duration: 0.12, ease: "power2.out",
+            onComplete: () => gsap.to(btn, { scale: 1, duration: 0.2, ease: "elastic.out(1.2, 0.4)" })
+          }
+        );
+      }
+
       const res = await API.post(`/posts/${id}/like`);
       const { liked, like_count } = res.data;
 
-      setInsights(
-        insights.map((item) => {
-          if (item.id === id) {
-            return {
-              ...item,
-              liked,
-              likes: like_count,
-            };
-          }
-          return item;
-        }),
+      setInsights((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, liked, likes: like_count } : item
+        )
+      );
+
+      // Keep modal in sync if it's open on this post
+      setSelectedInsight((prev) =>
+        prev?.id === id ? { ...prev, liked, likes: like_count } : prev
       );
     } catch (err) {
       console.error("Failed to toggle like:", err.message);
@@ -145,22 +164,85 @@ const Feed = () => {
     return text.substr(0, maxLength) + "...";
   };
 
-  const triggerFileSelect = () => fileInputRef.current.click();
+  const triggerFileSelect = () => {
+    openPostModal();
+    setTimeout(() => modalFileInputRef.current?.click(), 300);
+  };
   const triggerVideoSelect = () => videoInputRef.current.click();
 
+  const openPostModal = () => {
+    setIsPostModalOpen(true);
+    setTimeout(() => {
+      if (postOverlayRef.current && postModalRef.current) {
+        gsap.fromTo(
+          postOverlayRef.current,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.25, ease: "power2.out" }
+        );
+        gsap.fromTo(
+          postModalRef.current,
+          { scale: 0.92, opacity: 0, y: 24 },
+          { scale: 1, opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.4)" }
+        );
+        postTextareaRef.current?.focus();
+      }
+    }, 10);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closePostModal = () => {
+    if (postOverlayRef.current && postModalRef.current) {
+      gsap.to(postModalRef.current, { scale: 0.94, opacity: 0, y: 16, duration: 0.22, ease: "power2.in" });
+      gsap.to(postOverlayRef.current, {
+        opacity: 0, duration: 0.25, ease: "power2.in",
+        onComplete: () => {
+          setIsPostModalOpen(false);
+          document.body.style.overflow = "";
+        }
+      });
+    } else {
+      setIsPostModalOpen(false);
+      document.body.style.overflow = "";
+    }
+  };
+
+  const handleModalImageSelect = (files) => {
+    if (!files) return;
+    const imgs = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    if (imgs.length === 0) return;
+
+    // Only keep the first image — replace, don't append
+    const file = imgs[0];
+    const reader = new FileReader();
+    reader.onload = (e) => setPostImages([{ url: e.target.result, file }]);
+    reader.readAsDataURL(file);
+  };
+
+  const removePostImage = (idx) =>
+    setPostImages((prev) => prev.filter((_, i) => i !== idx));
+
   const handleCreatePost = async (e) => {
-    e.preventDefault();
-    if (!newPostContent.trim()) return;
+    if (e) e.preventDefault();
+    if (!newPostContent.trim() && postImages.length === 0) return;
 
     try {
-      const res = await API.post("/posts", {
-        content: newPostContent,
-        type: "post",
+      const formData = new FormData();
+      formData.append("content", newPostContent);
+      formData.append("type", "post");
+
+      if (postImages.length > 0) {
+        formData.append("image", postImages[0].file); // single() only accepts one file
+      }
+
+      const res = await API.post("/posts", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       const newPost = mapPostToInsight(res.data.post, user?.id);
       setInsights([newPost, ...insights]);
       setNewPostContent("");
+      setPostImages([]);
+      closePostModal();
     } catch (err) {
       console.error("Failed to create post:", err.message);
     }
@@ -170,7 +252,7 @@ const Feed = () => {
     <main className="feed-container" ref={feedRef}>
       {/* Create Post Area */}
       <div className="share-insight-card">
-        <form className="share-header" onSubmit={handleCreatePost}>
+        <div className="share-header">
           <Avatar
             className="user-avatar-ring"
             src={
@@ -179,40 +261,27 @@ const Feed = () => {
             }
             size={48}
           />
-          <div className="share-input-wrapper">
-            <input
-              type="text"
-              className="share-input-field"
-              placeholder="Build Something meaningful...."
-              value={newPostContent}
-              onChange={(e) => setNewPostContent(e.target.value)}
-              style={{
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                color: "var(--text-primary)",
-                width: "100%",
-                fontSize: "15px",
-              }}
-            />
+          <div className="share-input-wrapper" onClick={openPostModal} style={{ cursor: "pointer" }}>
+            <span className="share-placeholder">Build Something meaningful....</span>
             <div className="share-actions-inline">
               <button
                 className="btn-miing"
-                type="submit"
-                disabled={!newPostContent.trim()}
-                style={{ opacity: !newPostContent.trim() ? 0.5 : 1 }}
+                type="button"
+                onClick={(e) => { e.stopPropagation(); openPostModal(); }}
               >
                 Post
               </button>
             </div>
           </div>
-        </form>
+        </div>
         <div className="share-footer-actions">
           <input
             type="file"
             ref={fileInputRef}
             style={{ display: "none" }}
             accept="image/*"
+            multiple
+            onChange={(e) => handleModalImageSelect(e.target.files)}
           />
           <input
             type="file"
@@ -238,7 +307,7 @@ const Feed = () => {
           <button
             type="button"
             className="btn-icon-text"
-            onClick={triggerVideoSelect}
+            onClick={() => alert("Video coming soon!")}
           >
             <Icon name="video" style={{ color: "#8b5cf6" }} /> Video
           </button>
@@ -330,8 +399,10 @@ const Feed = () => {
                   <button
                     className={`btn-like-text ${insight.liked ? "active" : ""}`}
                     onClick={() => handleLike(insight.id)}
+                    ref={(el) => (likeRefs.current[insight.id] = el)}
                   >
-                    <Icon name="thumbs-up" /> Like
+                    <Icon name="thumbs-up" />
+                    Like{insight.likes > 0 && <span className="like-count">{insight.likes}</span>}
                   </button>
                   <button className="btn-comment-box">
                     <Icon name="comment" /> Comment
@@ -361,7 +432,131 @@ const Feed = () => {
         ))}
       </div>
 
-      {/* Project Details Modal */}
+      {/* ── Post Creation Modal Overlay ────────────────────── */}
+      {isPostModalOpen && (
+        <div
+          ref={postOverlayRef}
+          className="post-modal-overlay"
+          onClick={(e) => { if (e.target === postOverlayRef.current) closePostModal(); }}
+        >
+          <div ref={postModalRef} className="post-modal-card">
+            {/* Close */}
+            <button className="post-modal-close" onClick={closePostModal}>
+              <Icon name="close" size={18} />
+            </button>
+
+            {/* Header */}
+            <div className="post-modal-header">
+              <Avatar
+                src={
+                  user?.profileImage ||
+                  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                }
+                size={52}
+                style={{ border: "2px solid var(--primary-green)", flexShrink: 0 }}
+              />
+              <div>
+                <h3 className="post-modal-name">{user?.fullName || user?.name || "You"}</h3>
+                <span className="post-modal-audience">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                  </svg>
+                  Anyone
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            {/* Textarea */}
+            <textarea
+              ref={postTextareaRef}
+              className="post-modal-textarea"
+              placeholder="What do you want to talk about?"
+              value={newPostContent}
+              onChange={(e) => {
+                setNewPostContent(e.target.value);
+                e.target.style.height = "auto";
+                e.target.style.height = e.target.scrollHeight + "px";
+              }}
+            />
+
+            {/* Image Previews */}
+            {postImages.length > 0 && (
+              <div className="post-modal-image-previews">
+                {postImages.map((img, idx) => (
+                  <div key={idx} className="post-modal-preview-item">
+                    <img src={img.url} alt={`upload-${idx}`} className="post-modal-preview-img" />
+                    <button className="post-modal-preview-remove" onClick={() => removePostImage(idx)}>
+                      <Icon name="close" size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Dropzone */}
+            {postImages.length === 0 && (
+              <div
+                className={`post-modal-dropzone${isDragging ? " dragging" : ""}`}
+                onClick={() => modalFileInputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  handleModalImageSelect(e.dataTransfer.files);
+                }}
+              >
+                <div className="post-modal-dropzone-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect x="3" y="3" width="18" height="18" rx="4" />
+                    <path d="M3 15l4.586-4.586a2 2 0 012.828 0L16 16" />
+                    <path d="M14 14l1.586-1.586a2 2 0 012.828 0L21 15" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                  </svg>
+                </div>
+                <p className="post-modal-dropzone-label">Add Photos</p>
+                <p className="post-modal-dropzone-sub">Drag &amp; drop or click to upload</p>
+              </div>
+            )}
+
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={modalFileInputRef}
+              style={{ display: "none" }}
+              accept="image/*"
+              multiple
+              onChange={(e) => handleModalImageSelect(e.target.files)}
+            />
+
+            {/* Footer */}
+            <div className="post-modal-footer">
+              <div className="post-modal-footer-actions">
+                <button
+                  className="post-modal-action-btn"
+                  title="Add Photo"
+                  onClick={() => modalFileInputRef.current?.click()}
+                >
+                  <Icon name="image" size={20} />
+                </button>
+              </div>
+              <button
+                className={`post-modal-submit${!newPostContent.trim() && postImages.length === 0 ? " disabled" : ""
+                  }`}
+                disabled={!newPostContent.trim() && postImages.length === 0}
+                onClick={handleCreatePost}
+              >
+                Post
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Project Details Modal ------------------------------*/}
       {selectedInsight && (
         <div
           style={{
@@ -626,6 +821,14 @@ const Feed = () => {
                     >
                       Likes
                     </span>
+                    <button
+                      className={`btn-like-text ${selectedInsight.liked ? "active" : ""}`}
+                      onClick={() => handleLike(selectedInsight.id)}
+                      style={{ marginTop: "6px", fontSize: "12px", padding: "4px 10px" }}
+                      ref={(el) => (likeRefs.current[`modal-${selectedInsight.id}`] = el)}
+                    >
+                      <Icon name="thumbs-up" /> {selectedInsight.liked ? "Liked" : "Like"}
+                    </button>
                   </div>
                   <div style={{ textAlign: "center" }}>
                     <span

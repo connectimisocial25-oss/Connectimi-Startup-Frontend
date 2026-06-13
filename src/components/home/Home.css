@@ -692,6 +692,28 @@
   border-color: var(--primary-green);
 }
 
+/* Count badge shown inline on the Like button */
+.like-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--primary-green);
+  margin-left: 2px;
+  line-height: 1;
+}
+
+.btn-like-text:not(.active) .like-count {
+  background: var(--glass-border);
+  color: var(--text-secondary);
+}
+
 .btn-comment-box {
     display: flex;
     align-items: center;
@@ -798,4 +820,264 @@
     .insight-title {
         font-size: 16px;
     }
+}
+
+/* ─────────────────────────────────────────────────────────
+   Post Creation Modal Overlay
+───────────────────────────────────────────────────────── */
+.post-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(5, 14, 33, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.post-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  background: rgba(9, 19, 38, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow:
+    0 0 0 1px rgba(0, 208, 156, 0.08),
+    0 32px 80px -12px rgba(0, 0, 0, 0.65),
+    0 4px 24px rgba(0, 208, 156, 0.06);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+}
+
+/* Close button */
+.post-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.post-modal-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+}
+
+/* Header */
+.post-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.post-modal-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.post-modal-audience {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 3px 10px 3px 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.post-modal-audience:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+/* Textarea */
+.post-modal-textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: none;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 18px;
+  font-family: inherit;
+  line-height: 1.55;
+  margin-bottom: 20px;
+  display: block;
+}
+.post-modal-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Dropzone */
+.post-modal-dropzone {
+  border: 2px dashed rgba(0, 208, 156, 0.28);
+  border-radius: 18px;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(0, 208, 156, 0.04);
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.post-modal-dropzone:hover,
+.post-modal-dropzone.dragging {
+  background: rgba(0, 208, 156, 0.09);
+  border-color: rgba(0, 208, 156, 0.55);
+}
+
+.post-modal-dropzone-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(0, 208, 156, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-green);
+  margin-bottom: 4px;
+  transition: transform 0.2s;
+}
+.post-modal-dropzone:hover .post-modal-dropzone-icon,
+.post-modal-dropzone.dragging .post-modal-dropzone-icon {
+  transform: scale(1.1);
+}
+
+.post-modal-dropzone-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.post-modal-dropzone-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Image Previews */
+.post-modal-image-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.post-modal-preview-item {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 208, 156, 0.3);
+}
+
+.post-modal-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post-modal-preview-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.post-modal-preview-remove:hover {
+  background: rgba(255, 60, 60, 0.8);
+}
+
+/* Footer */
+.post-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 18px;
+  margin-top: 4px;
+}
+
+.post-modal-footer-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.post-modal-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.post-modal-action-btn:hover {
+  background: rgba(0, 208, 156, 0.1);
+  color: var(--primary-green);
+}
+
+.post-modal-submit {
+  background: var(--primary-green);
+  color: #050e21;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 32px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 208, 156, 0.35);
+}
+.post-modal-submit:hover:not(.disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 208, 156, 0.45);
+}
+.post-modal-submit:active:not(.disabled) {
+  transform: scale(0.97);
+}
+.post-modal-submit.disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+  box-shadow: none;
 }
