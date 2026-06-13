@@ -16,7 +16,7 @@ const MyNetwork = () => {
 
     const initialTab = location.state?.tab || new URLSearchParams(location.search).get('tab') || 'connections';
     const [activeTab, setActiveTab] = useState(initialTab);
-    
+
     // Payment Modal State
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [selectedExpert, setSelectedExpert] = useState(null);
@@ -46,23 +46,36 @@ const MyNetwork = () => {
     }, []);
 
     useEffect(() => {
-        if (activeTab !== 'messaging' && suggestionsRef.current.length > 0) {
-            gsap.fromTo(suggestionsRef.current,
-                { y: 20, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.2 }
-            );
+        // Reset stale refs from the previous tab before the new cards mount
+        suggestionsRef.current = [];
+
+        if (activeTab !== 'messaging') {
+            // Small delay so React has time to mount the new tab's cards
+            const id = setTimeout(() => {
+                const validRefs = suggestionsRef.current.filter(Boolean);
+                if (validRefs.length > 0) {
+                    gsap.fromTo(validRefs,
+                        { y: 20, opacity: 0 },
+                        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
+                    );
+                }
+            }, 50);
+            return () => clearTimeout(id);
         }
     }, [activeTab]);
 
     const [invitations, setInvitations] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
+    const [experts, setExperts] = useState([]);
+    const [expertsLoading, setExpertsLoading] = useState(false);
 
     const mapInvitation = (invite) => ({
         id: invite._id,
         name: invite.requester?.full_name || "Anonymous",
         role: invite.requester?.headline || "Connectimi Member",
         userRole: invite.requester?.role || "professional",
-        avatar: invite.requester?.profile_picture || "https://i.pravatar.cc/150"
+        avatar: invite.requester?.profile_picture || "https://i.pravatar.cc/150",
+        accountType: invite.requester.account_type || undefined,
     });
 
     const mapSuggestion = (sug) => ({
@@ -70,7 +83,18 @@ const MyNetwork = () => {
         name: sug.full_name || "Anonymous",
         role: sug.headline || "Connectimi Member",
         userRole: sug.role || "professional",
-        avatar: sug.profile_picture || "https://i.pravatar.cc/150"
+        avatar: sug.profile_picture || "https://i.pravatar.cc/150",
+        accountType: sug.account_type || undefined,
+    });
+
+    const mapExpert = (c) => ({
+        id: c._id,
+        name: c.consultant_name || "Consultant",
+        role: c.current_position || c.industry || "Consultant",
+        avatar: c.logo || `https://i.pravatar.cc/150?u=${c._id}`,
+        // Use the first active service price for the session fee display
+        fee: c.services?.[0]?.price ?? null,
+        accountType: "consultant",
     });
 
     // Load active invitations and suggestions from API
@@ -92,6 +116,24 @@ const MyNetwork = () => {
         }
     }, [activeTab]);
 
+    // Load suggested consultants when the experts tab is active
+    useEffect(() => {
+        if (activeTab === 'experts') {
+            const loadExperts = async () => {
+                setExpertsLoading(true);
+                try {
+                    const res = await API.get("/network/suggested-consultants");
+                    setExperts(res.data.suggestions.map(mapExpert));
+                } catch (err) {
+                    console.error("Failed to load expert consultants:", err.message);
+                } finally {
+                    setExpertsLoading(false);
+                }
+            };
+            loadExperts();
+        }
+    }, [activeTab]);
+
     const handleAcceptInvite = async (connectionId) => {
         try {
             await API.put(`/network/respond/${connectionId}`, { action: "accept" });
@@ -110,65 +152,15 @@ const MyNetwork = () => {
         }
     };
 
-    const handleSendConnect = async (userId) => {
+    const handleSendConnect = async (userId, userType) => {
         try {
-            await API.post(`/network/connect/${userId}`);
+            await API.post(`/network/connect/${userId}/${userType}`);
             setSuggestions(suggestions.filter(s => s.id !== userId));
         } catch (err) {
             console.error("Failed to send connect request:", err.message);
         }
     };
 
-    const expertsData = [
-        {
-            id: 201,
-            name: "Sarah Jenkins",
-            role: "Senior UI/UX Designer at Figma",
-            userRole: "expert",
-            avatar: "https://i.pravatar.cc/150?u=sarahj",
-            fee: 899
-        },
-        {
-            id: 202,
-            name: "Alex Rivera",
-            role: "Full-Stack Web Developer",
-            userRole: "expert",
-            avatar: "https://i.pravatar.cc/150?u=alexr",
-            fee: 799
-        },
-        {
-            id: 203,
-            name: "Dr. Elena Rostova",
-            role: "AI Research Scientist",
-            userRole: "expert",
-            avatar: "https://i.pravatar.cc/150?u=elena",
-            fee: 1499
-        },
-        {
-            id: 204,
-            name: "Marcus Chen",
-            role: "Backend Architect & Scalability Expert",
-            userRole: "expert",
-            avatar: "https://i.pravatar.cc/150?u=marcus",
-            fee: 1199
-        },
-        {
-            id: 205,
-            name: "Chloe Vang",
-            role: "Professional Photographer & Retoucher",
-            userRole: "expert",
-            avatar: "https://i.pravatar.cc/150?u=chloe",
-            fee: 599
-        },
-        {
-            id: 206,
-            name: "David O'Connor",
-            role: "Business Development & Growth Consultant",
-            userRole: "expert",
-            avatar: "https://i.pravatar.cc/150?u=davidoc",
-            fee: 1299
-        }
-    ];
 
     const handleConsultClick = (expert) => {
         setSelectedExpert(expert);
@@ -215,33 +207,41 @@ const MyNetwork = () => {
                         <Messaging embedded={true} />
                     ) : activeTab === 'experts' ? (
                         <section className="suggestions-section">
-                            <div className="modern-teal-badge">TOP EXPERTS FOR YOU</div>
-                            <div className="suggestions-grid">
-                                {expertsData.map((expert, index) => (
-                                    <div
-                                        key={expert.id}
-                                        className="suggestion-card"
-                                        ref={el => suggestionsRef.current[index] = el}
-                                    >
-                                        <div className="expert-banner"></div>
-                                        <Avatar
-                                            src={expert.avatar}
-                                            alt={expert.name}
-                                            role={expert.userRole}
-                                            size={110}
-                                            className="suggestion-avatar"
-                                        />
-                                        <div className="suggestion-info">
-                                            <div className="suggestion-name">{expert.name}</div>
-                                            <div className="suggestion-role">{expert.role}</div>
-                                            <div className="expert-fee">₹{expert.fee} / session</div>
+                            <div className="modern-teal-badge">TOP EXPERT CONSULTANTS FOR YOU</div>
+                            {expertsLoading ? (
+                                <p style={{ color: 'var(--text-muted)', padding: '32px', textAlign: 'center' }}>Loading consultants…</p>
+                            ) : experts.length === 0 ? (
+                                <p style={{ color: 'var(--text-muted)', padding: '32px', textAlign: 'center' }}>No expert consultants found yet.</p>
+                            ) : (
+                                <div className="suggestions-grid">
+                                    {experts.map((expert, index) => (
+                                        <div
+                                            key={expert.id}
+                                            className="suggestion-card"
+                                            ref={el => suggestionsRef.current[index] = el}
+                                        >
+                                            <div className="expert-banner"></div>
+                                            <Avatar
+                                                src={expert.avatar}
+                                                alt={expert.name}
+                                                role={expert.userRole}
+                                                size={110}
+                                                className="suggestion-avatar"
+                                            />
+                                            <div className="suggestion-info">
+                                                <div className="suggestion-name">{expert.name}</div>
+                                                <div className="suggestion-role">{expert.role}</div>
+                                                {expert.fee != null && (
+                                                    <div className="expert-fee">₹{expert.fee} / session</div>
+                                                )}
+                                            </div>
+                                            <button className="consult-btn" onClick={() => handleConsultClick(expert)}>
+                                                <Icon name="comment" /> Consult Now
+                                            </button>
                                         </div>
-                                        <button className="consult-btn" onClick={() => handleConsultClick(expert)}>
-                                            <Icon name="comment" /> Consult Now
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </section>
                     ) : (
                         <>
@@ -292,7 +292,7 @@ const MyNetwork = () => {
                                                 <div className="suggestion-name">{person.name}</div>
                                                 <div className="suggestion-role">{person.role}</div>
                                             </div>
-                                            <button className="connect-btn" onClick={() => handleSendConnect(person.id)}>
+                                            <button className="connect-btn" onClick={() => handleSendConnect(person.id, person.accountType)}>
                                                 <Icon name="user-plus" /> Connect
                                             </button>
                                         </div>
