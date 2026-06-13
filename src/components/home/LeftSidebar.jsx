@@ -16,7 +16,7 @@ const LeftSidebar = () => {
       <div className="sidebar-section profile-section">
         <div className="profile-header-row">
           <Avatar
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            src={`${user.profileImage}`}
             size={60}
             className="sidebar-profile-avatar"
           />
