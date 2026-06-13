@@ -37,8 +37,8 @@ const Feed = () => {
     // Likes — array of user ref objects, check by _id string
     liked: currentUserId
       ? post.likes?.some(
-          (like) => (like._id || like).toString() === currentUserId.toString(),
-        )
+        (like) => (like._id || like).toString() === currentUserId.toString(),
+      )
       : false,
     likes: post.likes?.length || 0,
 
@@ -317,10 +317,10 @@ const Feed = () => {
               >
                 {insight.createdAt
                   ? new Date(insight.createdAt).toLocaleDateString("en-IN", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })
                   : ""}
               </div>
 
