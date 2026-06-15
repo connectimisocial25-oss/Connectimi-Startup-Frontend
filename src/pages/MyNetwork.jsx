@@ -5,9 +5,47 @@ import { useTheme } from '../context/ThemeContext';
 import Icon from '../components/Icon';
 import Avatar from '../components/Avatar';
 import PaymentModal from '../components/PaymentModal';
+import ComingSoon from '../components/ComingSoon';
 import './MyNetwork.css';
 import Messaging from './Messaging';
 import API from '../services/api';
+
+// Tabs whose backend is fully implemented — everything else shows ComingSoon
+const ACTIVE_TABS = ['connections', 'experts'];
+
+// Per-tab copy for the ComingSoon placeholder
+const COMING_SOON_CONTENT = {
+    messaging: {
+        icon: 'comment-dots',
+        title: 'Messaging — Coming Soon',
+        text: 'Real-time messaging with your connections and consultants is on the way. Check back soon!',
+    },
+    following: {
+        icon: 'user-circle',
+        title: 'Following & Followers — Coming Soon',
+        text: "We're building a dedicated space to manage who you follow and who follows you. Check back soon!",
+    },
+    groups: {
+        icon: 'users',
+        title: 'Groups — Coming Soon',
+        text: 'Join and create communities around shared interests. This feature is on the way!',
+    },
+    events: {
+        icon: 'calendar-alt',
+        title: 'Events — Coming Soon',
+        text: 'Discover and host professional events with your network. Check back soon!',
+    },
+    newsletter: {
+        icon: 'newspaper',
+        title: 'Newsletter — Coming Soon',
+        text: 'Subscribe to newsletters from creators and consultants in your network. Check back soon!',
+    },
+    hashtags: {
+        icon: 'hashtag',
+        title: 'Hashtags — Coming Soon',
+        text: 'Follow topics and trends relevant to your industry. This feature is on the way!',
+    },
+};
 
 const MyNetwork = () => {
     const navigate = useNavigate();
@@ -203,8 +241,8 @@ const MyNetwork = () => {
                 </aside>
 
                 <main className="network-main" ref={mainContentRef}>
-                    {activeTab === 'messaging' ? (
-                        <Messaging embedded={true} />
+                    {!ACTIVE_TABS.includes(activeTab) ? (
+                        <ComingSoon {...COMING_SOON_CONTENT[activeTab]} />
                     ) : activeTab === 'experts' ? (
                         <section className="suggestions-section">
                             <div className="modern-teal-badge">TOP EXPERT CONSULTANTS FOR YOU</div>
