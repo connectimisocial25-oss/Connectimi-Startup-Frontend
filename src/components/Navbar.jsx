@@ -7,11 +7,13 @@ import Connectimi_logo from './Connectimi_logo';
 import { useTheme } from '../context/ThemeContext';
 
 import './Navbar.css';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { theme, toggleTheme } = useTheme();
+    const { user } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navBarRef = useRef(null);
 
@@ -110,7 +112,7 @@ const Navbar = () => {
                     <div className={`nav-item me-dropdown ${isActive('/me') ? 'active' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <div className="nav-icon">
                             <Avatar
-                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                                src={user?.profileImage}
                                 alt="Me"
                                 role="professional"
                                 size={24}
