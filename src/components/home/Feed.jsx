@@ -60,13 +60,62 @@ const Feed = () => {
     type: post.type || "post",
   });
 
+  // Fallback demo posts shown when API is unavailable
+  const DEMO_POSTS = [
+    {
+      id: "demo-1",
+      author: user?.fullName || user?.firstName + " " + user?.lastName || "Suroj Swarnakar",
+      authorHeadline: user?.headline || "Full-Stack Developer | Building at Connectimi",
+      authorImg: user?.profileImage || null,
+      authorId: "demo",
+      title: "Analyzed customer acquisition data this week. Interesting trends emerging from organic traffic sources.",
+      takeaway: "Analyzed customer acquisition data this week. Interesting trends emerging from organic traffic sources.",
+      image: null,
+      liked: false,
+      likes: 4,
+      comments: 2,
+      createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+      type: "post",
+    },
+    {
+      id: "demo-2",
+      author: "Arnab Dinda",
+      authorHeadline: "Web Developer | React & TypeScript",
+      authorImg: null,
+      authorId: "demo-2",
+      title: "Just launched my portfolio! Check it out — built with React, TypeScript, and a lot of coffee ☕",
+      takeaway: "Just launched my portfolio! Check it out — built with React, TypeScript, and a lot of coffee ☕",
+      image: null,
+      liked: false,
+      likes: 12,
+      comments: 5,
+      createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+      type: "post",
+    },
+    {
+      id: "demo-3",
+      author: "Sanniv Kumar",
+      authorHeadline: "Backend Engineer | Node.js & MongoDB",
+      authorImg: null,
+      authorId: "demo-3",
+      title: "Built a rate-limiting middleware from scratch today. It's amazing how much you learn when you avoid using libraries.",
+      takeaway: "Built a rate-limiting middleware from scratch today. It's amazing how much you learn when you avoid using libraries.",
+      image: null,
+      liked: false,
+      likes: 8,
+      comments: 3,
+      createdAt: new Date(Date.now() - 86400000 * 0.5).toISOString(),
+      type: "post",
+    },
+  ];
+
   // Load dynamic posts from feed
   useEffect(() => {
     const fetchFeed = async () => {
       try {
         const res = await API.get("/posts/feed");
         const mapped = res.data.posts.map((p) => mapPostToInsight(p, user?.id));
-        setInsights(mapped);
+        setInsights(mapped.length > 0 ? mapped : DEMO_POSTS);
         console.log(res.data);
 
         // GSAP Animations after loading data
@@ -100,6 +149,18 @@ const Feed = () => {
         }, 100);
       } catch (err) {
         console.error("Failed to load feed:", err.message);
+        // Show demo posts so the page is never empty
+        setInsights(DEMO_POSTS);
+        setTimeout(() => {
+          const cards = feedRef.current?.querySelectorAll(".insight-card");
+          if (cards && cards.length > 0) {
+            gsap.fromTo(
+              cards,
+              { y: 30, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out" },
+            );
+          }
+        }, 100);
       }
     };
 
