@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import './Landing.css';
 import Icon from '../components/Icon';
@@ -154,8 +155,8 @@ const Landing = () => {
                         <div className="auth-footer-minimal">
                             <p>
                                 By continuing, you agree to our
-                                <span className="link-span"> Terms of Service</span> and
-                                <span className="link-span"> Privacy Policy</span>.
+                                <Link to="/legal?tab=terms" className="link-span"> Terms of Service</Link> and
+                                <Link to="/legal?tab=privacy" className="link-span"> Privacy Policy</Link>.
                             </p>
                         </div>
                     </div>

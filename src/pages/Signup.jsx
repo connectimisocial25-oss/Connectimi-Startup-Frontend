@@ -144,7 +144,7 @@ export function SignupForm({ onToggle, compact = false }) {
 
 
         <p style={{ fontSize: "13px", color: "var(--text-muted)", textAlign: "center", margin: "10px 0", lineHeight: "1.5" }}>
-          By clicking Create Account, you agree to the <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>User Agreement</span>, <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>Privacy Policy</span>, and <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>Cookie Policy</span>.
+          By clicking Create Account, you agree to the <Link to="/legal?tab=terms" style={{ color: 'var(--emerald-500)', fontWeight: 600, textDecoration: 'none' }}>User Agreement</Link>, <Link to="/legal?tab=privacy" style={{ color: 'var(--emerald-500)', fontWeight: 600, textDecoration: 'none' }}>Privacy Policy</Link>, and <Link to="/legal?tab=cookies" style={{ color: 'var(--emerald-500)', fontWeight: 600, textDecoration: 'none' }}>Cookie Policy</Link>.
         </p>
 
         <button className="auth-submit-btn" type="submit">

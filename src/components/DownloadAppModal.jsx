@@ -66,22 +66,26 @@ export default function DownloadAppModal({ isOpen, onClose, deferredPrompt, onSu
           </p>
 
           {/* Action Button */}
-          <button className="install-instantly-btn" onClick={handleInstallInstantly}>
-            <FiSmartphone className="btn-device-icon" />
-            <span>Install App Instantly</span>
-          </button>
+          {deferredPrompt && activeTab !== "ios" && (
+            <>
+              <button className="install-instantly-btn" onClick={handleInstallInstantly}>
+                <FiSmartphone className="btn-device-icon" />
+                <span>Install App Instantly</span>
+              </button>
 
-          {/* Fallback Support Message */}
-          {installSupportMessage && (
-            <p className="install-support-error">{installSupportMessage}</p>
+              {/* Fallback Support Message */}
+              {installSupportMessage && (
+                <p className="install-support-error">{installSupportMessage}</p>
+              )}
+
+              {/* Separator */}
+              <div className="download-separator">
+                <span className="separator-line"></span>
+                <span className="separator-text">or follow manual steps below</span>
+                <span className="separator-line"></span>
+              </div>
+            </>
           )}
-
-          {/* Separator */}
-          <div className="download-separator">
-            <span className="separator-line"></span>
-            <span className="separator-text">or follow manual steps below</span>
-            <span className="separator-line"></span>
-          </div>
 
           {/* Platform Tabs */}
           <div className="platform-tabs">
