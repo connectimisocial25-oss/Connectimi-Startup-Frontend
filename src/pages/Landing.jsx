@@ -27,18 +27,32 @@ const Landing = () => {
             setIsInstalled(true);
         }
 
-        // 2. Listen to beforeinstallprompt event
+        // 2. Pick up any prompt already captured in main.jsx before React mounted
+        if (window.__deferredPrompt) {
+            setDeferredPrompt(window.__deferredPrompt);
+        }
+
+        // 3. Listen for the prompt if it arrives after this component mounts
         const handleBeforeInstallPrompt = (e) => {
             e.preventDefault();
+            window.__deferredPrompt = e;
             setDeferredPrompt(e);
+        };
+        // Also listen for the custom early-capture event from main.jsx
+        const handlePromptReady = () => {
+            if (window.__deferredPrompt) {
+                setDeferredPrompt(window.__deferredPrompt);
+            }
         };
 
         window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.addEventListener('pwa-prompt-ready', handlePromptReady);
 
-        // 3. Listen to appinstalled event
+        // 4. Listen to appinstalled event
         const handleAppInstalled = () => {
             setIsInstalled(true);
             setDeferredPrompt(null);
+            window.__deferredPrompt = null;
             localStorage.setItem('connectimi_app_installed', 'true');
         };
 
@@ -57,6 +71,7 @@ const Landing = () => {
 
         return () => {
             window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.removeEventListener('pwa-prompt-ready', handlePromptReady);
             window.removeEventListener('appinstalled', handleAppInstalled);
         };
     }, []);

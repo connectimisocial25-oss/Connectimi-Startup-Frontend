@@ -5,43 +5,40 @@ import "./DownloadAppModal.css";
 
 export default function DownloadAppModal({ isOpen, onClose, deferredPrompt, onSuccessfulInstall }) {
   const [activeTab, setActiveTab] = useState("android");
-  const [installSupportMessage, setInstallSupportMessage] = useState("");
+  const [installing, setInstalling] = useState(false);
 
-  // Determine user's OS on load and set default tab
+  // Detect platform and set default tab
   useEffect(() => {
     if (isOpen) {
-      const userAgent = navigator.userAgent.toLowerCase();
-      if (/iphone|ipad|ipod/.test(userAgent)) {
+      const ua = navigator.userAgent.toLowerCase();
+      if (/iphone|ipad|ipod/.test(ua)) {
         setActiveTab("ios");
-      } else if (/android/.test(userAgent)) {
+      } else if (/android/.test(ua)) {
         setActiveTab("android");
-      } else if (/win|mac|linux/.test(userAgent)) {
+      } else {
         setActiveTab("desktop");
       }
-      setInstallSupportMessage(""); // Reset message
+      setInstalling(false);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
+  // Only show instant-install button when browser actually supports it
+  const canInstallInstantly = !!deferredPrompt;
+
   const handleInstallInstantly = async () => {
-    if (deferredPrompt) {
-      // Show the install prompt
+    if (!deferredPrompt) return;
+    setInstalling(true);
+    try {
       deferredPrompt.prompt();
-      // Wait for the user to respond to the prompt
       const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to the install prompt: ${outcome}`);
       if (outcome === "accepted") {
-        if (onSuccessfulInstall) {
-          onSuccessfulInstall();
-        }
+        if (onSuccessfulInstall) onSuccessfulInstall();
         onClose();
       }
-    } else {
-      // If deferredPrompt is null, show fallback instruction message
-      setInstallSupportMessage(
-        "Instant installation is not supported by this browser. Please follow the manual steps below."
-      );
+    } finally {
+      setInstalling(false);
     }
   };
 
@@ -65,21 +62,24 @@ export default function DownloadAppModal({ isOpen, onClose, deferredPrompt, onSu
             Install Connectimi on your device for a full-screen, native experience with fast loading times.
           </p>
 
-          {/* Action Button */}
-          <button className="install-instantly-btn" onClick={handleInstallInstantly}>
-            <FiSmartphone className="btn-device-icon" />
-            <span>Install App Instantly</span>
-          </button>
-
-          {/* Fallback Support Message */}
-          {installSupportMessage && (
-            <p className="install-support-error">{installSupportMessage}</p>
+          {/* Instant install button — only shown when the browser supports it (Chrome Android/Desktop) */}
+          {canInstallInstantly && (
+            <button
+              className="install-instantly-btn"
+              onClick={handleInstallInstantly}
+              disabled={installing}
+            >
+              <FiSmartphone className="btn-device-icon" />
+              <span>{installing ? "Installing…" : "Install App Instantly"}</span>
+            </button>
           )}
 
           {/* Separator */}
           <div className="download-separator">
             <span className="separator-line"></span>
-            <span className="separator-text">or follow manual steps below</span>
+            <span className="separator-text">
+              {canInstallInstantly ? "or follow manual steps below" : "follow the steps below"}
+            </span>
             <span className="separator-line"></span>
           </div>
 
@@ -126,7 +126,7 @@ export default function DownloadAppModal({ isOpen, onClose, deferredPrompt, onSu
                 </li>
                 <li>
                   <span className="step-number">4</span>
-                  <span className="step-text">Confirm the prompt by tapping <strong>Add</strong> in the top-right corner.</span>
+                  <span className="step-text">Confirm by tapping <strong>Add</strong> in the top-right corner.</span>
                 </li>
               </ol>
             )}
