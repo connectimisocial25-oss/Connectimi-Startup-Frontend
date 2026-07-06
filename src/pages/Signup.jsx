@@ -14,6 +14,8 @@ export function SignupForm({ onToggle, compact = false }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
 
   useEffect(() => {
@@ -23,21 +25,32 @@ export function SignupForm({ onToggle, compact = false }) {
     );
   }, [accountType]);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // Validation: for organization, only firstName (repurposed for Org Name) is required
-    // for personal, both firstName and lastName are required
-    if (accountType === "personal") {
-      if (!firstName || !lastName || !email || !password) return;
-      initiateSignup({ firstName, lastName, email, password, accountType });
-    } else {
-      if (!firstName || !email || !password) return;
-      // For organization, we treat firstName as the Organization Name and leave lastName empty
-      initiateSignup({ firstName, lastName: "", email, password, accountType });
+    try {
+      if (accountType === "personal") {
+        if (!firstName || !lastName || !email || !password) {
+          setLoading(false);
+          return;
+        }
+        await initiateSignup({ firstName, lastName, email, password, accountType });
+      } else {
+        if (!firstName || !email || !password) {
+          setLoading(false);
+          return;
+        }
+        await initiateSignup({ firstName, lastName: "", email, password, accountType });
+      }
+
+      navigate("/verify-email");
+    } catch (err) {
+      setError(err.response?.data?.error || "Signup failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    navigate("/verify-email");
   }
 
   return (
@@ -147,8 +160,21 @@ export function SignupForm({ onToggle, compact = false }) {
           By clicking Create Account, you agree to the <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>User Agreement</span>, <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>Privacy Policy</span>, and <span style={{ color: 'var(--emerald-500)', fontWeight: 600 }}>Cookie Policy</span>.
         </p>
 
-        <button className="auth-submit-btn" type="submit">
-          Create Account
+        {error && (
+          <p
+            style={{
+              color: "var(--error, #ef4444)",
+              fontSize: "14px",
+              margin: "0 0 10px 0",
+              textAlign: "center"
+            }}
+          >
+            {error}
+          </p>
+        )}
+
+        <button className="auth-submit-btn" type="submit" disabled={loading}>
+          {loading ? "Creating Account..." : "Create Account"}
         </button>
       </form>
 

@@ -9,6 +9,9 @@ const LeftSidebar = () => {
   const { user: authUser } = useAuth();
   const user = authUser || JSON.parse(localStorage.getItem("connectimi_user") || "null");
 
+  if (!user) {
+    return null;
+  }
 
   return (
     <aside className="left-sidebar-panel">

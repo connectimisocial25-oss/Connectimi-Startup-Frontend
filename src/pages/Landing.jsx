@@ -5,15 +5,59 @@ import Icon from '../components/Icon';
 import Connectimi_logo from '../components/Connectimi_logo';
 import { LoginForm } from './Login';
 import { SignupForm } from './Signup';
+import { FiDownload } from 'react-icons/fi';
+import DownloadAppModal from '../components/DownloadAppModal';
 
 const Landing = () => {
     const [isLogin, setIsLogin] = useState(true);
+    const [isInstalled, setIsInstalled] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const leftPanelRef = useRef(null);
     const rightPanelRef = useRef(null);
     const formRef = useRef(null);
 
     useEffect(() => {
+        // 1. Check if running in standalone mode (already installed)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const isLocalInstalled = localStorage.getItem('connectimi_app_installed') === 'true';
+        
+        if (isStandalone || isLocalInstalled) {
+            setIsInstalled(true);
+        }
+
+        // 2. Pick up any prompt already captured in main.jsx before React mounted
+        if (window.__deferredPrompt) {
+            setDeferredPrompt(window.__deferredPrompt);
+        }
+
+        // 3. Listen for the prompt if it arrives after this component mounts
+        const handleBeforeInstallPrompt = (e) => {
+            e.preventDefault();
+            window.__deferredPrompt = e;
+            setDeferredPrompt(e);
+        };
+        // Also listen for the custom early-capture event from main.jsx
+        const handlePromptReady = () => {
+            if (window.__deferredPrompt) {
+                setDeferredPrompt(window.__deferredPrompt);
+            }
+        };
+
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.addEventListener('pwa-prompt-ready', handlePromptReady);
+
+        // 4. Listen to appinstalled event
+        const handleAppInstalled = () => {
+            setIsInstalled(true);
+            setDeferredPrompt(null);
+            window.__deferredPrompt = null;
+            localStorage.setItem('connectimi_app_installed', 'true');
+        };
+
+        window.addEventListener('appinstalled', handleAppInstalled);
+
         const tl = gsap.timeline();
         tl.fromTo(leftPanelRef.current,
             { x: -100, opacity: 0 },
@@ -24,6 +68,12 @@ const Landing = () => {
             { x: 0, opacity: 1, duration: 1, ease: 'power4.out' },
             "-=0.8"
         );
+
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.removeEventListener('pwa-prompt-ready', handlePromptReady);
+            window.removeEventListener('appinstalled', handleAppInstalled);
+        };
     }, []);
 
     useEffect(() => {
@@ -32,6 +82,11 @@ const Landing = () => {
             { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' }
         );
     }, [isLogin]);
+
+    const handleSuccessfulInstall = () => {
+        setIsInstalled(true);
+        localStorage.setItem('connectimi_app_installed', 'true');
+    };
 
     return (
         <div className="landing-container">
@@ -76,44 +131,61 @@ const Landing = () => {
 
             {/* Right Panel: Auth */}
             <div className="landing-right" ref={rightPanelRef}>
-                <div className="auth-card-glass" ref={formRef}>
-                    <div className="auth-tabs">
-                        <button
-                            className={`auth-tab ${isLogin ? 'active' : ''}`}
-                            onClick={() => setIsLogin(true)}
-                        >
-                            Sign In
+                <div className="landing-auth-wrapper">
+                    {!isInstalled && (
+                        <button className="landing-download-btn" onClick={() => setIsModalOpen(true)}>
+                            <FiDownload className="download-btn-icon" />
+                            <span>Click here for download</span>
                         </button>
-                        <button
-                            className={`auth-tab ${!isLogin ? 'active' : ''}`}
-                            onClick={() => setIsLogin(false)}
-                        >
-                            Join Now
-                        </button>
-                    </div>
-
-                    <div className="auth-header-minimal">
-                        <h2>{isLogin ? 'Welcome Back' : 'Get Started'}</h2>
-                        <p>{isLogin ? 'Enter your credentials to access your world.' : 'Create your account to start your journey.'}</p>
-                    </div>
-
-                    {isLogin ? (
-                        <LoginForm compact />
-                    ) : (
-                        <SignupForm compact />
                     )}
 
-                    <div className="auth-footer-minimal">
-                        <p>
-                            By continuing, you agree to our
-                            <span className="link-span"> Terms of Service</span> and
-                            <span className="link-span"> Privacy Policy</span>.
-                        </p>
+                    <div className="auth-card-glass" ref={formRef}>
+                        <div className="auth-tabs">
+                            <button
+                                className={`auth-tab ${isLogin ? 'active' : ''}`}
+                                onClick={() => setIsLogin(true)}
+                            >
+                                Sign In
+                            </button>
+                            <button
+                                className={`auth-tab ${!isLogin ? 'active' : ''}`}
+                                onClick={() => setIsLogin(false)}
+                            >
+                                Join Now
+                            </button>
+                        </div>
+
+                        <div className="auth-header-minimal">
+                            <h2>{isLogin ? 'Welcome Back' : 'Get Started'}</h2>
+                            <p>{isLogin ? 'Enter your credentials to access your world.' : 'Create your account to start your journey.'}</p>
+                        </div>
+
+                        {isLogin ? (
+                            <LoginForm compact />
+                        ) : (
+                            <SignupForm compact />
+                        )}
+
+                        <div className="auth-footer-minimal">
+                            <p>
+                                By continuing, you agree to our
+                                <span className="link-span"> Terms of Service</span> and
+                                <span className="link-span"> Privacy Policy</span>.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <DownloadAppModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                deferredPrompt={deferredPrompt}
+                onSuccessfulInstall={handleSuccessfulInstall}
+            />
         </div>
     );
 };
+
 
 export default Landing;
