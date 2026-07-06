@@ -149,6 +149,23 @@ const Profile = () => {
 
   const { user: authUser, updateUser: updateAuthUser } = useAuth();
 
+  // Sync profileData whenever authUser is updated in context (e.g., after a save)
+  useEffect(() => {
+    if (authUser) {
+      setProfileData((prev) => ({
+        ...prev,
+        ...authUser,
+        name: authUser.name || `${authUser.firstName || ""} ${authUser.lastName || ""}`.trim(),
+        profileImage: authUser.profileImage || DEFAULT_PROFILE_IMG,
+        bannerImage: authUser.bannerImage || DEFAULT_BANNER,
+        experience: authUser.experience || prev.experience,
+        projects: authUser.projects || prev.projects,
+        education: authUser.education || prev.education,
+        skills: authUser.skills || prev.skills,
+      }));
+    }
+  }, [authUser]);
+
   const fetchProfileData = async () => {
     if (authUser) {
       setProfileData({
@@ -359,14 +376,22 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
+    setIsUploading(true);
     const {
       newSkill, newExperience, newProject, newEducation,
       ...cleanData
     } = editData;
-    setProfileData(cleanData);
-    updateAuthUser(cleanData);
-    setIsEditing(false);
-    cleanupPreviewURLs();
+    try {
+      await updateAuthUser(cleanData);
+      setIsEditing(false);
+      cleanupPreviewURLs();
+      setImagePreview("");
+      setBannerPreview("");
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to save profile. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // Profile Sections Renderers
@@ -692,7 +717,7 @@ const Profile = () => {
       {showCV && <CVModal profileData={profileData} onClose={() => setShowCV(false)} />}
 
       {isEditing && (
-        <EditForm
+      <EditForm
           editData={editData}
           setEditData={setEditData}
           handleInputChange={handleInputChange}
@@ -708,6 +733,11 @@ const Profile = () => {
           removeProject={removeProject}
           removeSkill={removeSkill}
           handleSave={handleSave}
+          isUploading={isUploading}
+          imagePreview={imagePreview}
+          setImagePreview={setImagePreview}
+          bannerPreview={bannerPreview}
+          setBannerPreview={setBannerPreview}
           onCancel={() => setIsEditing(false)}
         />
       )}

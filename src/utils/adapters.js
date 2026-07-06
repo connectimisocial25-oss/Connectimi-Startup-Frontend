@@ -1,6 +1,24 @@
 /**
  * Translates frontend camelCase profile data into backend snake_case MongoDB payloads.
  */
+
+/**
+ * Pads a short "YYYY-MM" string to "YYYY-MM-DD" (appending "-01") so it passes
+ * the Zod .date() validator on the backend which expects full ISO dates.
+ * Full "YYYY-MM-DD" strings and nullish values are returned unchanged.
+ */
+const ensureFullDate = (value) => {
+  if (!value || value === "Present") return value || null;
+  const s = String(value).trim();
+  // Already full date
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // Short YYYY-MM → pad to first of month
+  if (/^\d{4}-\d{2}$/.test(s)) return `${s}-01`;
+  // Fallback — try coercing via Date constructor
+  const d = new Date(s);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+};
+
 const formatDatePart = (value, length) => {
   if (value === null || value === undefined || value === "") return "";
 
@@ -32,9 +50,6 @@ export function transformProfileToBackend(data) {
   if (data.location !== undefined) payload.location = data.location;
   if (data.role !== undefined) payload.role = data.role;
   if (data.companySize !== undefined) payload.company_size = data.companySize;
-  if (data.foundedDate !== undefined) {
-    payload.founded_date = data.foundedDate ? new Date(data.foundedDate) : null;
-  }
   if (data.industry !== undefined) payload.industry = data.industry;
 
   if (data.profileImage !== undefined)
@@ -63,8 +78,9 @@ export function transformProfileToBackend(data) {
       title: exp.title,
       company: exp.company,
       location: exp.location || "",
-      start_date: exp.startDate ? exp.startDate : new Date(),
-      end_date: exp.endDate ? exp.endDate : null,
+      start_date:
+        ensureFullDate(exp.startDate) || new Date().toISOString().slice(0, 10),
+      end_date: ensureFullDate(exp.endDate) || undefined,
       description: exp.description || "",
     }));
   }
@@ -79,13 +95,21 @@ export function transformProfileToBackend(data) {
 
   if (data.education !== undefined) {
     payload.educations = data.education
-      .filter((edu) => edu.school) // Only include educations with at least a school name
+      // Only include educations with a school name AND a valid start year >= 1900
+      .filter((edu) => {
+        const year = Number(edu.startYear);
+        return edu.school && !Number.isNaN(year) && year >= 1900;
+      })
       .map((edu) => ({
         school: edu.school,
         degree: edu.degree || "",
         field_of_study: edu.field || edu.fieldOfStudy || "",
-        start_date: edu.startYear ? `${edu.startYear}` : null,
-        end_date: edu.endYear ? `${edu.endYear}` : null,
+        start_date: Number(edu.startYear),
+        end_date: edu.endYear && !Number.isNaN(Number(edu.endYear))
+          ? Number(edu.endYear)
+          : edu.endYear === "Present"
+          ? "Present"
+          : undefined,
         description: edu.description || "",
       }));
   }
