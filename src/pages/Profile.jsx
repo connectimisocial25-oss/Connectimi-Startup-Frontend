@@ -43,6 +43,25 @@ const Profile = () => {
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
   const [showCV, setShowCV] = useState(false);
 
+  // Media Section State
+  const [activeMediaTab, setActiveMediaTab] = useState("photos");
+  const [mediaItems, setMediaItems] = useState({
+    photos: [
+      { id: 1, url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80", caption: "Team Hackathon 2024" },
+      { id: 2, url: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80", caption: "Conference Talk" },
+      { id: 3, url: "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80", caption: "Product Launch" },
+      { id: 4, url: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=600&q=80", caption: "Remote Work Setup" },
+      { id: 5, url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80", caption: "Workshop Session" },
+      { id: 6, url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80", caption: "Team Outing" },
+    ],
+    videos: [
+      { id: 1, url: "https://www.w3schools.com/html/mov_bbb.mp4", thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80", caption: "Product Demo Walkthrough" },
+      { id: 2, url: "https://www.w3schools.com/html/movie.mp4", thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&q=80", caption: "Tech Talk at DevConf" },
+    ]
+  });
+  const [lightbox, setLightbox] = useState({ open: false, item: null, type: null });
+  const mediaUploadRef = useRef(null);
+
   // Speech State
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -415,6 +434,153 @@ const Profile = () => {
     </div>
   );
 
+  const handleMediaUpload = (e) => {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const isVideo = file.type.startsWith("video/");
+      const newItem = { id: Date.now() + Math.random(), url, caption: file.name.replace(/\.[^/.]+$/, "") };
+      if (isVideo) {
+        newItem.thumbnail = url;
+        setMediaItems(prev => ({ ...prev, videos: [newItem, ...prev.videos] }));
+        setActiveMediaTab("videos");
+      } else {
+        setMediaItems(prev => ({ ...prev, photos: [newItem, ...prev.photos] }));
+        setActiveMediaTab("photos");
+      }
+    });
+    e.target.value = "";
+  };
+
+  const removeMedia = (type, id) => {
+    setMediaItems(prev => ({
+      ...prev,
+      [type]: prev[type].filter(item => item.id !== id)
+    }));
+    // Close lightbox if the deleted item is currently open
+    if (lightbox.open && lightbox.item?.id === id) {
+      setLightbox({ open: false, item: null, type: null });
+    }
+  };
+
+  const renderMedia = () => (
+    <div className="glass-panel media-section gsap-reveal">
+      {/* Lightbox */}
+      {lightbox.open && (
+        <div className="media-lightbox" onClick={() => setLightbox({ open: false, item: null, type: null })}>
+          <button className="lightbox-close" onClick={() => setLightbox({ open: false, item: null, type: null })}>✕</button>
+          <div className="lightbox-content" onClick={e => e.stopPropagation()}>
+            {lightbox.type === "photo" ? (
+              <img src={lightbox.item.url} alt={lightbox.item.caption} className="lightbox-img" />
+            ) : (
+              <video src={lightbox.item.url} controls autoPlay className="lightbox-video" />
+            )}
+            {lightbox.item.caption && (
+              <p className="lightbox-caption">{lightbox.item.caption}</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="media-header">
+        <h3 className="panel-title">
+          <Icon name="image" /> Media
+        </h3>
+        <div className="media-header-right">
+          <div className="media-tabs">
+            <button
+              className={`media-tab ${activeMediaTab === "photos" ? "active" : ""}`}
+              onClick={() => setActiveMediaTab("photos")}
+            >
+              📷 Photos <span className="media-count">{mediaItems.photos.length}</span>
+            </button>
+            <button
+              className={`media-tab ${activeMediaTab === "videos" ? "active" : ""}`}
+              onClick={() => setActiveMediaTab("videos")}
+            >
+              🎬 Videos <span className="media-count">{mediaItems.videos.length}</span>
+            </button>
+          </div>
+          <input
+            ref={mediaUploadRef}
+            type="file"
+            accept="image/*,video/*"
+            multiple
+            style={{ display: "none" }}
+            onChange={handleMediaUpload}
+          />
+          <button className="profile-btn media-upload-btn" onClick={() => mediaUploadRef.current?.click()}>
+            <Icon name="plus" /> Add Media
+          </button>
+        </div>
+      </div>
+
+      {activeMediaTab === "photos" && (
+        <div className="media-grid">
+          {mediaItems.photos.length > 0 ? (
+            mediaItems.photos.map((photo, i) => (
+              <div
+                key={photo.id}
+                className={`media-card ${i === 0 ? "media-card--featured" : ""}`}
+                onClick={() => setLightbox({ open: true, item: photo, type: "photo" })}
+              >
+                <img src={photo.url} alt={photo.caption} loading="lazy" />
+                <div className="media-overlay">
+                  <span className="media-caption">{photo.caption}</span>
+                  <span className="media-expand-icon">⛶</span>
+                </div>
+                <button
+                  className="media-delete-btn"
+                  title="Remove photo"
+                  onClick={e => { e.stopPropagation(); removeMedia("photos", photo.id); }}
+                >
+                  🗑
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className="media-empty">
+              <div className="media-empty-icon">📷</div>
+              <p>No photos yet. Click "Add Media" to upload your first photo.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeMediaTab === "videos" && (
+        <div className="media-grid">
+          {mediaItems.videos.length > 0 ? (
+            mediaItems.videos.map((video) => (
+              <div
+                key={video.id}
+                className="media-card media-card--video"
+                onClick={() => setLightbox({ open: true, item: video, type: "video" })}
+              >
+                <img src={video.thumbnail} alt={video.caption} loading="lazy" />
+                <div className="media-overlay">
+                  <div className="video-play-badge">▶</div>
+                  <span className="media-caption">{video.caption}</span>
+                </div>
+                <button
+                  className="media-delete-btn"
+                  title="Remove video"
+                  onClick={e => { e.stopPropagation(); removeMedia("videos", video.id); }}
+                >
+                  🗑
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className="media-empty">
+              <div className="media-empty-icon">🎬</div>
+              <p>No videos yet. Click "Add Media" to upload your first video.</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="profile-container" ref={containerRef}>
       <div className="profile-header-card">
@@ -479,6 +645,7 @@ const Profile = () => {
           {renderProjects()}
           {renderEducation()}
           {renderSkills()}
+          {renderMedia()}
         </div>
 
         <div className="side-col">
