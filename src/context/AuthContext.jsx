@@ -59,8 +59,9 @@ export const AuthProvider = ({ children }) => {
         account_type: tempData?.accountType,
       });
 
-      const { token, user: backendUser } = res.data;
-      localStorage.setItem("connectimi_token", token);
+      const { accessToken, refreshToken, user: backendUser } = res.data;
+      localStorage.setItem("connectimi_token", accessToken);
+      localStorage.setItem("connectimi_refresh_token", refreshToken);
 
       // const frontendUser = transformProfileToFrontend(backendUser);
       // console.log(`backend user: ${backendUser} \n res: ${res.data}`);
@@ -160,9 +161,10 @@ export const AuthProvider = ({ children }) => {
         password,
         account_type,
       });
-      const { token, user: backendUser } = res.data;
+      const { accessToken, refreshToken, user: backendUser } = res.data;
 
-      localStorage.setItem("connectimi_token", token);
+      localStorage.setItem("connectimi_token", accessToken);
+      localStorage.setItem("connectimi_refresh_token", refreshToken);
       const frontendUser = transformProfileToFrontend(backendUser);
       console.log(res.data);
 
@@ -205,7 +207,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("connectimi_token");
     localStorage.removeItem("connectimi_user");
     // Optionally call logout endpoint synchronously to clear blacklists
-    API.post("/auth/logout").catch(() => { });
+    API.post("/auth/logout").catch(() => {});
   };
 
   return (

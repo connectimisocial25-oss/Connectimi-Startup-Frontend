@@ -1,6 +1,21 @@
 /**
  * Translates frontend camelCase profile data into backend snake_case MongoDB payloads.
  */
+const formatDatePart = (value, length) => {
+  if (value === null || value === undefined || value === "") return "";
+
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime())
+      ? ""
+      : value.toISOString().slice(0, length);
+  }
+
+  const stringValue = String(value);
+  if (stringValue === "Present") return stringValue;
+
+  return stringValue.slice(0, length);
+};
+
 export function transformProfileToBackend(data) {
   const payload = {};
 
@@ -104,7 +119,7 @@ export function transformProfileToFrontend(user) {
     location: user.location || "",
     role: user.role || "professional",
     companySize: user.company_size || "",
-    foundedDate: user.founded_date ? user.founded_date.substring(0, 10) : "",
+    foundedDate: formatDatePart(user.founded_date, 10),
     specialties: user.specialties || [],
     industry: user.industry || "",
     profileImage: user.profile_picture || "",
@@ -116,8 +131,8 @@ export function transformProfileToFrontend(user) {
       title: exp.title,
       company: exp.company,
       location: exp.location,
-      startDate: exp.start_date ? exp.start_date.substring(0, 7) : "",
-      endDate: exp.end_date ? exp.end_date.substring(0, 7) : "",
+      startDate: formatDatePart(exp.start_date, 7),
+      endDate: formatDatePart(exp.end_date, 7),
       description: exp.description,
     })),
     projects: (user.projects || []).map((p) => ({
@@ -131,8 +146,8 @@ export function transformProfileToFrontend(user) {
       school: edu.school,
       degree: edu.degree,
       field: edu.field_of_study,
-      startYear: edu.start_date ? edu.start_date.substring(0, 4) : "",
-      endYear: edu.end_date ? edu.end_date.substring(0, 4) : "",
+      startYear: formatDatePart(edu.start_date, 4),
+      endYear: formatDatePart(edu.end_date, 4),
       description: edu.description,
     })),
     urls: user.urls || [],
