@@ -114,13 +114,7 @@ export function transformProfileToBackend(data) {
       }));
   }
 
-  if (data.website !== undefined) {
-    payload.urls = data.website.trim() !== ""
-      ? [{ url_type: "website", url: data.website.trim() }]
-      : [];
-  } else if (data.urls !== undefined) {
-    payload.urls = data.urls;
-  }
+  if (data.urls !== undefined) payload.urls = data.urls;
 
   return payload;
 }
@@ -181,7 +175,6 @@ export function transformProfileToFrontend(user) {
       description: edu.description,
     })),
     urls: user.urls || [],
-    website: (user.urls || []).find((u) => u.url_type === "website")?.url || "",
     following: user.following || [],
     followers: user.followers || [],
   };

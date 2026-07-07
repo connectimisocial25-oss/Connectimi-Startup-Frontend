@@ -17,8 +17,6 @@ import Courses from "./pages/Courses";
 import CourseRoadmap from "./pages/CourseRoadmap";
 
 import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
-import PublicRoute from "./components/PublicRoute";
 
 // Organization Components
 import OrganizationLayout from "./organization/OrganizationLayout";
@@ -49,33 +47,23 @@ function App() {
         <BrowserRouter>
           <Layout>
             <Routes>
-              {/* Public/Guest Routes */}
-              <Route element={<PublicRoute />}>
-                <Route path="/" element={<Landing />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
-              </Route>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/account-completion" element={<AccountCompletion />} />
+              <Route path="/org-account-completion" element={<OrgAccountCompletion />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/work" element={<Work />} />
+              <Route path="/mynetwork" element={<MyNetwork />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/courses/:courseId" element={<CourseRoadmap />} />
 
-              {/* Protected Personal Routes */}
-              <Route element={<ProtectedRoute allowedRoles={["personal"]} />}>
-                <Route path="/account-completion" element={<AccountCompletion />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/work" element={<Work />} />
-                <Route path="/mynetwork" element={<MyNetwork />} />
-                <Route path="/notifications" element={<Notifications />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/courses/:courseId" element={<CourseRoadmap />} />
-              </Route>
-
-              {/* Protected Organization Routes */}
-              <Route path="/organization" element={
-                <ProtectedRoute allowedRoles={["consultant"]}>
-                  <OrganizationLayout />
-                </ProtectedRoute>
-              }>
+              {/* Organization Routes */}
+              <Route path="/organization" element={<OrganizationLayout />}>
                 <Route index element={<Navigate to="/organization/feed" replace />} />
                 <Route path="feed" element={<OrgFeed />} />
                 <Route path="profile" element={<OrgProfile />} />
@@ -84,14 +72,6 @@ function App() {
                 <Route path="courses" element={<OrgCourses />} />
                 <Route path="ads" element={<OrgAds />} />
               </Route>
-
-              {/* Protected Org Onboarding Route */}
-              <Route element={<ProtectedRoute allowedRoles={["consultant"]} />}>
-                <Route path="/org-account-completion" element={<OrgAccountCompletion />} />
-              </Route>
-
-              {/* Wildcard Fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Layout>
         </BrowserRouter>
