@@ -25,12 +25,28 @@ export const AuthProvider = ({ children }) => {
           setVerificationStep("active");
         } catch (err) {
           console.error("Session verification failed:", err.message);
-          // logout();
+          logout();
+        } finally {
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
     checkSession();
+  }, []);
+
+  // Listen to unauthorized events from API layer
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      console.warn("Session unauthorized. Clearing state...");
+      logout();
+    };
+
+    window.addEventListener("connectimi_unauthorized", handleUnauthorized);
+    return () => {
+      window.removeEventListener("connectimi_unauthorized", handleUnauthorized);
+    };
   }, []);
 
   const initiateSignup = async (data) => {
@@ -180,6 +196,8 @@ export const AuthProvider = ({ children }) => {
 
   const updateUser = async (updatedData) => {
     try {
+      console.log("=== FRONTEND updateUser CALLED ===");
+      console.log("updatedData:", updatedData);
       const isConsultant = user?.account_type === "consultant";
       const profileEndpoint = isConsultant ? "/consultant/profile/me" : "/profile/me";
       const avatarEndpoint = isConsultant ? "/consultant/profile/me/logo" : "/profile/me/avatar";
@@ -188,8 +206,21 @@ export const AuthProvider = ({ children }) => {
       let profileImageUrl = updatedData.profileImage;
       let bannerImageUrl = updatedData.bannerImage;
 
+      const isProfileBlob = 
+        updatedData.profileImage instanceof Blob || 
+        updatedData.profileImage instanceof File || 
+        (updatedData.profileImage && typeof updatedData.profileImage === "object" && "size" in updatedData.profileImage);
+
+      const isBannerBlob = 
+        updatedData.bannerImage instanceof Blob || 
+        updatedData.bannerImage instanceof File || 
+        (updatedData.bannerImage && typeof updatedData.bannerImage === "object" && "size" in updatedData.bannerImage);
+
+      console.log("isProfileBlob:", isProfileBlob, "isBannerBlob:", isBannerBlob);
+
       // Upload avatar blob if a new one was cropped
-      if (updatedData.profileImage instanceof Blob || updatedData.profileImage instanceof File) {
+      if (isProfileBlob) {
+        console.log("Uploading avatar blob...");
         const formData = new FormData();
         formData.append("image", updatedData.profileImage);
         const uploadRes = await API.put(avatarEndpoint, formData, {
@@ -198,10 +229,12 @@ export const AuthProvider = ({ children }) => {
         profileImageUrl = isConsultant
           ? uploadRes.data.logo
           : uploadRes.data.profile_picture;
+        console.log("Avatar upload success:", profileImageUrl);
       }
 
       // Upload banner blob if a new one was cropped
-      if (updatedData.bannerImage instanceof Blob || updatedData.bannerImage instanceof File) {
+      if (isBannerBlob) {
+        console.log("Uploading banner blob...");
         const formData = new FormData();
         formData.append("image", updatedData.bannerImage);
         const uploadRes = await API.put(bannerEndpoint, formData, {
@@ -210,6 +243,7 @@ export const AuthProvider = ({ children }) => {
         bannerImageUrl = isConsultant
           ? uploadRes.data.banner
           : uploadRes.data.banner_image;
+        console.log("Banner upload success:", bannerImageUrl);
       }
 
       // Strip binary blobs from JSON payload, substitute Cloudinary URLs
@@ -220,14 +254,26 @@ export const AuthProvider = ({ children }) => {
       };
 
       // Remove blob fields that are not serializable to JSON
-      if (dataForBackend.profileImage instanceof Blob) delete dataForBackend.profileImage;
-      if (dataForBackend.bannerImage instanceof Blob) delete dataForBackend.bannerImage;
+      if (dataForBackend.profileImage instanceof Blob || (dataForBackend.profileImage && typeof dataForBackend.profileImage === "object" && "size" in dataForBackend.profileImage)) {
+        delete dataForBackend.profileImage;
+      }
+      if (dataForBackend.bannerImage instanceof Blob || (dataForBackend.bannerImage && typeof dataForBackend.bannerImage === "object" && "size" in dataForBackend.bannerImage)) {
+        delete dataForBackend.bannerImage;
+      }
+
+      // Clean up profilePicture so it doesn't overwrite profile_picture
+      if ("profilePicture" in dataForBackend) {
+        delete dataForBackend.profilePicture;
+      }
 
       const payload = transformProfileToBackend(dataForBackend);
+      console.log("Sending profile payload to backend:", payload);
 
       const res = await API.put(profileEndpoint, payload);
+      console.log("Profile update response:", res.data);
 
       const frontendUser = transformProfileToFrontend(res.data.user);
+      console.log("frontendUser sync context:", frontendUser);
 
       setUser(frontendUser);
       localStorage.setItem("connectimi_user", JSON.stringify(frontendUser));

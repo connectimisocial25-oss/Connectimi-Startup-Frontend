@@ -26,11 +26,12 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    // If unauthorized (401), we could optionally clear token and redirect
+    // If unauthorized (401), we clear token and notify the application via custom event
     if (error.response && error.response.status === 401) {
       console.warn("Session expired or unauthorized. Logging out...");
       localStorage.removeItem("connectimi_token");
       localStorage.removeItem("connectimi_user");
+      window.dispatchEvent(new CustomEvent("connectimi_unauthorized"));
     }
     return Promise.reject(error);
   },

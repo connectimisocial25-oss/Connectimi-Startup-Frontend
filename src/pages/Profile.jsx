@@ -388,7 +388,17 @@ const Profile = () => {
       setImagePreview("");
       setBannerPreview("");
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to save profile. Please try again.");
+      let errMsg = "Failed to save profile. Please try again.";
+      if (err.response?.data?.errors) {
+        // Format Zod structured validation errors nicely
+        errMsg = err.response.data.errors.map(e => {
+          const fieldName = e.field.replace("urls.0.url", "website").replace("urls.0.", "");
+          return `${fieldName}: ${e.message}`;
+        }).join("\n");
+      } else if (err.response?.data?.error) {
+        errMsg = err.response.data.error;
+      }
+      alert(errMsg);
     } finally {
       setIsUploading(false);
     }
