@@ -288,13 +288,18 @@ export const AuthProvider = ({ children }) => {
 
 
   const logout = () => {
+    // Fire the blacklist call FIRST — while the token is still in localStorage
+    // so the Authorization header is attached. Ignore any errors (e.g. 401 if
+    // token already expired) to prevent triggering the unauthorized event loop.
+    API.post("/auth/logout").catch(() => {});
+
+    // Clear local state after dispatching the request
     setUser(null);
     setVerificationStep(null);
     setTempData(null);
     localStorage.removeItem("connectimi_token");
+    localStorage.removeItem("connectimi_refresh_token");
     localStorage.removeItem("connectimi_user");
-    // Optionally call logout endpoint synchronously to clear blacklists
-    API.post("/auth/logout").catch(() => {});
   };
 
   return (
