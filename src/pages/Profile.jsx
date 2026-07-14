@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Icon from "../components/Icon";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import "./Profile.css";
 import CVModal from "../components/CVModal";
 import EditForm from "../components/editProfile";
 import { gsap } from "gsap";
 import { useAuth } from "../context/AuthContext";
+import API from "../services/api";
+import { transformProfileToFrontend } from "../utils/adapters";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80";
 const DEFAULT_PROFILE_IMG = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
@@ -13,6 +15,11 @@ const DEFAULT_PROFILE_IMG = "https://images.unsplash.com/photo-1472099645785-565
 const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userId } = useParams();
+  const { user: authUser, setUser } = useAuth();
+  const isOwnProfile = !userId || userId === authUser?.id;
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState("");
   const containerRef = useRef(null);
   const speechSynthesisRef = useRef(null);
   const progressIntervalRef = useRef(null);
@@ -38,6 +45,8 @@ const Profile = () => {
     email: "alex.johnson@example.com",
     phone: "+1 (555) 123-4567",
   });
+
+  const isFollowing = authUser?.following?.includes(profileData.id);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
@@ -120,22 +129,7 @@ const Profile = () => {
 
   useEffect(() => {
     isMountedRef.current = true;
-    fetchProfileData();
     initializeSpeechSynthesis();
-
-    // GSAP Entrance
-    const ctx = gsap.context(() => {
-      gsap.from(".profile-header-card", { y: 30, opacity: 0, duration: 1, ease: "power3.out" });
-      gsap.to(".gsap-reveal", {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        delay: 0.3,
-        clearProps: "transform, y" // Keep opacity: 1, clear only positioning to prevent layout issues
-      });
-    }, containerRef);
 
     return () => {
       isMountedRef.current = false;
@@ -143,15 +137,38 @@ const Profile = () => {
       cleanupPreviewURLs();
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       if (speechSynthesisRef.current) speechSynthesisRef.current.onvoiceschanged = null;
-      ctx.revert();
     };
-  }, []); // Empty dependency array to ensure animation runs only once on mount
+  }, []);
 
-  const { user: authUser, updateUser: updateAuthUser } = useAuth();
-
-  // Sync profileData whenever authUser is updated in context (e.g., after a save)
+  // GSAP animation triggered when loading finishes
   useEffect(() => {
-    if (authUser) {
+    if (!profileLoading && !profileError) {
+      const ctx = gsap.context(() => {
+        gsap.from(".profile-header-card", { y: 30, opacity: 0, duration: 1, ease: "power3.out" });
+        gsap.fromTo(".gsap-reveal",
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out",
+            clearProps: "transform, y"
+          }
+        );
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, [profileLoading, profileError]);
+
+  // Trigger fetchProfileData when userId or authUser changes
+  useEffect(() => {
+    fetchProfileData();
+  }, [userId, authUser]);
+
+  // Sync profileData whenever authUser is updated in context (only if own profile)
+  useEffect(() => {
+    if (authUser && isOwnProfile) {
       setProfileData((prev) => ({
         ...prev,
         ...authUser,
@@ -164,54 +181,61 @@ const Profile = () => {
         skills: authUser.skills || prev.skills,
       }));
     }
-  }, [authUser]);
+  }, [authUser, isOwnProfile]);
 
   const fetchProfileData = async () => {
-    if (authUser) {
-      setProfileData({
-        ...authUser,
-        name: authUser.name || `${authUser.firstName} ${authUser.lastName}`,
-        profileImage: authUser.profileImage || DEFAULT_PROFILE_IMG,
-        bannerImage: authUser.bannerImage || DEFAULT_BANNER,
-        experience: authUser.experience || [],
-        projects: authUser.projects || [],
-        education: authUser.education || [],
-        skills: authUser.skills || [],
-        connections: authUser.connections || 543,
-        profileViews: authUser.profileViews || 1287,
-        postImpressions: authUser.postImpressions || 3256,
-      });
+    if (isOwnProfile) {
+      if (authUser) {
+        setProfileData({
+          ...authUser,
+          name: authUser.name || `${authUser.firstName} ${authUser.lastName}`,
+          profileImage: authUser.profileImage || DEFAULT_PROFILE_IMG,
+          bannerImage: authUser.bannerImage || DEFAULT_BANNER,
+          experience: authUser.experience || [],
+          projects: authUser.projects || [],
+          education: authUser.education || [],
+          skills: authUser.skills || [],
+          connections: authUser.connections || 543,
+          profileViews: authUser.profileViews || 1287,
+          postImpressions: authUser.postImpressions || 3256,
+        });
+      }
       return;
     }
 
-    // Simulated API call (keeping the original mock structure)
-    const mockData = {
-      name: "Alex Johnson",
-      role: "professional",
-      headline: "Senior Software Engineer at TechCorp",
-      location: "San Francisco, California",
-      connections: 543,
-      profileViews: 1287,
-      postImpressions: 3256,
-      about: "Passionate software engineer with 8+ years of experience building scalable web applications. Specialized in React, Node.js, and cloud technologies. Previously worked at WebSolutions Inc where I led a team of 5 developers.",
-      experience: [
-        { id: 1, title: "Senior Software Engineer", company: "TechCorp", startDate: "2020-03", endDate: "Present", location: "San Francisco, CA", description: "Lead development of customer-facing web applications using React and Node.js" },
-        { id: 2, title: "Software Engineer", company: "WebSolutions Inc", startDate: "2017-06", endDate: "2020-02", location: "New York, NY", description: "Developed and maintained multiple client websites and web applications" }
-      ],
-      projects: [
-        { id: 1, title: "E-commerce Platform", description: "Built a full-stack e-commerce platform using MERN stack with payment gateway integration.", link: "https://github.com/alex/ecommerce" }
-      ],
-      education: [
-        { id: 1, school: "Stanford University", degree: "Master of Science", field: "Computer Science", startYear: "2015", endYear: "2017", description: "Specialized in Machine Learning and Web Technologies" }
-      ],
-      skills: ["React", "JavaScript", "Node.js", "TypeScript", "AWS", "MongoDB", "Python", "Docker"],
-      website: "https://alexjohnson.dev",
-      profileImage: DEFAULT_PROFILE_IMG,
-      bannerImage: DEFAULT_BANNER,
-      email: "alex.johnson@example.com",
-      phone: "+1 (555) 123-4567",
-    };
-    setProfileData(mockData);
+    setProfileLoading(true);
+    setProfileError("");
+    try {
+      let publicUser;
+      try {
+        const res = await API.get(`/profile/${userId}`);
+        publicUser = res.data.user;
+      } catch (err) {
+        if (err.response?.status === 404) {
+          const res = await API.get(`/consultant/profile/${userId}`);
+          publicUser = res.data.consultant;
+        } else {
+          throw err;
+        }
+      }
+
+      if (!publicUser) {
+        throw new Error("User profile not found");
+      }
+
+      const adapted = transformProfileToFrontend(publicUser);
+      setProfileData({
+        ...adapted,
+        connections: publicUser.connections || 0,
+        profileViews: publicUser.profile_views || 0,
+        postImpressions: publicUser.post_impressions || 0,
+      });
+    } catch (err) {
+      console.error("Failed to load public profile:", err);
+      setProfileError("Profile not found or error loading profile.");
+    } finally {
+      setProfileLoading(false);
+    }
   };
 
   const initializeSpeechSynthesis = () => {
@@ -606,6 +630,60 @@ const Profile = () => {
     </div>
   );
 
+  const handleConnect = async () => {
+    try {
+      await API.post(`/network/connect/${profileData.id}/${profileData.accountType}`);
+      alert("Connection request sent successfully!");
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to send connection request.");
+    }
+  };
+
+  const handleToggleFollow = async () => {
+    try {
+      const res = await API.post(`/network/follow/${profileData.id}/${profileData.accountType}`);
+      const isNowFollowing = res.data.following;
+      
+      setUser(prev => {
+        const following = prev.following || [];
+        const updatedFollowing = isNowFollowing
+          ? [...following, profileData.id]
+          : following.filter(id => id !== profileData.id);
+        
+        const updatedUser = { ...prev, following: updatedFollowing };
+        localStorage.setItem("connectimi_user", JSON.stringify(updatedUser));
+        return updatedUser;
+      });
+    } catch (err) {
+      console.error("Failed to toggle follow:", err);
+      alert(err.response?.data?.error || "Failed to toggle follow state.");
+    }
+  };
+
+  if (profileLoading) {
+    return (
+      <div className="profile-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+        <div className="loading-spinner" style={{ border: '4px solid rgba(255, 255, 255, 0.1)', borderLeftColor: 'var(--emerald-500)', borderRadius: '50%', width: '50px', height: '50px', animation: 'spin 1s linear infinite' }} />
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  if (profileError) {
+    return (
+      <div className="profile-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', gap: '20px' }}>
+        <Icon name="exclamation-circle" size={48} style={{ color: 'var(--error)' }} />
+        <h2>{profileError}</h2>
+        <button className="profile-btn primary" onClick={() => navigate("/home")}>Go Home</button>
+      </div>
+    );
+  }
+
   return (
     <div className="profile-container" ref={containerRef}>
       <div className="profile-header-card">
@@ -637,25 +715,39 @@ const Profile = () => {
           </div>
 
           <div className="profile-actions">
-            <button className="profile-btn primary">Connect</button>
+            {!isOwnProfile && (
+              <>
+                <button className="profile-btn primary" onClick={handleConnect}>Connect</button>
+                <button 
+                  className={`profile-btn ${isFollowing ? '' : 'primary'}`} 
+                  onClick={handleToggleFollow}
+                  style={isFollowing ? { background: 'rgba(255, 255, 255, 0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' } : {}}
+                >
+                  <Icon name={isFollowing ? "user-times" : "user-plus"} />
+                  {isFollowing ? " Unfollow" : " Follow"}
+                </button>
+              </>
+            )}
             <button className="profile-btn" onClick={() => setShowCV(true)}>
               <Icon name="file-alt" /> CV Profile
             </button>
             <button className="profile-btn" onClick={() => profileSummary ? speakText(profileSummary) : generateProfileSummary()} disabled={isSummarizing}>
               <Icon name="play" /> AI Podcast
             </button>
-            <button className="profile-btn" onClick={() => {
-              setEditData({
-                ...profileData,
-                newSkill: "",
-                newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false },
-                newProject: { title: "", description: "", link: "" },
-                newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" },
-              });
-              setIsEditing(true);
-            }}>
-              <Icon name="edit" /> Edit
-            </button>
+            {isOwnProfile && (
+              <button className="profile-btn" onClick={() => {
+                setEditData({
+                  ...profileData,
+                  newSkill: "",
+                  newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false },
+                  newProject: { title: "", description: "", link: "" },
+                  newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" },
+                });
+                setIsEditing(true);
+              }}>
+                <Icon name="edit" /> Edit
+              </button>
+            )}
           </div>
         </div>
       </div>
