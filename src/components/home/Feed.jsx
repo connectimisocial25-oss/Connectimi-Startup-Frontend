@@ -20,6 +20,8 @@ const Feed = () => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [postImages, setPostImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [expandedPostComments, setExpandedPostComments] = useState({});
+  const [newCommentText, setNewCommentText] = useState({});
   const fileInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const modalFileInputRef = useRef(null);
@@ -52,6 +54,15 @@ const Feed = () => {
 
     // Comments count
     comments: post.comments?.length || 0,
+    commentsData: (post.comments || []).map(c => ({
+        id: c._id,
+        authorId: c.author?._id || c.author,
+        authorName: c.author?.full_name || "Anonymous",
+        authorImg: c.author?.profile_picture || null,
+        authorHeadline: c.author?.headline || "",
+        text: c.text,
+        createdAt: c.created_at
+    })),
 
     // Timestamp
     createdAt: post.created_at,
@@ -208,6 +219,68 @@ const Feed = () => {
       );
     } catch (err) {
       console.error("Failed to toggle like:", err.message);
+    }
+  };
+
+  const handleCreateComment = async (postId, text) => {
+    if (!text.trim()) return;
+    try {
+      const res = await API.post(`/posts/${postId}/comments`, { text });
+      const newComment = res.data.comment;
+      
+      const newCommentObj = {
+        id: newComment._id,
+        authorId: user?.id,
+        authorName: user?.fullName || user?.name || "You",
+        authorImg: user?.profileImage || null,
+        authorHeadline: user?.headline || "",
+        text: newComment.text,
+        createdAt: newComment.created_at || new Date().toISOString()
+      };
+
+      setInsights(prev => prev.map(item => {
+        if (item.id === postId) {
+          return {
+            ...item,
+            comments: res.data.comment_count,
+            commentsData: [...(item.commentsData || []), newCommentObj]
+          };
+        }
+        return item;
+      }));
+
+      setNewCommentText(prev => ({ ...prev, [postId]: "" }));
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+    }
+  };
+
+  const handleDeleteComment = async (postId, commentId) => {
+    try {
+      await API.delete(`/posts/${postId}/comments/${commentId}`);
+      setInsights(prev => prev.map(item => {
+        if (item.id === postId) {
+          const updatedCommentsData = (item.commentsData || []).filter(c => c.id !== commentId);
+          return {
+            ...item,
+            comments: updatedCommentsData.length,
+            commentsData: updatedCommentsData
+          };
+        }
+        return item;
+      }));
+    } catch (err) {
+      console.error("Failed to delete comment:", err);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    try {
+      await API.delete(`/posts/${postId}`);
+      setInsights(prev => prev.filter(item => item.id !== postId));
+    } catch (err) {
+      console.error("Failed to delete post:", err);
     }
   };
 
@@ -465,7 +538,10 @@ const Feed = () => {
                     <Icon name="thumbs-up" />
                     Like{insight.likes > 0 && <span className="like-count">{insight.likes}</span>}
                   </button>
-                  <button className="btn-comment-box">
+                  <button 
+                    className={`btn-comment-box ${expandedPostComments[insight.id] ? "active" : ""}`}
+                    onClick={() => setExpandedPostComments(prev => ({ ...prev, [insight.id]: !prev[insight.id] }))}
+                  >
                     <Icon name="comment" /> Comment
                   </button>
                 </div>
@@ -473,10 +549,71 @@ const Feed = () => {
                   <Icon name="share" /> Share
                 </button>
               </div>
+
+              {/* Comments Section */}
+              {expandedPostComments[insight.id] && (
+                <div className="comments-section" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.05)", marginTop: "15px", paddingTop: "15px" }}>
+                  <form 
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleCreateComment(insight.id, newCommentText[insight.id] || "");
+                    }}
+                    style={{ display: "flex", gap: "10px", marginBottom: "15px" }}
+                  >
+                    <Avatar src={user?.profileImage} size={32} />
+                    <input
+                      type="text"
+                      placeholder="Add a comment..."
+                      value={newCommentText[insight.id] || ""}
+                      onChange={(e) => setNewCommentText(prev => ({ ...prev, [insight.id]: e.target.value }))}
+                      style={{ flex: 1, padding: "8px 12px", borderRadius: "20px", border: "1px solid rgba(255, 255, 255, 0.1)", background: "rgba(255, 255, 255, 0.05)", color: "white", outline: "none", fontSize: "0.85rem" }}
+                    />
+                    <button 
+                      type="submit" 
+                      disabled={!(newCommentText[insight.id] || "").trim()}
+                      style={{ padding: "8px 16px", borderRadius: "20px", border: "none", background: "var(--emerald-500)", color: "white", cursor: "pointer", fontWeight: "600", opacity: (newCommentText[insight.id] || "").trim() ? 1 : 0.5 }}
+                    >
+                      Post
+                    </button>
+                  </form>
+
+                  <div className="comments-list" style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "250px", overflowY: "auto" }}>
+                    {(insight.commentsData || []).length === 0 ? (
+                      <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", margin: "10px 0" }}>No comments yet.</p>
+                    ) : (
+                      (insight.commentsData || []).map((comm) => (
+                        <div key={comm.id} className="comment-item" style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                          <Avatar src={comm.authorImg} size={28} />
+                          <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                            <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px 14px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                                <span style={{ fontWeight: "600", fontSize: "0.8rem", color: "white" }}>{comm.authorName}</span>
+                                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
+                                  {comm.createdAt ? new Date(comm.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
+                                </span>
+                              </div>
+                              <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>{comm.authorHeadline}</span>
+                              <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0 }}>{comm.text}</p>
+                            </div>
+                            {comm.authorId === user?.id && (
+                              <button 
+                                onClick={() => handleDeleteComment(insight.id, comm.id)}
+                                style={{ background: "none", border: "none", color: "var(--error)", cursor: "pointer", fontSize: "0.75rem", alignSelf: "flex-start", marginTop: "4px", padding: 0 }}
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Author footer */}
-            <div className="insight-footer-author">
+            <div className="insight-footer-author" style={{ position: "relative" }}>
               <Avatar src={insight.authorImg} size={32} />
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <span className="insight-author-name">{insight.author}</span>
@@ -488,6 +625,16 @@ const Feed = () => {
                   </span>
                 )}
               </div>
+              {insight.authorId === user?.id && (
+                <button 
+                  className="post-delete-btn" 
+                  onClick={() => handleDeletePost(insight.id)}
+                  style={{ position: "absolute", right: "15px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--error)", fontSize: "1rem", transition: "color 0.2s" }}
+                  title="Delete Post"
+                >
+                  <Icon name="trash" size={16} />
+                </button>
+              )}
             </div>
           </div>
         ))}

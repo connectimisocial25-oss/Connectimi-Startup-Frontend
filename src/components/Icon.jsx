@@ -7,13 +7,14 @@ import {
   FiShare2, FiAlertTriangle, FiFile, FiMoon, FiSun, FiHash, FiCalendar,
   FiThumbsUp, FiMessageSquare, FiBookmark, FiImage, FiVideo, FiEye, FiTrendingUp,
   FiLock, FiUnlock, FiCheckCircle, FiClock, FiCheck, FiArrowRight, FiBook, FiBarChart2,
-  FiCreditCard, FiSmartphone, FiLayers
+  FiCreditCard, FiSmartphone, FiLayers, FiTrash2
 } from 'react-icons/fi';
 
 import { FaStar } from "react-icons/fa";
 import { LuGraduationCap } from "react-icons/lu";
 
 const iconMap = {
+  'trash': FiTrash2,
   'print': FiPrinter,
   'close': FiX,
   'envelope': FiMail,
