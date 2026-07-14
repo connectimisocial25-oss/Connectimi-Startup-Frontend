@@ -8,6 +8,7 @@ import { useTheme } from '../context/ThemeContext';
 
 import './Navbar.css';
 import { useAuth } from '../context/AuthContext';
+import API from '../services/api';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -16,6 +17,27 @@ const Navbar = () => {
     const { user } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navBarRef = useRef(null);
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            try {
+                const res = await API.get("/notifications");
+                const unread = (res.data.notifications || []).filter(n => !n.is_read).length;
+                setUnreadCount(unread);
+            } catch (err) {
+                console.error("Failed to fetch unread notification count:", err.message);
+            }
+        };
+        if (user) {
+            fetchUnreadCount();
+        }
+
+        window.addEventListener('notifications_updated', fetchUnreadCount);
+        return () => {
+            window.removeEventListener('notifications_updated', fetchUnreadCount);
+        };
+    }, [location.pathname, user]);
 
     const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
     const navRef = React.useRef(null);
@@ -118,7 +140,7 @@ const Navbar = () => {
                                 size={24}
                                 className="nav-profile-img"
                             />
-                            <div className="nav-icon-badge">3</div>
+                            {unreadCount > 0 && <div className="nav-icon-badge">{unreadCount}</div>}
                         </div>
                         <span className="nav-label">Me</span>
                         {isDropdownOpen && (
@@ -130,7 +152,7 @@ const Navbar = () => {
                                 <div className="dropdown-item" onClick={() => { navigate('/notifications'); setIsDropdownOpen(false); }}>
                                     <Icon name="bell" />
                                     Notifications
-                                    <span className="dropdown-badge">3 New</span>
+                                    {unreadCount > 0 && <span className="dropdown-badge">{unreadCount} New</span>}
                                 </div>
                                 <div className="dropdown-item" onClick={toggleTheme}>
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
@@ -168,7 +190,7 @@ const Navbar = () => {
                                 <div className="dropdown-item" onClick={() => { navigate('/notifications'); setIsDropdownOpen(false); }}>
                                     <Icon name="bell" />
                                     Notifications
-                                    <span className="dropdown-badge">3 New</span>
+                                    {unreadCount > 0 && <span className="dropdown-badge">{unreadCount} New</span>}
                                 </div>
                                 <div className="dropdown-item" onClick={toggleTheme}>
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
