@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useCallback } from "react";
 
-import axios from "../lib/axios";
 import API from "../services/api";
 
 const ProfileContext = createContext();
@@ -18,7 +17,7 @@ export const ProfileProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const { data } = await axios.put("/profile/complete", profileData);
+      const { data } = await API.put("/profile/complete", profileData);
 
       setProfile(data.user);
 
@@ -38,7 +37,7 @@ export const ProfileProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const { data } = await axios.get(`/profile/${userId}`);
+      const { data } = await API.get(`/profile/${userId}`);
 
       setViewedProfile(data.user);
 
@@ -58,7 +57,7 @@ export const ProfileProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const { data } = await axios.put("/profile/me", payload);
+      const { data } = await API.put("/profile/me", payload);
 
       setProfile(data.user);
 
@@ -111,7 +110,7 @@ export const ProfileProvider = ({ children }) => {
 
       formData.append("image", file);
 
-      const { data } = await axios.put("/profile/me/banner", formData, {
+      const { data } = await API.put("/profile/me/banner", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

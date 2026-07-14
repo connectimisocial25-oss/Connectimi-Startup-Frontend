@@ -125,18 +125,18 @@ export function transformProfileToBackend(data) {
 export function transformProfileToFrontend(user) {
   if (!user) return null;
 
-  const names = (user.full_name || "").split(" ");
+  const names = (user.full_name || user.consultant_name || "").split(" ");
   const firstName = names[0] || "";
   const lastName = names.slice(1).join(" ") || "";
 
   return {
     id: user.id || user._id,
     email: user.email,
-    accountType: user.account_type || "",
+    accountType: user.account_type || (user.role === "professional" ? "personal" : "consultant"),
     phone: user.phone || "",
     firstName,
     lastName,
-    name: user.full_name || "",
+    name: user.full_name || user.consultant_name || "",
     headline: user.headline || "",
     about: user.bio || "",
     bio: user.bio || "",
@@ -146,9 +146,9 @@ export function transformProfileToFrontend(user) {
     foundedDate: formatDatePart(user.founded_date, 10),
     specialties: user.specialties || [],
     industry: user.industry || "",
-    profileImage: user.profile_picture || "",
-    profilePicture: user.profile_picture || "",
-    bannerImage: user.banner_image || "",
+    profileImage: user.profile_picture || user.logo || "",
+    profilePicture: user.profile_picture || user.logo || "",
+    bannerImage: user.banner_image || user.banner || "",
     skills: (user.skills || []).map((s) => s.skill_name),
     experience: (user.experiences || []).map((exp) => ({
       id: exp._id || exp.id,

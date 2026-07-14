@@ -56,6 +56,7 @@ function App() {
               <Route path="/org-account-completion" element={<OrgAccountCompletion />} />
               <Route path="/home" element={<Home />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:userId" element={<Profile />} />
               <Route path="/work" element={<Work />} />
               <Route path="/mynetwork" element={<MyNetwork />} />
               <Route path="/notifications" element={<Notifications />} />
