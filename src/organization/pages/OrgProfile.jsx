@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from '../../components/Icon';
 import { useAuth } from '../../context/AuthContext';
 import { FaGlobe, FaMapMarkerAlt, FaUsers, FaCalendarAlt, FaBriefcase } from 'react-icons/fa';
 import OrgEditForm from '../components/OrgEditForm';
+import API from '../../services/api';
 import './OrgPages.css';
 import './OrgProfile.css';
 
@@ -10,6 +11,19 @@ const OrgProfile = () => {
     const { user, updateUser } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState(null);
+    const [services, setServices] = useState([]);
+
+    useEffect(() => {
+        const fetchServices = async () => {
+            try {
+                const res = await API.get("/consultant/services/me");
+                setServices(res.data.services || []);
+            } catch (error) {
+                console.error("Failed to fetch services:", error);
+            }
+        };
+        fetchServices();
+    }, []);
 
     // Initial dummy data as fallback
     const defaultData = {
@@ -41,7 +55,7 @@ const OrgProfile = () => {
         companySize: user?.companySize || defaultData.companySize,
         foundedDate: user?.foundedDate || defaultData.foundedDate,
         specialties: user?.specialties || defaultData.specialties,
-        services: user?.services || defaultData.services
+        services: services
     };
 
     const handleStartEdit = () => {
@@ -56,17 +70,49 @@ const OrgProfile = () => {
             profileImage: orgData.profileImage,
             bannerImage: orgData.bannerImage,
             specialties: [...orgData.specialties],
-            services: [...orgData.services.map(s => ({ ...s }))]
+            services: [...services.map(s => ({ ...s }))]
         });
         setIsEditing(true);
     };
 
     const handleSave = async () => {
         try {
+            // 1. Save profile basic details
             await updateUser(editData);
+
+            // 2. Sync services list with backend
+            const originalServices = services;
+            const editedServices = editData.services;
+
+            // Delete removed services
+            const toDelete = originalServices.filter(orig => !editedServices.some(ed => ed._id === orig._id));
+            for (const s of toDelete) {
+                await API.delete(`/consultant/services/${s._id}`);
+            }
+
+            // Create or update services
+            for (const s of editedServices) {
+                const payload = {
+                    title: s.title,
+                    description: s.description,
+                    price: Number(s.price) || 0,
+                    category: s.category || "Other"
+                };
+
+                if (s._id) {
+                    await API.put(`/consultant/services/${s._id}`, payload);
+                } else {
+                    await API.post("/consultant/services", payload);
+                }
+            }
+
+            // Reload services
+            const res = await API.get("/consultant/services/me");
+            setServices(res.data.services || []);
             setIsEditing(false);
         } catch (error) {
-            console.error("Failed to update profile:", error);
+            console.error("Failed to update profile or services:", error);
+            alert(error.response?.data?.error || "Failed to save profile changes. Please try again.");
         }
     };
 
@@ -106,11 +152,16 @@ const OrgProfile = () => {
                             <h3>Our Services</h3>
                             <div className="services-list">
                                 {orgData.services.map(service => (
-                                    <div key={service.id} className="service-item">
+                                    <div key={service.id || service._id} className="service-item" style={{ marginBottom: "15px", borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: "10px" }}>
                                         <div className="service-icon"><FaBriefcase /></div>
-                                        <div className="service-info">
-                                            <h4>{service.title}</h4>
-                                            <p>{service.description}</p>
+                                        <div className="service-info" style={{ width: "100%" }}>
+                                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                                <h4 style={{ margin: 0 }}>{service.title}</h4>
+                                                <span style={{ fontSize: "0.85rem", color: "var(--emerald-500)", fontWeight: "600" }}>
+                                                    ${service.price} · {service.category}
+                                                </span>
+                                            </div>
+                                            <p style={{ marginTop: "5px", color: "var(--text-muted)", fontSize: "0.9rem" }}>{service.description}</p>
                                         </div>
                                     </div>
                                 ))}
