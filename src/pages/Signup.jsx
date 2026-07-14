@@ -58,8 +58,8 @@ export function SignupForm({ onToggle, compact = false }) {
       <div className="auth-toggle">
         <button
           type="button"
-          className={`toggle-btn ${accountType === "organization" ? "active" : ""}`}
-          onClick={() => setAccountType("organization")}
+          className={`toggle-btn ${accountType === "consultant" ? "active" : ""}`}
+          onClick={() => setAccountType("consultant")}
         >
           Consultant
         </button>

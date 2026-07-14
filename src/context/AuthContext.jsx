@@ -36,11 +36,17 @@ export const AuthProvider = ({ children }) => {
   const initiateSignup = async (data) => {
     try {
       const payload = {
-        full_name: `${data.firstName || ""} ${data.lastName || ""}`.trim(),
         email: data.email,
         password: data.password,
         account_type: data.accountType,
       };
+
+      if (data.accountType === "consultant") {
+        payload.consultant_name = data.firstName;
+      } else {
+        payload.full_name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
+      }
+
       await API.post("/auth/signup", payload);
       setTempData(data);
       setVerificationStep("verify-email");
@@ -180,7 +186,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateUser = async (updatedData) => {
     try {
-      const isConsultant = user?.account_type === "consultant";
+      const isConsultant = user?.accountType === "consultant";
       const profileEndpoint = isConsultant ? "/consultant/profile/me" : "/profile/me";
       const avatarEndpoint = isConsultant ? "/consultant/profile/me/logo" : "/profile/me/avatar";
       const bannerEndpoint = isConsultant ? "/consultant/profile/me/banner" : "/profile/me/banner";
@@ -227,7 +233,7 @@ export const AuthProvider = ({ children }) => {
 
       const res = await API.put(profileEndpoint, payload);
 
-      const frontendUser = transformProfileToFrontend(res.data.user);
+      const frontendUser = transformProfileToFrontend(res.data.user || res.data.consultant);
 
       setUser(frontendUser);
       localStorage.setItem("connectimi_user", JSON.stringify(frontendUser));
@@ -255,6 +261,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         verificationStep,
         tempData,
         loading,

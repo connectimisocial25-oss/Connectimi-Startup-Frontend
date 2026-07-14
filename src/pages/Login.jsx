@@ -53,8 +53,8 @@ export function LoginForm({ onToggle, compact = false }) {
       <div className="auth-toggle">
         <button
           type="button"
-          className={`toggle-btn ${accountType === "organization" ? "active" : ""}`}
-          onClick={() => setAccountType("organization")}
+          className={`toggle-btn ${accountType === "consultant" ? "active" : ""}`}
+          onClick={() => setAccountType("consultant")}
         >
           Consultant
         </button>
@@ -73,7 +73,7 @@ export function LoginForm({ onToggle, compact = false }) {
             type="email"
             className="auth-input"
             placeholder={
-              accountType === "organization" ? "Work Email" : "Email or Phone"
+              accountType === "consultant" ? "Work Email" : "Email or Phone"
             }
             value={email}
             onChange={(e) => setEmail(e.target.value)}
