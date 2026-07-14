@@ -39,7 +39,7 @@ const OrgEditForm = ({
   };
 
   const [newSpecialty, setNewSpecialty] = useState("");
-  const [newService, setNewService] = useState({ title: "", description: "" });
+  const [newService, setNewService] = useState({ title: "", description: "", price: "", category: "Other" });
 
   const handleInputChange = (field, value) => {
     setEditData(prev => ({ ...prev, [field]: value }));
@@ -63,26 +63,26 @@ const OrgEditForm = ({
   };
 
   const addService = () => {
-    if (newService.title.trim()) {
+    if (newService.title.trim() && newService.description.trim() && newService.price) {
       setEditData(prev => ({
         ...prev,
         services: [...prev.services, { ...newService, id: Date.now() }]
       }));
-      setNewService({ title: "", description: "" });
+      setNewService({ title: "", description: "", price: "", category: "Other" });
     }
   };
 
   const removeService = (id) => {
     setEditData(prev => ({
       ...prev,
-      services: prev.services.filter(s => s.id !== id)
+      services: prev.services.filter(s => (s.id || s._id) !== id)
     }));
   };
 
   const handleServiceChange = (id, field, value) => {
     setEditData(prev => ({
       ...prev,
-      services: prev.services.map(s => s.id === id ? { ...s, [field]: value } : s)
+      services: prev.services.map(s => (s.id || s._id) === id ? { ...s, [field]: value } : s)
     }));
   };
 
@@ -248,22 +248,46 @@ const OrgEditForm = ({
             <h4>Our Services</h4>
             <div className="edit-services-list">
               {editData.services.map((service) => (
-                <div key={service.id} className="edit-service-card">
+                <div key={service.id || service._id} className="edit-service-card">
                   <div className="service-inputs">
                     <input
                       type="text"
                       value={service.title}
-                      onChange={(e) => handleServiceChange(service.id, "title", e.target.value)}
+                      onChange={(e) => handleServiceChange(service.id || service._id, "title", e.target.value)}
                       placeholder="Service Title"
                     />
                     <textarea
                       value={service.description}
-                      onChange={(e) => handleServiceChange(service.id, "description", e.target.value)}
+                      onChange={(e) => handleServiceChange(service.id || service._id, "description", e.target.value)}
                       placeholder="Service Description"
                       rows={2}
                     />
+                    <div style={{ display: "flex", gap: "10px", marginTop: "5px" }}>
+                      <input
+                        type="number"
+                        value={service.price}
+                        onChange={(e) => handleServiceChange(service.id || service._id, "price", e.target.value)}
+                        placeholder="Price ($)"
+                        style={{ flex: 1, padding: "8px", borderRadius: "6px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "white" }}
+                      />
+                      <select
+                        value={service.category}
+                        onChange={(e) => handleServiceChange(service.id || service._id, "category", e.target.value)}
+                        style={{ flex: 1, padding: "8px", borderRadius: "6px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "white" }}
+                      >
+                        <option value="Career">Career</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Legal">Legal</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Design">Design</option>
+                        <option value="Business">Business</option>
+                        <option value="Health">Health</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
                   </div>
-                  <button className="remove-service-btn" onClick={() => removeService(service.id)}>
+                  <button className="remove-service-btn" onClick={() => removeService(service.id || service._id)}>
                     <FaTimes />
                   </button>
                 </div>
@@ -283,6 +307,30 @@ const OrgEditForm = ({
                 placeholder="New Service Description"
                 rows={2}
               />
+              <div style={{ display: "flex", gap: "10px", marginTop: "5px", marginBottom: "10px" }}>
+                <input
+                  type="number"
+                  value={newService.price}
+                  onChange={(e) => setNewService({ ...newService, price: e.target.value })}
+                  placeholder="Price ($)"
+                  style={{ flex: 1, padding: "8px", borderRadius: "6px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "white" }}
+                />
+                <select
+                  value={newService.category}
+                  onChange={(e) => setNewService({ ...newService, category: e.target.value })}
+                  style={{ flex: 1, padding: "8px", borderRadius: "6px", border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "white" }}
+                >
+                  <option value="Career">Career</option>
+                  <option value="Technical">Technical</option>
+                  <option value="Legal">Legal</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Design">Design</option>
+                  <option value="Business">Business</option>
+                  <option value="Health">Health</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
               <button className="add-service-btn" onClick={addService}>
                 <FaPlus /> Add Service
               </button>
