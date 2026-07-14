@@ -43,6 +43,15 @@ function OrgAccountCompletion() {
     // Profile Images
     const [logoImage, setLogoImage] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);
+    const [logoPreview, setLogoPreview] = useState(null);
+    const [bannerPreview, setBannerPreview] = useState(null);
+
+    useEffect(() => {
+        return () => {
+            if (logoPreview && logoPreview.startsWith("blob:")) URL.revokeObjectURL(logoPreview);
+            if (bannerPreview && bannerPreview.startsWith("blob:")) URL.revokeObjectURL(bannerPreview);
+        };
+    }, [logoPreview, bannerPreview]);
 
     // Cropper State
     const [imageToCrop, setImageToCrop] = useState(null);
@@ -116,8 +125,16 @@ function OrgAccountCompletion() {
     };
 
     const handleCropSave = (croppedImage) => {
-        if (cropType === 'logo') setLogoImage(croppedImage);
-        else setBannerImage(croppedImage);
+        const previewUrl = URL.createObjectURL(croppedImage);
+        if (cropType === 'logo') {
+            if (logoPreview && logoPreview.startsWith("blob:")) URL.revokeObjectURL(logoPreview);
+            setLogoImage(croppedImage);
+            setLogoPreview(previewUrl);
+        } else {
+            if (bannerPreview && bannerPreview.startsWith("blob:")) URL.revokeObjectURL(bannerPreview);
+            setBannerImage(croppedImage);
+            setBannerPreview(previewUrl);
+        }
         setShowCropper(false);
         setImageToCrop(null);
     };
@@ -171,7 +188,8 @@ function OrgAccountCompletion() {
                             onClick={() => handleImageClick('banner')}
                             style={{
                                 height: '180px',
-                                background: bannerImage ? `url(${bannerImage})` : 'var(--surface-faint)',
+                                backgroundImage: bannerPreview ? `url(${bannerPreview})` : 'none',
+                                backgroundColor: bannerPreview ? 'transparent' : 'var(--surface-faint)',
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                                 borderRadius: '16px',
@@ -184,13 +202,13 @@ function OrgAccountCompletion() {
                                 justifyContent: 'center'
                             }}
                         >
-                            {!bannerImage && (
+                            {!bannerPreview && (
                                 <div style={{ textAlign: 'center' }}>
                                     <FaCamera className="camera-icon" />
                                     <p className="add-photo-text">Add Banner Image</p>
                                 </div>
                             )}
-                            {bannerImage && <div className="change-photo-overlay">Change Banner</div>}
+                            {bannerPreview && <div className="change-photo-overlay">Change Banner</div>}
                         </div>
 
                         <div
@@ -209,20 +227,21 @@ function OrgAccountCompletion() {
                                 style={{
                                     width: '120px',
                                     height: '120px',
-                                    background: logoImage ? `url(${logoImage})` : 'var(--bg-main)',
+                                    backgroundImage: logoPreview ? `url(${logoPreview})` : 'none',
+                                    backgroundColor: logoPreview ? 'transparent' : 'var(--bg-main)',
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
                                     border: '4px solid var(--bg-main)',
                                     boxShadow: 'var(--premium-shadow)'
                                 }}
                             >
-                                {!logoImage && (
+                                {!logoPreview && (
                                     <>
                                         <FaCamera className="camera-icon" />
                                         <span className="add-photo-text">Add Logo</span>
                                     </>
                                 )}
-                                {logoImage && (
+                                {logoPreview && (
                                     <div className="change-photo-overlay">Change</div>
                                 )}
                             </div>

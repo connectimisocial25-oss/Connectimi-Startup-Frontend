@@ -33,3 +33,4 @@ logs
 *.log
 .vercel
 .env*
+stage_and_commit.bat
