@@ -82,27 +82,28 @@ connectimi-web-frontend/
 
 ### Individual Users
 - **Landing Page** — Public marketing page with sign-up CTA
-- **Authentication** — Sign up, log in, forgot password, email verification, and onboarding flow
-- **Home Feed** — Dynamic post feed with interactions
-- **Profile** — Rich user profiles with CV upload, image cropping, and editing
-- **My Network** — Connection management and discovery
+- **Authentication** — Sign up, log in, forgot password (bypassing full validation on reset save), email verification, and onboarding flow
+- **Home Feed (`/home`)** — Dynamic post feed supporting:
+  - Post creation (with text/photo upload)
+  - Post deletion (available for owned posts via trash icon)
+  - Likes toggle with micro-animations
+  - Comments toggle showing nested comments list, adding comments, and deleting owned comments
+- **Profile (`/profile` & `/profile/:userId`)** — Rich user profiles supporting:
+  - Public profile view with dynamic **Follow / Unfollow** toggle button next to Connect
+  - CV/Resume file uploads
+  - Profile detail editing (skills, experience, projects, education) with visual image cropping
+- **My Network (`/mynetwork`)** — Connection management including:
+  - Active connections grid with **Disconnect** functionality
+  - **Followers & Following** lists tab switcher supporting follow/unfollow toggle
+  - Excludes orphaned connection records to handle deleted profiles gracefully
 - **Work** — Browse job listings and opportunities
-- **Notifications** — Real-time activity alerts
+- **Notifications (`/notifications`)** — Real-time activity alerts with dynamic navbar badges:
+  - Live activity feed showing unread (`New`) and read (`Earlier`) items mapped by type (`like`, `comment`, `connection_request`, `connection_accept`, `message`)
+  - Mark single notification as read on click
+  - **Mark all as read** batch update action
+  - Navbar unread counts badge syncs instantly across tab shifts using `notifications_updated` events
 - **Courses** — Discover and follow learning paths with roadmaps
 - **Messaging** — Direct messages between users
-
-### Organizations
-- **Organization Portal** — Dedicated layout and navigation for org accounts
-- **Org Profile** — Public-facing organization page
-- **Org Feed** — Post and engage as an organization
-- **Org Courses** — Publish and manage learning courses
-- **Org Ads** — Create and manage sponsored ads
-- **Org Alerts & Messages** — Internal communication tools
-
-### Platform
-- **Theme Support** — Light/dark mode via `ThemeContext`
-- **Protected Routing** — Auth-aware route handling
-- **React Compiler** — Enabled for optimized renders
 
 ---
 

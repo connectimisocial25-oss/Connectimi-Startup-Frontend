@@ -34,3 +34,6 @@ logs
 .vercel
 .env*
 stage_and_commit.bat
+
+testsprite_tests\tmp\config.json
+testsprite_tests
