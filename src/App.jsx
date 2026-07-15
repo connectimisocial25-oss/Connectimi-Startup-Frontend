@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
+import { FeedProvider } from "./context/FeedContext";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -44,7 +45,8 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <BrowserRouter>
+        <FeedProvider>
+          <BrowserRouter>
           <Layout>
             <Routes>
               <Route path="/" element={<Landing />} />
@@ -75,7 +77,8 @@ function App() {
               </Route>
             </Routes>
           </Layout>
-        </BrowserRouter>
+          </BrowserRouter>
+        </FeedProvider>
       </AuthProvider>
     </ThemeProvider>
   );

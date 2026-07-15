@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import Avatar from "../Avatar";
 import Icon from "../Icon";
 import gsap from "gsap";
 import { useAuth } from "../../context/AuthContext";
+import { useFeed } from "../../context/FeedContext";
 import API from "../../services/api";
 
 const Feed = () => {
@@ -13,6 +14,14 @@ const Feed = () => {
   const postTextareaRef = useRef(null);
   const likeRefs = useRef({});
   const { user } = useAuth();
+  const {
+    feedPosts,
+    fetchFeed,
+    patchFeedPost,
+    prependFeedPost,
+    removeFeedPost,
+    hasFetchedFeed,
+  } = useFeed();
 
   // State for managing "See More" modal
   const [selectedInsight, setSelectedInsight] = useState(null);
@@ -25,7 +34,7 @@ const Feed = () => {
   const fileInputRef = useRef(null);
   const videoInputRef = useRef(null);
   const modalFileInputRef = useRef(null);
-  const [insights, setInsights] = useState([]);
+  const currentUserId = user?.id ?? null;
 
   // ─── Fixed mapper ─────────────────────────────────────────────
   const mapPostToInsight = (post, currentUserId) => ({
@@ -120,63 +129,54 @@ const Feed = () => {
     },
   ];
 
-  // Load dynamic posts from feed
   useEffect(() => {
-    const fetchFeed = async () => {
-      try {
-        const res = await API.get("/posts/feed");
-        const mapped = res.data.posts.map((p) => mapPostToInsight(p, user?.id));
-        setInsights(mapped.length > 0 ? mapped : DEMO_POSTS);
-        console.log(res.data);
+    if (!currentUserId) return;
 
-        // GSAP Animations after loading data
-        setTimeout(() => {
-          const cards = feedRef.current?.querySelectorAll(".insight-card");
-          const shareCard = feedRef.current?.querySelector(
-            ".share-insight-card",
-          );
+    fetchFeed().catch((err) => {
+      console.error("Failed to load feed:", err.message);
+    });
+  }, [currentUserId, fetchFeed]);
 
-          if (shareCard) {
-            gsap.fromTo(
-              shareCard,
-              { y: 20, opacity: 0 },
-              { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
-            );
-          }
+  const insights = useMemo(() => {
+    if (feedPosts.length === 0) return DEMO_POSTS;
+    return feedPosts.map((post) => mapPostToInsight(post, currentUserId));
+  }, [feedPosts, currentUserId, user]);
 
-          if (cards && cards.length > 0) {
-            gsap.fromTo(
-              cards,
-              { y: 30, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: "power3.out",
-              },
-            );
-          }
-        }, 100);
-      } catch (err) {
-        console.error("Failed to load feed:", err.message);
-        // Show demo posts so the page is never empty
-        setInsights(DEMO_POSTS);
-        setTimeout(() => {
-          const cards = feedRef.current?.querySelectorAll(".insight-card");
-          if (cards && cards.length > 0) {
-            gsap.fromTo(
-              cards,
-              { y: 30, opacity: 0 },
-              { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "power3.out" },
-            );
-          }
-        }, 100);
+  useEffect(() => {
+    if (!hasFetchedFeed && feedPosts.length === 0) return;
+
+    const timer = setTimeout(() => {
+      const cards = feedRef.current?.querySelectorAll(".insight-card");
+      const shareCard = feedRef.current?.querySelector(
+        ".share-insight-card",
+      );
+
+      if (shareCard) {
+        gsap.fromTo(
+          shareCard,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
+        );
       }
-    };
 
-    fetchFeed();
-  }, [user]);
+      if (cards && cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out",
+          },
+        );
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [feedPosts, hasFetchedFeed]);
+
   //   console.log();
 
   useEffect(() => {
@@ -207,11 +207,20 @@ const Feed = () => {
       const res = await API.post(`/posts/${id}/like`);
       const { liked, like_count } = res.data;
 
-      setInsights((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, liked, likes: like_count } : item
-        )
-      );
+      patchFeedPost(id, (post) => {
+        const existingLikes = post.likes || [];
+        const normalizedCurrentUserId = currentUserId?.toString();
+        const otherLikes = existingLikes.filter(
+          (like) => (like._id || like).toString() !== normalizedCurrentUserId,
+        );
+
+        return {
+          ...post,
+          likes: liked
+            ? [currentUserId, ...otherLikes].slice(0, like_count)
+            : otherLikes.slice(0, like_count),
+        };
+      });
 
       // Keep modal in sync if it's open on this post
       setSelectedInsight((prev) =>
@@ -228,25 +237,19 @@ const Feed = () => {
       const res = await API.post(`/posts/${postId}/comments`, { text });
       const newComment = res.data.comment;
       
-      const newCommentObj = {
-        id: newComment._id,
-        authorId: user?.id,
-        authorName: user?.fullName || user?.name || "You",
-        authorImg: user?.profileImage || null,
-        authorHeadline: user?.headline || "",
-        text: newComment.text,
-        createdAt: newComment.created_at || new Date().toISOString()
+      const hydratedComment = {
+        ...newComment,
+        author: {
+          _id: user?.id,
+          full_name: user?.fullName || user?.name || "You",
+          profile_picture: user?.profileImage || null,
+          headline: user?.headline || "",
+        },
       };
 
-      setInsights(prev => prev.map(item => {
-        if (item.id === postId) {
-          return {
-            ...item,
-            comments: res.data.comment_count,
-            commentsData: [...(item.commentsData || []), newCommentObj]
-          };
-        }
-        return item;
+      patchFeedPost(postId, (post) => ({
+        ...post,
+        comments: [...(post.comments || []), hydratedComment],
       }));
 
       setNewCommentText(prev => ({ ...prev, [postId]: "" }));
@@ -258,16 +261,9 @@ const Feed = () => {
   const handleDeleteComment = async (postId, commentId) => {
     try {
       await API.delete(`/posts/${postId}/comments/${commentId}`);
-      setInsights(prev => prev.map(item => {
-        if (item.id === postId) {
-          const updatedCommentsData = (item.commentsData || []).filter(c => c.id !== commentId);
-          return {
-            ...item,
-            comments: updatedCommentsData.length,
-            commentsData: updatedCommentsData
-          };
-        }
-        return item;
+      patchFeedPost(postId, (post) => ({
+        ...post,
+        comments: (post.comments || []).filter((comment) => comment._id !== commentId),
       }));
     } catch (err) {
       console.error("Failed to delete comment:", err);
@@ -278,7 +274,7 @@ const Feed = () => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
     try {
       await API.delete(`/posts/${postId}`);
-      setInsights(prev => prev.filter(item => item.id !== postId));
+      removeFeedPost(postId);
     } catch (err) {
       console.error("Failed to delete post:", err);
     }
@@ -372,8 +368,7 @@ const Feed = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const newPost = mapPostToInsight(res.data.post, user?.id);
-      setInsights([newPost, ...insights]);
+      prependFeedPost(res.data.post);
       setNewPostContent("");
       setPostImages([]);
       closePostModal();
