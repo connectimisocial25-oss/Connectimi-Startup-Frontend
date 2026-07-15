@@ -144,7 +144,7 @@ function ForgotPassword() {
                         </button>
 
                         <div className="auth-footer" style={{ marginTop: '20px' }}>
-                            <Link to="/login" className="auth-link-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <Link to="/" className="auth-link-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                 <FaArrowLeft fontSize="12px" /> Back to Log in
                             </Link>
                         </div>
@@ -213,7 +213,7 @@ function ForgotPassword() {
                         <p className="success-text" style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '24px', lineHeight: '1.5' }}>
                             Your password has been changed. You can now log in with your new password.
                         </p>
-                        <button className="auth-submit-btn" onClick={() => navigate("/login")}>
+                        <button className="auth-submit-btn" onClick={() => navigate("/")}>
                             Go to Log in
                         </button>
                     </div>

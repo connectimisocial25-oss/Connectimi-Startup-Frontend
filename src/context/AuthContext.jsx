@@ -252,6 +252,7 @@ export const AuthProvider = ({ children }) => {
     setVerificationStep(null);
     setTempData(null);
     localStorage.removeItem("connectimi_token");
+    localStorage.removeItem("connectimi_refresh_token");
     localStorage.removeItem("connectimi_user");
     // Optionally call logout endpoint synchronously to clear blacklists
     API.post("/auth/logout").catch(() => {});

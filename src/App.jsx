@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { FeedProvider } from "./context/FeedContext";
+import { useEffect } from "react";
 import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
@@ -31,7 +30,7 @@ import OrgAds from "./organization/pages/OrgAds";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const showHeader = !['/', '/login', '/signup', '/forgot-password', '/verify-email', '/account-completion', '/org-account-completion'].includes(location.pathname) && !location.pathname.startsWith('/organization');
+  const showHeader = !['/', '/forgot-password', '/verify-email', '/account-completion', '/org-account-completion'].includes(location.pathname) && !location.pathname.startsWith('/organization');
 
   return (
     <>
@@ -39,6 +38,14 @@ const Layout = ({ children }) => {
       {children}
     </>
   );
+};
+
+const NotFoundRedirect = () => {
+  const { logout } = useAuth();
+  useEffect(() => {
+    logout();
+  }, [logout]);
+  return <Navigate to="/" replace />;
 };
 
 function App() {
@@ -50,8 +57,6 @@ function App() {
           <Layout>
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/account-completion" element={<AccountCompletion />} />
@@ -75,6 +80,9 @@ function App() {
                 <Route path="courses" element={<OrgCourses />} />
                 <Route path="ads" element={<OrgAds />} />
               </Route>
+
+              {/* Catch-all Route */}
+              <Route path="*" element={<NotFoundRedirect />} />
             </Routes>
           </Layout>
           </BrowserRouter>
