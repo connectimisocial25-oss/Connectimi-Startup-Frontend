@@ -33,13 +33,21 @@ export function LoginForm({ onToggle, compact = false }) {
     setLoading(true);
 
     try {
-      await login(email, password, accountType); // pass accountType
+      const loggedInUser = await login(email, password, accountType); // pass accountType
       // AuthContext.login sets the user + token
-      // navigate based on account type
-      if (accountType === "consultant") {
-        navigate("/organization");
+      // navigate based on account type & profile completion
+      if (loggedInUser && !loggedInUser.accountCompleted) {
+        if (accountType === "consultant") {
+          navigate("/org-account-completion");
+        } else {
+          navigate("/account-completion");
+        }
       } else {
-        navigate("/home");
+        if (accountType === "consultant") {
+          navigate("/organization");
+        } else {
+          navigate("/home");
+        }
       }
     } catch (err) {
       setError(err.response?.data?.error || "Login failed. Please try again.");

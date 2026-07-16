@@ -133,6 +133,7 @@ export function transformProfileToFrontend(user) {
     id: user.id || user._id,
     email: user.email,
     accountType: user.account_type || (user.role === "professional" ? "personal" : "consultant"),
+    accountCompleted: user.account_completed !== undefined ? user.account_completed : !!(user.headline || user.location),
     phone: user.phone || "",
     firstName,
     lastName,

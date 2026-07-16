@@ -22,7 +22,11 @@ export const AuthProvider = ({ children }) => {
           const res = await API.get("/auth/me");
           const frontendUser = transformProfileToFrontend(res.data.user);
           setUser(frontendUser);
-          setVerificationStep("active");
+          if (frontendUser.accountCompleted) {
+            setVerificationStep("active");
+          } else {
+            setVerificationStep("account-completion");
+          }
         } catch (err) {
           console.error("Session verification failed:", err.message);
           // logout();
@@ -65,19 +69,20 @@ export const AuthProvider = ({ children }) => {
         account_type: tempData?.accountType,
       });
 
-      const { accessToken, refreshToken, user: backendUser } = res.data;
+      const { accessToken, refreshToken } = res.data;
       localStorage.setItem("connectimi_token", accessToken);
       localStorage.setItem("connectimi_refresh_token", refreshToken);
 
-      // const frontendUser = transformProfileToFrontend(backendUser);
-      // console.log(`backend user: ${backendUser} \n res: ${res.data}`);
+      // Fetch user profile immediately using the new token to populate the context user
+      const meRes = await API.get("/auth/me");
+      const frontendUser = transformProfileToFrontend(meRes.data.user);
 
-      // setUser(frontendUser);
+      setUser(frontendUser);
       setVerificationStep("account-completion");
-      // localStorage.setItem("connectimi_user", JSON.stringify(frontendUser));
+      localStorage.setItem("connectimi_user", JSON.stringify(frontendUser));
       console.log(
         "Email verified, proceeding to completion:",
-        // frontendUser.email,
+        frontendUser.email,
       );
     } catch (err) {
       console.error(
@@ -102,23 +107,24 @@ export const AuthProvider = ({ children }) => {
 
   const completeAccount = async (additionalData) => {
     try {
-      const isConsultant = tempData?.accountType === "consultant";
+      const isConsultant = user?.accountType === "consultant" || tempData?.accountType === "consultant";
       const endpoint = isConsultant
         ? "/consultant/profile/complete"
         : "/profile/complete";
 
-      let profilePictureUrl,
-        bannerImageUrl = null;
+      let profilePictureUrl = null;
+      let bannerImageUrl = null;
 
       // Step 1 — upload image first if user selected one
       if (additionalData.profileImage) {
         const formData = new FormData();
         formData.append("image", additionalData.profileImage);
 
-        const uploadRes = await API.put("/profile/me/avatar", formData, {
+        const avatarEndpoint = isConsultant ? "/consultant/profile/me/logo" : "/profile/me/avatar";
+        const uploadRes = await API.put(avatarEndpoint, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        profilePictureUrl = uploadRes.data.profile_picture;
+        profilePictureUrl = isConsultant ? uploadRes.data.logo : uploadRes.data.profile_picture;
       }
 
       // Step 2 — upload banner image if user selected one
@@ -126,19 +132,23 @@ export const AuthProvider = ({ children }) => {
         const formData = new FormData();
         formData.append("image", additionalData.bannerImage);
 
-        const uploadRes = await API.put("/profile/me/banner", formData, {
+        const bannerEndpoint = isConsultant ? "/consultant/profile/me/banner" : "/profile/me/banner";
+        const uploadRes = await API.put(bannerEndpoint, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        bannerImageUrl = uploadRes.data.profile_picture;
+        bannerImageUrl = isConsultant ? uploadRes.data.banner : uploadRes.data.banner_image;
       }
 
       // Step 3 — send profile completion with URL (not the file)
       const completePayload = transformProfileToBackend({
+        ...user,
         ...tempData,
         ...additionalData,
         // override with the real Cloudinary URL if uploaded
         ...(profilePictureUrl && { profile_picture: profilePictureUrl }),
+        ...(profilePictureUrl && { logo: profilePictureUrl }),
         ...(bannerImageUrl && { banner_image: bannerImageUrl }),
+        ...(bannerImageUrl && { banner: bannerImageUrl }),
       });
 
       // remove the raw file — not serializable to JSON
@@ -146,7 +156,7 @@ export const AuthProvider = ({ children }) => {
       delete completePayload.bannerFile;
 
       const res = await API.put(endpoint, completePayload);
-      const frontendUser = transformProfileToFrontend(res.data.user);
+      const frontendUser = transformProfileToFrontend(res.data.user || res.data.consultant);
 
       setUser(frontendUser);
       setVerificationStep("active");
@@ -175,9 +185,14 @@ export const AuthProvider = ({ children }) => {
       console.log(res.data);
 
       setUser(frontendUser);
-      setVerificationStep("active");
+      if (frontendUser.accountCompleted) {
+        setVerificationStep("active");
+      } else {
+        setVerificationStep("account-completion");
+      }
       localStorage.setItem("connectimi_user", JSON.stringify(frontendUser));
       console.log("Login successful:", frontendUser.email);
+      return frontendUser;
     } catch (err) {
       console.error("Login failed:", err.response?.data?.error || err.message);
       throw err;
@@ -248,14 +263,15 @@ export const AuthProvider = ({ children }) => {
 
 
   const logout = () => {
+    // Optionally call logout endpoint synchronously to clear blacklists
+    API.post("/auth/logout").catch(() => {});
+
     setUser(null);
     setVerificationStep(null);
     setTempData(null);
     localStorage.removeItem("connectimi_token");
     localStorage.removeItem("connectimi_refresh_token");
     localStorage.removeItem("connectimi_user");
-    // Optionally call logout endpoint synchronously to clear blacklists
-    API.post("/auth/logout").catch(() => {});
   };
 
   return (
