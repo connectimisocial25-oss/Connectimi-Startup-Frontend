@@ -158,7 +158,7 @@ const Navbar = () => {
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
                                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                                 </div>
-                                <div className="dropdown-item signout-item" onClick={() => { logout(); navigate('/'); }}>
+                                <div className="dropdown-item signout-item" onClick={() => logout()}>
                                     <Icon name="sign-out" />
                                     Sign Out
                                 </div>
@@ -196,7 +196,7 @@ const Navbar = () => {
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
                                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                                 </div>
-                                <div className="dropdown-item signout-item" onClick={() => { logout(); navigate('/'); }}>
+                                <div className="dropdown-item signout-item" onClick={() => logout()}>
                                     <Icon name="sign-out" />
                                     Sign Out
                                 </div>
