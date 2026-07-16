@@ -176,8 +176,12 @@ Styling uses a hybrid of **Tailwind CSS v4** and **Vanilla CSS**.
 ## Routing & Layouts
 
 - All client-side routes are defined centrally in `src/App.jsx`.
-- **Personal Routes:** Located under `/` and `/home`, `/profile`, `/work`, `/mynetwork`, `/notifications`, `/courses`.
-- **Organization Routes:** Nested under `/organization/` (e.g., `/organization/feed`, `/organization/profile`).
+- **Routing Guards:**
+  - `PublicRoute`: Restricts landing, login, signup, forgot password, and email verification routes to unauthenticated users. Logged-in users are automatically redirected to their correct landing/home page depending on profile completion status.
+  - `ProtectedRoute`: Restricts routes to authenticated users with completed profiles. Unauthenticated users are redirected to `/`. Users with incomplete profiles are redirected to their respective completion page. Also supports role-based checks (e.g., separating `personal` vs `consultant` routes).
+  - `CompletionRoute`: Restricts onboarding/completion routes to authenticated users with *incomplete* profiles of the correct role. Completed users are redirected to their dashboard; unauthenticated users are redirected to `/`.
+- **Personal Routes:** Located under `/home`, `/profile`, `/work`, `/mynetwork`, `/notifications`, `/courses`. Wrapped in `ProtectedRoute` (allowedRoles: `["personal"]`).
+- **Organization Routes:** Nested under `/organization/` (e.g., `/organization/feed`, `/organization/profile`). Wrapped in `ProtectedRoute` (allowedRoles: `["consultant"]`).
 - **Conditional Layout:** The main `Navbar` is conditionally hidden on public landing pages (`/`), auth screens (`/login`, `/signup`, `/forgot-password`, `/verify-email`), onboarding flows (`/account-completion`, `/org-account-completion`), and any route prefixed with `/organization`.
 - **Organization Portal Isolation:** Org portal pages are nested under `src/organization/pages/` and render inside the `OrganizationLayout.jsx` wrapper.
 
