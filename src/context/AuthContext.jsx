@@ -262,9 +262,9 @@ export const AuthProvider = ({ children }) => {
   };
 
 
-  const logout = () => {
+  const logout = async () => {
     // Optionally call logout endpoint synchronously to clear blacklists
-    API.post("/auth/logout").catch(() => {});
+    await API.post("/auth/logout", {}).catch(() => {});
 
     setUser(null);
     setVerificationStep(null);

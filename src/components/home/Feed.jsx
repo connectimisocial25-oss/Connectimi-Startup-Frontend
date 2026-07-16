@@ -781,277 +781,298 @@ const Feed = () => {
           <div
             ref={modalRef}
             style={{
-              backgroundColor: "var(--glass-bg)",
-              backdropFilter: "blur(16px)",
-              borderRadius: "32px",
-              border: "1px solid var(--glass-border)",
-              maxWidth: "960px",
+              backgroundColor: "var(--glass-bg, rgba(30, 41, 59, 0.75))",
+              backdropFilter: "blur(20px)",
+              borderRadius: "24px",
+              border: "1px solid var(--glass-border, rgba(255, 255, 255, 0.1))",
+              maxWidth: "880px",
               width: "100%",
               maxHeight: "90vh",
               display: "flex",
               flexDirection: "column",
-              overflowY: "auto",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+              overflow: "hidden",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7)",
               position: "relative",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* 1. Modal Header Title */}
+            {/* Modal Header */}
             <div
               style={{
-                padding: "24px 32px",
-                borderBottom: "1px solid var(--glass-border)",
+                padding: "20px 24px",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "rgba(255,255,255,0.02)",
+                background: "rgba(255, 255, 255, 0.02)",
               }}
             >
-              <h2
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "700",
-                  color: "var(--text-primary)",
-                  margin: 0,
-                  fontFamily: "Satoshi",
-                }}
-              >
-                {selectedInsight.title}
-              </h2>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <Avatar src={selectedInsight.authorImg} size={42} />
+                <div>
+                  <h4 style={{ fontSize: "15px", fontWeight: "700", margin: 0, color: "var(--text-primary)" }}>
+                    {selectedInsight.author}
+                  </h4>
+                  <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: 0 }}>
+                    {selectedInsight.authorHeadline || "Member"}
+                  </p>
+                </div>
+              </div>
               <button
                 onClick={closeProjectModal}
                 style={{
-                  background: "rgba(255,255,255,0.1)",
+                  background: "rgba(255, 255, 255, 0.08)",
                   border: "none",
                   cursor: "pointer",
-                  width: "36px",
-                  height: "36px",
+                  width: "32px",
+                  height: "32px",
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "var(--text-primary)",
-                  transition: "all 0.2s",
+                  transition: "background 0.2s",
                 }}
               >
-                <Icon name="close" size={18} />
+                <Icon name="close" size={16} />
               </button>
             </div>
 
-            {/* 2. Full Width Image Banner */}
-            <div
-              style={{
-                width: "100%",
-                height: "320px",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <img
-                src={selectedInsight.image}
-                alt={selectedInsight.title}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </div>
-
-            {/* 3. Content Body (Two Columns) */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 300px",
-                gap: "40px",
-                padding: "30px",
-                alignItems: "start",
-              }}
-            >
-              {/* Left Column: Details */}
-              <div style={{ minWidth: 0 }}>
-                <div style={{ marginBottom: "30px" }}>
-                  <h3
+            {/* Modal Content Scroll Area */}
+            <div style={{ overflowY: "auto", flex: 1, display: "flex", flexDirection: "column" }}>
+              {/* Post Image Container (Dynamic Height) */}
+              {selectedInsight.image && (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.25)",
+                    borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                    padding: "10px 0",
+                  }}
+                >
+                  <img
+                    src={selectedInsight.image}
+                    alt={selectedInsight.title}
                     style={{
-                      fontSize: "14px",
-                      fontWeight: "700",
-                      color: "var(--text-secondary)",
-                      marginBottom: "8px",
-                      textTransform: "uppercase",
+                      maxWidth: "100%",
+                      maxHeight: "480px",
+                      width: "auto",
+                      height: "auto",
+                      objectFit: "contain",
+                      display: "block",
                     }}
-                  >
-                    Project Overview
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: "15px",
-                      lineHeight: "1.6",
-                      color: "var(--text-secondary)",
-                    }}
-                  >
-                    A deep dive into fintech user flows using mixed-methods
-                    research to uncover pain points and optimization
-                    opportunities.
-                  </p>
+                  />
                 </div>
+              )}
 
-                <div>
-                  <h3
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "700",
-                      color: "var(--text-secondary)",
-                      marginBottom: "8px",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Key Takeaway
-                  </h3>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: "700",
-                        color: "var(--primary-green)",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      KEY RESULT:
-                    </span>
+              {/* Two Column Layout for Body & Interactions */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 280px",
+                  gap: "24px",
+                  padding: "24px",
+                  alignItems: "start",
+                }}
+              >
+                {/* Left Column: Post Content & Comments */}
+                <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: "24px" }}>
+                  {/* Post Content Text */}
+                  <div style={{ wordBreak: "break-word" }}>
                     <p
                       style={{
                         fontSize: "15px",
                         lineHeight: "1.6",
-                        color: "var(--text-secondary)",
+                        color: "var(--text-primary)",
+                        margin: 0,
+                        whiteSpace: "pre-wrap",
                       }}
                     >
                       {selectedInsight.takeaway}
                     </p>
                   </div>
-                </div>
-              </div>
 
-              {/* Right Column: Author & Actions */}
-              <div
-                style={{
-                  paddingLeft: "20px",
-                  borderLeft: "1px solid var(--border-color)",
-                }}
-              >
-                {/* Author Row */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <Avatar src={selectedInsight.authorImg} size={40} />
-                  <div>
-                    <h4
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        margin: 0,
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {selectedInsight.author}
+                  {/* Interactive Comments Section */}
+                  <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "20px" }}>
+                    <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-primary)", marginBottom: "16px" }}>
+                      Discussion ({selectedInsight.comments})
                     </h4>
-                    <p
-                      style={{
-                        fontSize: "12px",
-                        color: "var(--text-secondary)",
-                        margin: 0,
+                    
+                    {/* Add Comment Form */}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleCreateComment(selectedInsight.id, newCommentText[selectedInsight.id] || "");
                       }}
+                      style={{ display: "flex", gap: "10px", marginBottom: "20px" }}
                     >
-                      Project Lead
-                    </p>
+                      <Avatar src={user?.profileImage} size={32} />
+                      <input
+                        type="text"
+                        placeholder="Add to the discussion..."
+                        value={newCommentText[selectedInsight.id] || ""}
+                        onChange={(e) => setNewCommentText(prev => ({ ...prev, [selectedInsight.id]: e.target.value }))}
+                        style={{
+                          flex: 1,
+                          padding: "10px 16px",
+                          borderRadius: "24px",
+                          border: "1px solid rgba(255, 255, 255, 0.1)",
+                          background: "rgba(255, 255, 255, 0.04)",
+                          color: "white",
+                          outline: "none",
+                          fontSize: "0.85rem",
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        disabled={!(newCommentText[selectedInsight.id] || "").trim()}
+                        style={{
+                          padding: "8px 18px",
+                          borderRadius: "24px",
+                          border: "none",
+                          background: "var(--emerald-500)",
+                          color: "white",
+                          cursor: "pointer",
+                          fontWeight: "600",
+                          fontSize: "0.85rem",
+                          opacity: (newCommentText[selectedInsight.id] || "").trim() ? 1 : 0.55,
+                        }}
+                      >
+                        Post
+                      </button>
+                    </form>
+
+                    {/* Comments List */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                      {(selectedInsight.commentsData || []).length === 0 ? (
+                        <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", margin: "10px 0" }}>
+                          No comments yet. Start the conversation!
+                        </p>
+                      ) : (
+                        (selectedInsight.commentsData || []).map((comm) => (
+                          <div key={comm.id} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                            <Avatar src={comm.authorImg} size={30} />
+                            <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                              <div
+                                style={{
+                                  background: "rgba(255, 255, 255, 0.03)",
+                                  padding: "10px 14px",
+                                  borderRadius: "14px",
+                                  border: "1px solid rgba(255, 255, 255, 0.05)",
+                                }}
+                              >
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                                  <span style={{ fontWeight: "600", fontSize: "0.85rem", color: "white" }}>
+                                    {comm.authorName}
+                                  </span>
+                                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                                    {comm.createdAt ? new Date(comm.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
+                                  </span>
+                                </div>
+                                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>
+                                  {comm.authorHeadline}
+                                </span>
+                                <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, whiteSpace: "pre-wrap" }}>
+                                  {comm.text}
+                                </p>
+                              </div>
+                              {comm.authorId === user?.id && (
+                                <button
+                                  onClick={() => handleDeleteComment(selectedInsight.id, comm.id)}
+                                  style={{
+                                    background: "none",
+                                    border: "none",
+                                    color: "var(--error)",
+                                    cursor: "pointer",
+                                    fontSize: "0.75rem",
+                                    alignSelf: "flex-start",
+                                    marginTop: "4px",
+                                    padding: 0,
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Message Button */}
-                <button
-                  style={{
-                    backgroundColor: "var(--primary-green)" /* Green color */,
-                    color: "white",
-                    border: "none",
-                    borderRadius: "24px",
-                    padding: "10px 20px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "8px",
-                    width: "100%",
-                    marginBottom: "24px",
-                    boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
-                  }}
-                >
-                  <Icon name="comment-dots" /> Message Owner
-                </button>
-
-                {/* Stats Row */}
+                {/* Right Column: Actions Sidebar */}
                 <div
                   style={{
+                    paddingLeft: "20px",
+                    borderLeft: "1px solid rgba(255, 255, 255, 0.08)",
                     display: "flex",
-                    justifyContent: "space-around",
-                    borderTop: "1px solid var(--border-color)",
-                    paddingTop: "20px",
+                    flexDirection: "column",
+                    gap: "20px",
                   }}
                 >
-                  <div style={{ textAlign: "center" }}>
-                    <span
-                      style={{
-                        display: "block",
-                        fontSize: "16px",
-                        fontWeight: "700",
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {selectedInsight.likes}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "12px",
-                        color: "var(--text-secondary)",
-                      }}
-                    >
-                      Likes
-                    </span>
+                  {/* Actions Area */}
+                  <div>
                     <button
                       className={`btn-like-text ${selectedInsight.liked ? "active" : ""}`}
                       onClick={() => handleLike(selectedInsight.id)}
-                      style={{ marginTop: "6px", fontSize: "12px", padding: "4px 10px" }}
+                      style={{
+                        width: "100%",
+                        padding: "10px 16px",
+                        borderRadius: "20px",
+                        background: selectedInsight.liked ? "rgba(16, 185, 129, 0.15)" : "rgba(255, 255, 255, 0.05)",
+                        border: "1px solid rgba(255, 255, 255, 0.08)",
+                        color: selectedInsight.liked ? "var(--primary-green)" : "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        marginBottom: "12px",
+                        transition: "all 0.2s",
+                      }}
                       ref={(el) => (likeRefs.current[`modal-${selectedInsight.id}`] = el)}
                     >
                       <Icon name="thumbs-up" /> {selectedInsight.liked ? "Liked" : "Like"}
                     </button>
+
+                    <button
+                      style={{
+                        backgroundColor: "var(--primary-green)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "20px",
+                        padding: "10px 16px",
+                        fontSize: "0.9rem",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        width: "100%",
+                        boxShadow: "0 4px 12px rgba(16, 185, 129, 0.25)",
+                      }}
+                    >
+                      <Icon name="comment-dots" /> Message Owner
+                    </button>
                   </div>
-                  <div style={{ textAlign: "center" }}>
-                    <span
-                      style={{
-                        display: "block",
-                        fontSize: "16px",
-                        fontWeight: "700",
-                        color: "var(--text-primary)",
-                      }}
-                    >
-                      {selectedInsight.comments}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "12px",
-                        color: "var(--text-secondary)",
-                      }}
-                    >
-                      Comments
-                    </span>
+
+                  {/* Info Stats */}
+                  <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "8px" }}>
+                      <span>Likes</span>
+                      <span style={{ fontWeight: "700", color: "var(--text-primary)" }}>{selectedInsight.likes}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                      <span>Comments</span>
+                      <span style={{ fontWeight: "700", color: "var(--text-primary)" }}>{selectedInsight.comments}</span>
+                    </div>
                   </div>
                 </div>
               </div>
