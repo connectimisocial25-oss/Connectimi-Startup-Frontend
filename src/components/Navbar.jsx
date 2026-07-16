@@ -14,7 +14,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { theme, toggleTheme } = useTheme();
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navBarRef = useRef(null);
     const [unreadCount, setUnreadCount] = useState(0);
@@ -158,7 +158,7 @@ const Navbar = () => {
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
                                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                                 </div>
-                                <div className="dropdown-item signout-item" onClick={() => navigate('/')}>
+                                <div className="dropdown-item signout-item" onClick={() => { logout(); navigate('/'); }}>
                                     <Icon name="sign-out" />
                                     Sign Out
                                 </div>
@@ -196,7 +196,7 @@ const Navbar = () => {
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
                                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                                 </div>
-                                <div className="dropdown-item signout-item" onClick={() => navigate('/')}>
+                                <div className="dropdown-item signout-item" onClick={() => { logout(); navigate('/'); }}>
                                     <Icon name="sign-out" />
                                     Sign Out
                                 </div>

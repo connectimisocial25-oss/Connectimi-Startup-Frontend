@@ -5,6 +5,7 @@ import Icon from '../../components/Icon';
 import Avatar from '../../components/Avatar';
 import Connectimi_logo from '../../components/Connectimi_logo';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 import './OrganizationNavbar.css';
 
@@ -12,6 +13,7 @@ const OrganizationNavbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { theme, toggleTheme } = useTheme();
+    const { logout } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navBarRef = useRef(null);
 
@@ -117,7 +119,7 @@ const OrganizationNavbar = () => {
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
                                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                                 </div>
-                                <div className="dropdown-item signout-item" onClick={() => navigate('/')}>
+                                <div className="dropdown-item signout-item" onClick={() => { logout(); navigate('/'); }}>
                                     <Icon name="sign-out" />
                                     Sign Out
                                 </div>
@@ -150,7 +152,7 @@ const OrganizationNavbar = () => {
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
                                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                                 </div>
-                                <div className="dropdown-item signout-item" onClick={() => navigate('/')}>
+                                <div className="dropdown-item signout-item" onClick={() => { logout(); navigate('/'); }}>
                                     <Icon name="sign-out" />
                                     Sign Out
                                 </div>
