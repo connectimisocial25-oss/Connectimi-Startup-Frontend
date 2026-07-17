@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { useAuth } from "../context/AuthContext";
+import { parseApiError } from "../utils/adapters";
 import "./Auth.css";
 
 const OTP_LENGTH = 6;
@@ -110,9 +111,7 @@ function VerifyEmail() {
         navigate("/account-completion");
       }
     } catch (err) {
-      setError(
-        err.response?.data?.error || "Invalid or expired code. Try again.",
-      );
+      setError(parseApiError(err));
       gsap.fromTo(
         cardRef.current,
         { x: -8 },
@@ -137,7 +136,7 @@ function VerifyEmail() {
       setCanResend(false);
       inputsRef.current[0]?.focus();
     } catch (err) {
-      setError(err.response?.data?.error || "Failed to resend. Try again.");
+      setError(parseApiError(err));
     }
   };
 
@@ -239,7 +238,7 @@ function VerifyEmail() {
               opacity: loading ? 0.7 : 1,
             }}
           >
-            {loading ? "Verifying..." : "Verify email"}
+            {loading ? <div className="auth-btn-spinner"></div> : "Verify email"}
           </button>
         </form>
 

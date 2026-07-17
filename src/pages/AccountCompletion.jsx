@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { useAuth } from "../context/AuthContext";
 import { FaCamera, FaTimes, FaPlus, FaTrash } from "react-icons/fa";
 import ImageCropperModal from "../components/ImageCropperModal";
+import { parseApiError } from "../utils/adapters";
 import "./Auth.css";
 
 const SUGGESTED_SKILLS = [
@@ -25,6 +26,8 @@ const SUGGESTED_SKILLS = [
 function AccountCompletion() {
   const navigate = useNavigate();
   const { tempData, completeAccount } = useAuth();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Profile basic info
   const [headline, setHeadline] = useState("");
@@ -199,6 +202,8 @@ function AccountCompletion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
       await completeAccount({
         headline,
@@ -215,10 +220,9 @@ function AccountCompletion() {
       });
       navigate("/home");
     } catch (err) {
-      alert(
-        err.response?.data?.error ||
-        "Failed to complete account. Please check your fields.",
-      );
+      setError(parseApiError(err));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -773,12 +777,26 @@ function AccountCompletion() {
             </div>
           </div>
 
+          {error && (
+            <p
+              style={{
+                color: "var(--error, #ef4444)",
+                fontSize: "14px",
+                margin: "20px 0 0 0",
+                textAlign: "center"
+              }}
+            >
+              {error}
+            </p>
+          )}
+
           <button
             className="auth-submit-btn"
             type="submit"
+            disabled={loading}
             style={{ marginTop: "30px" }}
           >
-            Complete Account
+            {loading ? <div className="auth-btn-spinner"></div> : "Complete Account"}
           </button>
         </form>
       </div>

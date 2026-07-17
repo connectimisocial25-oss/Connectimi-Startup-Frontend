@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Auth.css";
 import { useAuth } from "../context/AuthContext";
+import { parseApiError } from "../utils/adapters";
 
 export function LoginForm({ onToggle, compact = false }) {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export function LoginForm({ onToggle, compact = false }) {
         }
       }
     } catch (err) {
-      setError(err.response?.data?.error || "Login failed. Please try again.");
+      setError(parseApiError(err));
     } finally {
       setLoading(false);
     }
@@ -152,7 +153,7 @@ export function LoginForm({ onToggle, compact = false }) {
         </div>
 
         <button className="auth-submit-btn" type="submit" disabled={loading}>
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? <div className="auth-btn-spinner"></div> : "Sign In"}
         </button>
       </form>
 

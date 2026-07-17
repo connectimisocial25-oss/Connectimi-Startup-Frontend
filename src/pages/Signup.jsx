@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import { parseApiError } from "../utils/adapters";
 import "./Auth.css";
 
 export function SignupForm({ onToggle, compact = false }) {
@@ -47,7 +48,7 @@ export function SignupForm({ onToggle, compact = false }) {
 
       navigate("/verify-email");
     } catch (err) {
-      setError(err.response?.data?.error || "Signup failed. Please try again.");
+      setError(parseApiError(err));
     } finally {
       setLoading(false);
     }
@@ -174,7 +175,7 @@ export function SignupForm({ onToggle, compact = false }) {
         )}
 
         <button className="auth-submit-btn" type="submit" disabled={loading}>
-          {loading ? "Creating Account..." : "Create Account"}
+          {loading ? <div className="auth-btn-spinner"></div> : "Create Account"}
         </button>
       </form>
 

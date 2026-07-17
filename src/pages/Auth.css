@@ -146,14 +146,20 @@
     color: white;
     border: none;
     border-radius: 16px;
-    padding: 16px;
-    font-size: 16px;
+    padding: 12px;
+    font-size: 17px;
     font-weight: 700;
     cursor: pointer;
     width: 100%;
+    height: 50px;
+    box-sizing: border-box;
     margin-top: 24px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 .auth-submit-btn:hover {
@@ -490,4 +496,21 @@
 
 .input-icon-padding {
     padding-left: 48px !important;
+}
+
+/* Spinner Loader */
+.auth-btn-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50% !important;
+    border-top-color: white !important;
+    animation: spin 1s ease-in-out infinite !important;
+    -webkit-animation: spin 1s ease-in-out infinite !important;
+    margin: 0 !important;
+}
+
+@keyframes spin {
+    to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }

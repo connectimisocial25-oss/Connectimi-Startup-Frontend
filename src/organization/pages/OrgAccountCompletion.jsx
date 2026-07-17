@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { useAuth } from "../../context/AuthContext";
 import { FaCamera, FaTimes, FaPlus, FaTrash, FaBuilding, FaGlobe, FaPhone, FaMapMarkerAlt, FaCalendarAlt, FaUsers } from "react-icons/fa";
 import ImageCropperModal from "../../components/ImageCropperModal";
+import { parseApiError } from "../../utils/adapters";
 import "../../pages/Auth.css";
 
 const SUGGESTED_SPECIALTIES = [
@@ -26,6 +27,8 @@ const COMPANY_SIZES = [
 function OrgAccountCompletion() {
     const navigate = useNavigate();
     const { tempData, completeAccount } = useAuth();
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // Org basic info
     const [industry, setIndustry] = useState("");
@@ -141,6 +144,8 @@ function OrgAccountCompletion() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
+        setLoading(true);
         try {
             await completeAccount({
                 industry,
@@ -158,7 +163,9 @@ function OrgAccountCompletion() {
             });
             navigate("/organization/feed");
         } catch (err) {
-            alert(err.response?.data?.error || "Failed to complete organization setup. Please check your fields.");
+            setError(parseApiError(err));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -428,8 +435,26 @@ function OrgAccountCompletion() {
                         </div>
                     </div>
 
-                    <button className="auth-submit-btn" type="submit" style={{ marginTop: '30px' }}>
-                        Complete Organization Setup
+                    {error && (
+                        <p
+                            style={{
+                                color: "var(--error, #ef4444)",
+                                fontSize: "14px",
+                                margin: "20px 0 0 0",
+                                textAlign: "center"
+                            }}
+                        >
+                            {error}
+                        </p>
+                    )}
+
+                    <button
+                        className="auth-submit-btn"
+                        type="submit"
+                        disabled={loading}
+                        style={{ marginTop: '30px' }}
+                    >
+                        {loading ? <div className="auth-btn-spinner"></div> : "Complete Organization Setup"}
                     </button>
                 </form>
             </div>

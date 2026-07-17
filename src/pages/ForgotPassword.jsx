@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { FaEnvelope, FaArrowLeft, FaCheckCircle, FaLock, FaKey } from "react-icons/fa";
 import API from "../services/api";
+import { parseApiError } from "../utils/adapters";
 import "./Auth.css";
 
 function ForgotPassword() {
@@ -37,7 +38,7 @@ function ForgotPassword() {
             });
             setStep(2);
         } catch (err) {
-            setError(err.response?.data?.error || "Failed to send reset code. Please check your email and try again.");
+            setError(parseApiError(err));
         } finally {
             setLoading(false);
         }
@@ -59,7 +60,7 @@ function ForgotPassword() {
             });
             setStep(3);
         } catch (err) {
-            setError(err.response?.data?.error || "Reset password failed. Please check the code and try again.");
+            setError(parseApiError(err));
         } finally {
             setLoading(false);
         }
@@ -140,7 +141,7 @@ function ForgotPassword() {
                         )}
 
                         <button className="auth-submit-btn" type="submit" disabled={loading} style={{ marginTop: '20px' }}>
-                            {loading ? "Sending OTP..." : "Send Verification Code"}
+                            {loading ? <div className="auth-btn-spinner"></div> : "Send Verification Code"}
                         </button>
 
                         <div className="auth-footer" style={{ marginTop: '20px' }}>
@@ -190,7 +191,7 @@ function ForgotPassword() {
                         )}
 
                         <button className="auth-submit-btn" type="submit" disabled={loading} style={{ marginTop: '20px' }}>
-                            {loading ? "Resetting Password..." : "Reset Password"}
+                            {loading ? <div className="auth-btn-spinner"></div> : "Reset Password"}
                         </button>
 
                         <div className="auth-footer" style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between', width: '100%' }}>

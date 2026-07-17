@@ -205,6 +205,7 @@ Global state is managed via React Context providers in `src/context/`:
 - **Data Adaptation:** Because the frontend uses `camelCase` properties and the backend MongoDB models use `snake_case`, always use the helper transformations in `src/utils/adapters.js`:
   - `transformProfileToBackend(data)` — Map camelCase state payloads to snake_case.
   - `transformProfileToFrontend(user)` — Map snake_case response fields to camelCase.
+  - `parseApiError(err)` — Centralized parser for backend validation errors (handling both standard `{ error }` and array `{ errors }` structures).
 
 ---
 

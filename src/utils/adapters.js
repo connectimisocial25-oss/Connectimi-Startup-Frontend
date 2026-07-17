@@ -180,3 +180,16 @@ export function transformProfileToFrontend(user) {
     followers: user.followers || [],
   };
 }
+
+export function parseApiError(err) {
+  if (err?.response?.data) {
+    const data = err.response.data;
+    if (data.error) {
+      return data.error;
+    }
+    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+      return data.errors.map((e) => e.message).join(", ");
+    }
+  }
+  return err?.message || "An unexpected error occurred.";
+}
