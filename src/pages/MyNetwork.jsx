@@ -114,6 +114,7 @@ const MyNetwork = () => {
 
     const mapInvitation = (invite) => ({
         id: invite._id,
+        userId: invite.requester?._id || invite.requester?.id,
         name: invite.requester?.full_name || invite.requester?.consultant_name || "Anonymous",
         role: invite.requester?.headline || invite.requester?.industry || "Connectimi Member",
         userRole: invite.requester?.role || "professional",
@@ -474,10 +475,10 @@ const MyNetwork = () => {
                                                 role={invite.userRole}
                                                 size={56}
                                                 className="invite-avatar"
-                                                onClick={() => navigate(`/profile/${invite.id}`)}
+                                                onClick={() => navigate(`/profile/${invite.userId}`)}
                                                 style={{ cursor: 'pointer' }}
                                             />
-                                            <div className="invite-info" onClick={() => navigate(`/profile/${invite.id}`)} style={{ cursor: 'pointer' }}>
+                                            <div className="invite-info" onClick={() => navigate(`/profile/${invite.userId}`)} style={{ cursor: 'pointer' }}>
                                                 <div className="invite-name">{invite.name}</div>
                                                 <div className="invite-role">{invite.role}</div>
                                             </div>

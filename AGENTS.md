@@ -263,3 +263,18 @@ The frontend behaves as a Progressive Web App (PWA):
 - [ ] Global ESLint rules are satisfied (verify by running `npm run lint`).
 - [ ] If changing caching or PWA features, `CACHE_VERSION` in `sw.js` is updated.
 - [ ] `AGENTS.md` is updated to reflect any structural changes.
+
+---
+
+## Recent Changes
+
+### Global API Error Handling & Button Spinners
+- Added `parseApiError` utility in `src/utils/adapters.js` to extract detailed validation arrays and standard error messages from API payloads.
+- Standardized submit buttons in auth and onboarding forms with dynamic `.auth-btn-spinner` white rotating loaders and fixed layout sizes (`height: 50px`, `font-size: 17px`, `padding: 12px`, `box-sizing: border-box`).
+- Replaced browser `alert()` popups with inline red error alerts on onboarding pages.
+
+### Dynamic Profile Connection Status & Navigation
+- Added state tracking for `connectionStatus` and `connectionId` in `Profile.jsx`.
+- Dynamically rendered profile actions button ("Connect", "Pending", "Accept Request", "Message") based on connection status.
+- Added `handleAcceptConnection` to respond to incoming requests using the connection ID.
+- Updated invitations mapping and navigation in `MyNetwork.jsx` to navigate using the sender's actual `userId` instead of the connection document ID.

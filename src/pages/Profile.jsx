@@ -20,6 +20,8 @@ const Profile = () => {
   const isOwnProfile = !userId || userId === authUser?.id;
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
+  const [connectionStatus, setConnectionStatus] = useState("none");
+  const [connectionId, setConnectionId] = useState(null);
   const containerRef = useRef(null);
   const speechSynthesisRef = useRef(null);
   const progressIntervalRef = useRef(null);
@@ -207,13 +209,19 @@ const Profile = () => {
     setProfileError("");
     try {
       let publicUser;
+      let connStatus = "none";
+      let connId = null;
       try {
         const res = await API.get(`/profile/${userId}`);
         publicUser = res.data.user;
+        connStatus = res.data.connectionStatus || "none";
+        connId = res.data.connectionId || null;
       } catch (err) {
         if (err.response?.status === 404) {
           const res = await API.get(`/consultant/profile/${userId}`);
           publicUser = res.data.consultant;
+          connStatus = res.data.connectionStatus || "none";
+          connId = res.data.connectionId || null;
         } else {
           throw err;
         }
@@ -230,6 +238,8 @@ const Profile = () => {
         profileViews: publicUser.profile_views || 0,
         postImpressions: publicUser.post_impressions || 0,
       });
+      setConnectionStatus(connStatus);
+      setConnectionId(connId);
     } catch (err) {
       console.error("Failed to load public profile:", err);
       setProfileError("Profile not found or error loading profile.");
@@ -632,10 +642,25 @@ const Profile = () => {
 
   const handleConnect = async () => {
     try {
-      await API.post(`/network/connect/${profileData.id}/${profileData.accountType}`);
+      const res = await API.post(`/network/connect/${profileData.id}/${profileData.accountType}`);
+      setConnectionStatus("pending");
+      if (res.data.connection?.id || res.data.connection?._id) {
+        setConnectionId(res.data.connection.id || res.data.connection._id);
+      }
       alert("Connection request sent successfully!");
     } catch (err) {
       alert(err.response?.data?.error || "Failed to send connection request.");
+    }
+  };
+
+  const handleAcceptConnection = async () => {
+    if (!connectionId) return;
+    try {
+      await API.put(`/network/respond/${connectionId}`, { action: "accept" });
+      setConnectionStatus("accepted");
+      alert("Connection request accepted!");
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to accept connection request.");
     }
   };
 
@@ -717,7 +742,18 @@ const Profile = () => {
           <div className="profile-actions">
             {!isOwnProfile && (
               <>
-                <button className="profile-btn primary" onClick={handleConnect}>Connect</button>
+                {(connectionStatus === "none" || connectionStatus === "declined") && (
+                  <button className="profile-btn primary" onClick={handleConnect}>Connect</button>
+                )}
+                {connectionStatus === "pending" && (
+                  <button className="profile-btn" disabled style={{ opacity: 0.7, cursor: "not-allowed" }}>Pending</button>
+                )}
+                {connectionStatus === "incoming_request" && (
+                  <button className="profile-btn primary" onClick={handleAcceptConnection}>Accept Request</button>
+                )}
+                {connectionStatus === "accepted" && (
+                  <button className="profile-btn primary" onClick={() => navigate("/messaging")}>Message</button>
+                )}
                 <button 
                   className={`profile-btn ${isFollowing ? '' : 'primary'}`} 
                   onClick={handleToggleFollow}
