@@ -54,24 +54,10 @@ const Profile = () => {
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
   const [showCV, setShowCV] = useState(false);
 
-  // Media Section State
-  const [activeMediaTab, setActiveMediaTab] = useState("photos");
-  const [mediaItems, setMediaItems] = useState({
-    photos: [
-      { id: 1, url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80", caption: "Team Hackathon 2024" },
-      { id: 2, url: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80", caption: "Conference Talk" },
-      { id: 3, url: "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80", caption: "Product Launch" },
-      { id: 4, url: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=600&q=80", caption: "Remote Work Setup" },
-      { id: 5, url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80", caption: "Workshop Session" },
-      { id: 6, url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80", caption: "Team Outing" },
-    ],
-    videos: [
-      { id: 1, url: "https://www.w3schools.com/html/mov_bbb.mp4", thumbnail: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80", caption: "Product Demo Walkthrough" },
-      { id: 2, url: "https://www.w3schools.com/html/movie.mp4", thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&q=80", caption: "Tech Talk at DevConf" },
-    ]
-  });
-  const [lightbox, setLightbox] = useState({ open: false, item: null, type: null });
-  const mediaUploadRef = useRef(null);
+  // Posts Feed State
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [postsError, setPostsError] = useState("");
 
   // Speech State
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -185,6 +171,66 @@ const Profile = () => {
     }
   }, [authUser, isOwnProfile]);
 
+  const fetchUserPosts = async (targetId) => {
+    if (!targetId) return;
+    setPostsLoading(true);
+    setPostsError("");
+    try {
+      const res = await API.get(`/posts/user/${targetId}`);
+      setPosts(res.data.posts || []);
+    } catch (err) {
+      console.error("Failed to fetch user posts:", err);
+      setPostsError("Failed to load posts.");
+    } finally {
+      setPostsLoading(false);
+    }
+  };
+
+  const isLikedByMe = (likesArray) => {
+    if (!authUser?.id || !likesArray) return false;
+    return likesArray.some(like => (like._id || like).toString() === authUser.id.toString());
+  };
+
+  const handleLikePost = async (postId) => {
+    try {
+      const res = await API.post(`/posts/${postId}/like`);
+      setPosts(prev => prev.map(post => {
+        if (post._id === postId) {
+          const isLiked = res.data.liked;
+          const currentUserId = authUser?.id;
+          let newLikes = [...(post.likes || [])];
+          if (isLiked) {
+            if (currentUserId && !newLikes.some(id => (id._id || id).toString() === currentUserId.toString())) {
+              newLikes.push(currentUserId);
+            }
+          } else {
+            if (currentUserId) {
+              newLikes = newLikes.filter(id => (id._id || id).toString() !== currentUserId.toString());
+            }
+          }
+          return {
+            ...post,
+            likes: newLikes
+          };
+        }
+        return post;
+      }));
+    } catch (err) {
+      console.error("Failed to like post:", err);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    try {
+      await API.delete(`/posts/${postId}`);
+      setPosts(prev => prev.filter(post => post._id !== postId));
+    } catch (err) {
+      console.error("Failed to delete post:", err);
+      alert(err.response?.data?.error || "Failed to delete post.");
+    }
+  };
+
   const fetchProfileData = async () => {
     if (isOwnProfile) {
       if (authUser) {
@@ -201,6 +247,7 @@ const Profile = () => {
           profileViews: authUser.profileViews || 1287,
           postImpressions: authUser.postImpressions || 3256,
         });
+        fetchUserPosts(authUser.id);
       }
       return;
     }
@@ -240,6 +287,7 @@ const Profile = () => {
       });
       setConnectionStatus(connStatus);
       setConnectionId(connId);
+      fetchUserPosts(publicUser._id || publicUser.id);
     } catch (err) {
       console.error("Failed to load public profile:", err);
       setProfileError("Profile not found or error loading profile.");
@@ -493,152 +541,111 @@ const Profile = () => {
     </div>
   );
 
-  const handleMediaUpload = (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const url = URL.createObjectURL(file);
-      const isVideo = file.type.startsWith("video/");
-      const newItem = { id: Date.now() + Math.random(), url, caption: file.name.replace(/\.[^/.]+$/, "") };
-      if (isVideo) {
-        newItem.thumbnail = url;
-        setMediaItems(prev => ({ ...prev, videos: [newItem, ...prev.videos] }));
-        setActiveMediaTab("videos");
-      } else {
-        setMediaItems(prev => ({ ...prev, photos: [newItem, ...prev.photos] }));
-        setActiveMediaTab("photos");
-      }
-    });
-    e.target.value = "";
-  };
-
-  const removeMedia = (type, id) => {
-    setMediaItems(prev => ({
-      ...prev,
-      [type]: prev[type].filter(item => item.id !== id)
-    }));
-    // Close lightbox if the deleted item is currently open
-    if (lightbox.open && lightbox.item?.id === id) {
-      setLightbox({ open: false, item: null, type: null });
+  const renderPosts = () => {
+    if (postsLoading) {
+      return (
+        <div className="glass-panel posts-section gsap-reveal">
+          <h3 className="panel-title"><Icon name="newspaper" /> Latest Posts</h3>
+          <div className="posts-loading-container" style={{ display: 'flex', justifyContent: 'center', padding: '2rem 0' }}>
+            <div className="loading-spinner" style={{ border: '3px solid rgba(255, 255, 255, 0.1)', borderLeftColor: 'var(--primary-emerald)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }} />
+          </div>
+        </div>
+      );
     }
-  };
 
-  const renderMedia = () => (
-    <div className="glass-panel media-section gsap-reveal">
-      {/* Lightbox */}
-      {lightbox.open && (
-        <div className="media-lightbox" onClick={() => setLightbox({ open: false, item: null, type: null })}>
-          <button className="lightbox-close" onClick={() => setLightbox({ open: false, item: null, type: null })}>✕</button>
-          <div className="lightbox-content" onClick={e => e.stopPropagation()}>
-            {lightbox.type === "photo" ? (
-              <img src={lightbox.item.url} alt={lightbox.item.caption} className="lightbox-img" />
-            ) : (
-              <video src={lightbox.item.url} controls autoPlay className="lightbox-video" />
-            )}
-            {lightbox.item.caption && (
-              <p className="lightbox-caption">{lightbox.item.caption}</p>
-            )}
-          </div>
+    if (postsError) {
+      return (
+        <div className="glass-panel posts-section gsap-reveal">
+          <h3 className="panel-title"><Icon name="newspaper" /> Latest Posts</h3>
+          <p className="error-msg">{postsError}</p>
         </div>
-      )}
+      );
+    }
 
-      <div className="media-header">
+    return (
+      <div className="glass-panel posts-section gsap-reveal">
         <h3 className="panel-title">
-          <Icon name="image" /> Media
+          <Icon name="newspaper" /> Latest Posts
         </h3>
-        <div className="media-header-right">
-          <div className="media-tabs">
-            <button
-              className={`media-tab ${activeMediaTab === "photos" ? "active" : ""}`}
-              onClick={() => setActiveMediaTab("photos")}
-            >
-              📷 Photos <span className="media-count">{mediaItems.photos.length}</span>
-            </button>
-            <button
-              className={`media-tab ${activeMediaTab === "videos" ? "active" : ""}`}
-              onClick={() => setActiveMediaTab("videos")}
-            >
-              🎬 Videos <span className="media-count">{mediaItems.videos.length}</span>
-            </button>
+
+        {posts.length > 0 ? (
+          <div className="profile-posts-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {posts.map((post) => {
+              const liked = isLikedByMe(post.likes);
+              const authorName = post.author?.full_name || profileData.name || "User";
+              const authorHeadline = post.author?.headline || profileData.headline || "";
+              const authorImg = post.author?.profile_picture || profileData.profileImage || DEFAULT_PROFILE_IMG;
+              const hasMedia = post.media && post.media.length > 0;
+              const formattedDate = post.created_at ? new Date(post.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "";
+
+              return (
+                <div key={post._id} className="profile-post-card">
+                  <div className="post-card-header">
+                    <img src={authorImg} alt={authorName} className="post-author-img" />
+                    <div className="post-author-info">
+                      <h4 className="post-author-name">{authorName}</h4>
+                      <p className="post-author-headline">{authorHeadline}</p>
+                      <p className="post-date"><Icon name="clock" size={12} /> {formattedDate}</p>
+                    </div>
+                    {isOwnProfile && (
+                      <button 
+                        className="post-delete-btn" 
+                        title="Delete post" 
+                        onClick={() => handleDeletePost(post._id)}
+                      >
+                        <Icon name="trash" size={14} />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="post-card-body">
+                    <p className="post-content-text">{post.content}</p>
+                    {hasMedia && (
+                      <div className="post-media-wrapper">
+                        {post.media[0].media_type === "video" ? (
+                          <video src={post.media[0].url} controls className="post-media-element" />
+                        ) : (
+                          <img src={post.media[0].url} alt="Post Attachment" className="post-media-element" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="post-card-footer">
+                    <button 
+                      className={`post-action-btn like-btn ${liked ? 'active' : ''}`}
+                      onClick={() => handleLikePost(post._id)}
+                    >
+                      <Icon name="thumbs-up" size={14} />
+                      <span>{liked ? "Liked" : "Like"} ({post.likes?.length || 0})</span>
+                    </button>
+                    <button 
+                      className="post-action-btn comment-btn"
+                      onClick={() => navigate("/home")}
+                      title="View comments in feed"
+                    >
+                      <Icon name="comment" size={14} />
+                      <span>Comments ({post.comments?.length || 0})</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <input
-            ref={mediaUploadRef}
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            style={{ display: "none" }}
-            onChange={handleMediaUpload}
-          />
-          <button className="profile-btn media-upload-btn" onClick={() => mediaUploadRef.current?.click()}>
-            <Icon name="plus" /> Add Media
-          </button>
-        </div>
+        ) : (
+          <div className="posts-empty-state">
+            <div className="empty-icon"><Icon name="newspaper" size={32} /></div>
+            <p className="empty-text">No posts published yet.</p>
+            {isOwnProfile && (
+              <button className="profile-btn primary" onClick={() => navigate("/home")}>
+                Share your first post
+              </button>
+            )}
+          </div>
+        )}
       </div>
-
-      {activeMediaTab === "photos" && (
-        <div className="media-grid">
-          {mediaItems.photos.length > 0 ? (
-            mediaItems.photos.map((photo, i) => (
-              <div
-                key={photo.id}
-                className={`media-card ${i === 0 ? "media-card--featured" : ""}`}
-                onClick={() => setLightbox({ open: true, item: photo, type: "photo" })}
-              >
-                <img src={photo.url} alt={photo.caption} loading="lazy" />
-                <div className="media-overlay">
-                  <span className="media-caption">{photo.caption}</span>
-                  <span className="media-expand-icon">⛶</span>
-                </div>
-                <button
-                  className="media-delete-btn"
-                  title="Remove photo"
-                  onClick={e => { e.stopPropagation(); removeMedia("photos", photo.id); }}
-                >
-                  🗑
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="media-empty">
-              <div className="media-empty-icon">📷</div>
-              <p>No photos yet. Click "Add Media" to upload your first photo.</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeMediaTab === "videos" && (
-        <div className="media-grid">
-          {mediaItems.videos.length > 0 ? (
-            mediaItems.videos.map((video) => (
-              <div
-                key={video.id}
-                className="media-card media-card--video"
-                onClick={() => setLightbox({ open: true, item: video, type: "video" })}
-              >
-                <img src={video.thumbnail} alt={video.caption} loading="lazy" />
-                <div className="media-overlay">
-                  <div className="video-play-badge">▶</div>
-                  <span className="media-caption">{video.caption}</span>
-                </div>
-                <button
-                  className="media-delete-btn"
-                  title="Remove video"
-                  onClick={e => { e.stopPropagation(); removeMedia("videos", video.id); }}
-                >
-                  🗑
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="media-empty">
-              <div className="media-empty-icon">🎬</div>
-              <p>No videos yet. Click "Add Media" to upload your first video.</p>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+    );
+  };
 
   const handleConnect = async () => {
     try {
@@ -798,7 +805,7 @@ const Profile = () => {
           {renderProjects()}
           {renderEducation()}
           {renderSkills()}
-          {renderMedia()}
+          {renderPosts()}
         </div>
 
         <div className="side-col">
