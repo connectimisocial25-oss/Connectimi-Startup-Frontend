@@ -8,6 +8,7 @@ import { gsap } from "gsap";
 import { useAuth } from "../context/AuthContext";
 import API from "../services/api";
 import { transformProfileToFrontend } from "../utils/adapters";
+import Avatar from "../components/Avatar";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80";
 const DEFAULT_PROFILE_IMG = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
@@ -16,7 +17,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userId } = useParams();
-  const { user: authUser, setUser } = useAuth();
+  const { user: authUser, setUser, updateUser } = useAuth();
   const isOwnProfile = !userId || userId === authUser?.id;
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
@@ -58,6 +59,8 @@ const Profile = () => {
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
   const [postsError, setPostsError] = useState("");
+  const [expandedPostComments, setExpandedPostComments] = useState({});
+  const [newCommentText, setNewCommentText] = useState({});
 
   // Speech State
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -228,6 +231,54 @@ const Profile = () => {
     } catch (err) {
       console.error("Failed to delete post:", err);
       alert(err.response?.data?.error || "Failed to delete post.");
+    }
+  };
+
+  const handleCreateComment = async (postId, text) => {
+    if (!text.trim()) return;
+    try {
+      const res = await API.post(`/posts/${postId}/comments`, { text });
+      const newComment = res.data.comment;
+      
+      const hydratedComment = {
+        ...newComment,
+        id: newComment._id,
+        authorId: newComment.author?._id || newComment.author,
+        authorName: newComment.author?.full_name || authUser?.name || "You",
+        authorImg: newComment.author?.profile_picture || authUser?.profileImage || null,
+        authorHeadline: newComment.author?.headline || authUser?.headline || "",
+        createdAt: newComment.created_at
+      };
+
+      setPosts(prev => prev.map(post => {
+        if (post._id === postId) {
+          return {
+            ...post,
+            comments: [...(post.comments || []), hydratedComment]
+          };
+        }
+        return post;
+      }));
+      setNewCommentText(prev => ({ ...prev, [postId]: "" }));
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+    }
+  };
+
+  const handleDeleteComment = async (postId, commentId) => {
+    try {
+      await API.delete(`/posts/${postId}/comments/${commentId}`);
+      setPosts(prev => prev.map(post => {
+        if (post._id === postId) {
+          return {
+            ...post,
+            comments: (post.comments || []).filter(c => (c._id || c.id) !== commentId)
+          };
+        }
+        return post;
+      }));
+    } catch (err) {
+      console.error("Failed to delete comment:", err);
     }
   };
 
@@ -464,7 +515,7 @@ const Profile = () => {
       ...cleanData
     } = editData;
     try {
-      await updateAuthUser(cleanData);
+      await updateUser(cleanData);
       setIsEditing(false);
       cleanupPreviewURLs();
       setImagePreview("");
@@ -589,9 +640,10 @@ const Profile = () => {
                     </div>
                     {isOwnProfile && (
                       <button 
+                        type="button"
                         className="post-delete-btn" 
                         title="Delete post" 
-                        onClick={() => handleDeletePost(post._id)}
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeletePost(post._id); }}
                       >
                         <Icon name="trash" size={14} />
                       </button>
@@ -613,21 +665,94 @@ const Profile = () => {
 
                   <div className="post-card-footer">
                     <button 
+                      type="button"
                       className={`post-action-btn like-btn ${liked ? 'active' : ''}`}
-                      onClick={() => handleLikePost(post._id)}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLikePost(post._id); }}
                     >
                       <Icon name="thumbs-up" size={14} />
                       <span>{liked ? "Liked" : "Like"} ({post.likes?.length || 0})</span>
                     </button>
                     <button 
-                      className="post-action-btn comment-btn"
-                      onClick={() => navigate("/home")}
-                      title="View comments in feed"
+                      type="button"
+                      className={`post-action-btn comment-btn ${expandedPostComments[post._id] ? 'active' : ''}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpandedPostComments(prev => ({ ...prev, [post._id]: !prev[post._id] })); }}
+                      title="Comments"
                     >
                       <Icon name="comment" size={14} />
                       <span>Comments ({post.comments?.length || 0})</span>
                     </button>
                   </div>
+
+                  {/* Comments Section */}
+                  {expandedPostComments[post._id] && (
+                    <div className="comments-section" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.05)", marginTop: "15px", paddingTop: "15px" }}>
+                      <form 
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          handleCreateComment(post._id, newCommentText[post._id] || "");
+                        }}
+                        style={{ display: "flex", gap: "10px", marginBottom: "15px" }}
+                      >
+                        <Avatar src={authUser?.profileImage} size={32} />
+                        <input
+                          type="text"
+                          placeholder="Add a comment..."
+                          value={newCommentText[post._id] || ""}
+                          onChange={(e) => setNewCommentText(prev => ({ ...prev, [post._id]: e.target.value }))}
+                          style={{ flex: 1, padding: "8px 12px", borderRadius: "20px", border: "1px solid rgba(255, 255, 255, 0.1)", background: "rgba(255, 255, 255, 0.05)", color: "white", outline: "none", fontSize: "0.85rem" }}
+                        />
+                        <button 
+                          type="submit" 
+                          disabled={!(newCommentText[post._id] || "").trim()}
+                          style={{ padding: "8px 16px", borderRadius: "20px", border: "none", background: "var(--emerald-500)", color: "white", cursor: "pointer", fontWeight: "600", opacity: (newCommentText[post._id] || "").trim() ? 1 : 0.5 }}
+                        >
+                          Post
+                        </button>
+                      </form>
+
+                      <div className="comments-list" style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "250px", overflowY: "auto" }}>
+                        {(post.comments || []).length === 0 ? (
+                          <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", margin: "10px 0" }}>No comments yet.</p>
+                        ) : (
+                          (post.comments || []).map((comm) => {
+                            const commId = comm._id || comm.id;
+                            const authorId = comm.author?._id || comm.authorId || comm.author;
+                            const authorName = comm.author?.full_name || comm.authorName || "User";
+                            const authorHeadline = comm.author?.headline || comm.authorHeadline || "";
+                            const authorImg = comm.author?.profile_picture || comm.authorImg || DEFAULT_PROFILE_IMG;
+                            const createdAt = comm.created_at || comm.createdAt;
+
+                            return (
+                              <div key={commId} className="comment-item" style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                                <Avatar src={authorImg} size={28} />
+                                <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                                  <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px 14px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                                      <span style={{ fontWeight: "700", fontSize: "0.85rem", color: "white" }}>{authorName}</span>
+                                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                                        {createdAt ? new Date(createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
+                                      </span>
+                                    </div>
+                                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>{authorHeadline}</span>
+                                    <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0 }}>{comm.text}</p>
+                                  </div>
+                                  {authorId === authUser?.id && (
+                                    <button 
+                                      type="button"
+                                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteComment(post._id, commId); }}
+                                      style={{ background: "none", border: "none", color: "var(--error)", cursor: "pointer", fontSize: "0.75rem", alignSelf: "flex-start", marginTop: "4px", padding: 0 }}
+                                    >
+                                      Delete
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -873,7 +998,12 @@ const Profile = () => {
           setImagePreview={setImagePreview}
           bannerPreview={bannerPreview}
           setBannerPreview={setBannerPreview}
-          onCancel={() => setIsEditing(false)}
+          onCancel={() => {
+            setIsEditing(false);
+            cleanupPreviewURLs();
+            setImagePreview("");
+            setBannerPreview("");
+          }}
         />
       )}
     </div>

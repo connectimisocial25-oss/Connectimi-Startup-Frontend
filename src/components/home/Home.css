@@ -354,12 +354,6 @@
 
 .insight-card--text-only .insight-takeaway p {
     /* More text visible since no image competes for space */
-    line-clamp: 4;
-    -webkit-line-clamp: 4;
-
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 .insight-header {

@@ -278,3 +278,13 @@ The frontend behaves as a Progressive Web App (PWA):
 - Dynamically rendered profile actions button ("Connect", "Pending", "Accept Request", "Message") based on connection status.
 - Added `handleAcceptConnection` to respond to incoming requests using the connection ID.
 - Updated invitations mapping and navigation in `MyNetwork.jsx` to navigate using the sender's actual `userId` instead of the connection document ID.
+
+### Frontend Bugs & UI Responsiveness Fixes
+- **Profile Comment Box Navigation**: Added inline comments drawer toggle in `Profile.jsx` alongside `handleCreateComment` and `handleDeleteComment` API handlers, replacing the broken page navigation bug.
+- **Cropping & Banner Previews**: Created object URLs for cropped logo and banner image previews in `OrgEditForm.jsx` to fix `[object Blob]` rendering issues. Included file input reference resets to fix re-selection behavior.
+- **Like Action Page Reload Prevention**: Appended `type="button"` and event stop-propagation / prevent-default to all post and detail modal action buttons (like, comment, delete) across `Feed.jsx` and `Profile.jsx`.
+- **Takeaway truncation**: Conditionalized the "See More..." link in `Feed.jsx` based on takeaway character length, and removed line-clamping CSS rules from `.insight-card--text-only` in `Home.css` so that the "See More..." button is visible on mobile viewports.
+- **General Mobile Responsiveness**: Fixed mobile bottom navbar rendering issues across the app by correcting the class name mismatch to `mobile-bottom-nav` in both `Navbar.jsx` and `OrganizationNavbar.jsx`, and fetched the real organization logo from authenticated user context. Added media query padding to job and notification container layouts to clear the bottom navbar.
+- **Edit Profile Fixes**: Corrected invalid `updateAuthUser` function call in `Profile.jsx` to `updateUser`.
+- **Comment Styling Distinction**: Styled comment items to make author name, user headline, and comment text visually distinct in sizes and weights.
+- **Consultant UI Scaling**: Scaled down hero banner and large logos on screens below `768px` in `OrgPages.css` to fix consultant profile layout.
