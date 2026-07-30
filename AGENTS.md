@@ -160,6 +160,7 @@ The development server runs at `http://localhost:5173` by default.
 | Variable | Description |
 |---|---|
 | `VITE_API_URL` | Base URL of the backend API (e.g., `http://localhost:3001` or production host). **Note:** This is the official variable name (do not use VITE_API_BASE_URL). |
+| `VITE_CHAT_URL` | Base URL of the RealTimeChat messaging server (e.g., `http://localhost:8000` or production chat host). |
 
 ---
 
@@ -191,14 +192,16 @@ Styling uses a hybrid of **Tailwind CSS v4** and **Vanilla CSS**.
 
 Global state is managed via React Context providers in `src/context/`:
 1. `AuthContext.jsx` — Stores user authentication status, holds the JWT token in `localStorage` under `connectimi_token`, stores public user metadata under `connectimi_user`, and exposes helper routines (`login`, `logout`, `updateUser`).
-2. `ThemeContext.jsx` — Exposes the current visual theme (`light` or `dark`), toggles themes, and updates classes on the HTML `document` element.
-3. `ProfileContext.jsx` — Caches user profile information for editing, completing profile details, and syncing across screens.
+2. `ChatContext.jsx` — Manages real-time Socket.io chat server connections, incoming/outgoing messaging events, typing indicator states, and user online/offline status tracking.
+3. `ThemeContext.jsx` — Exposes the current visual theme (`light` or `dark`), toggles themes, and updates classes on the HTML `document` element.
+4. `ProfileContext.jsx` — Caches user profile information for editing, completing profile details, and syncing across screens.
 
 ---
 
 ## Services & API Integration
 
 - All API communications must flow through the central Axios instance in `src/services/api.js`.
+- All chat-related HTTP API communications (conversations lists, message history, fallback HTTP message sends) must flow through the chat-specific Axios instance in `src/services/chatApi.js`.
 - The API client automatically configures `baseURL` utilizing `VITE_API_URL` (appending `/api/v1`).
 - **Request Interceptor:** Automatically reads `connectimi_token` from `localStorage` and attaches it to the `Authorization` header as `Bearer <token>`.
 - **Response Interceptor:** If the backend returns a `401 Unauthorized` status (e.g., token expired), the interceptor automatically logs the user out by purging credentials from `localStorage`.
@@ -278,3 +281,16 @@ The frontend behaves as a Progressive Web App (PWA):
 - Dynamically rendered profile actions button ("Connect", "Pending", "Accept Request", "Message") based on connection status.
 - Added `handleAcceptConnection` to respond to incoming requests using the connection ID.
 - Updated invitations mapping and navigation in `MyNetwork.jsx` to navigate using the sender's actual `userId` instead of the connection document ID.
+
+### Real-Time Chat & Messaging Integration
+- Installed `socket.io-client` package.
+- Created `chatApi` Axios instance and `ChatContext` for unified state management of conversations, messages, typing indicators, and user presence.
+- Refactored `Messaging.jsx` and `Messaging.css` to use the real-time context and styles for unread counts, status bubbles, and typing dots.
+- Integrated the Messaging view inside the `MyNetwork` tab selection `mynetwork?tab=messaging`, showing a dynamic unread count badge in the network sidebar.
+- Added a fallback effect in `ChatContext` to cleanly disconnect socket sessions and flush chat data upon logout.
+- Fixed the "Message" redirection inside `Profile.jsx` and `MyNetwork.jsx` to pass `contactId` and profile data context, allowing the messaging window to immediately target and initialize a new conversation.
+- Aligned `JWT_SECRET` in the chat server `.env` to match the main API backend secret, resolving the signature mismatch, and updated `ChatContext.jsx` connection error handler to stop infinite reconnect loops on authentication failure.
+- Updated `User` and `Message` models in the chat server to use `STRING(24)` instead of `UUID` to match Mongoose MongoDB ObjectIds.
+- Updated chat server auth and socket middlewares to check both `sub` (FastAPI standard) and `id` (Mongoose standard) fields, preventing Sequelize `undefined` crashes and connection drops.
+- Postponed the initial conversation list fetch so it only executes when the `MyNetwork` page mounts, preventing redundant `/user/conversations` API calls on Home page load/reload.
+

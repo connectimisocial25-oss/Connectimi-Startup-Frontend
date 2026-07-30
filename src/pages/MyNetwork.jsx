@@ -9,9 +9,10 @@ import ComingSoon from '../components/ComingSoon';
 import './MyNetwork.css';
 import Messaging from './Messaging';
 import API from '../services/api';
+import { useChat } from '../context/ChatContext';
 
 // Tabs whose backend is fully implemented — everything else shows ComingSoon
-const ACTIVE_TABS = ['connections', 'experts', 'following'];
+const ACTIVE_TABS = ['connections', 'experts', 'following', 'messaging'];
 
 // Per-tab copy for the ComingSoon placeholder
 const COMING_SOON_CONTENT = {
@@ -51,6 +52,15 @@ const MyNetwork = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { theme } = useTheme();
+    const { conversations, isConnected, fetchConversations } = useChat();
+
+    const unreadMessagesCount = (conversations || []).reduce((acc, c) => acc + (c.unreadCount || 0), 0);
+
+    useEffect(() => {
+        if (isConnected) {
+            fetchConversations();
+        }
+    }, [isConnected, fetchConversations]);
 
     const initialTab = location.state?.tab || new URLSearchParams(location.search).get('tab') || 'connections';
     const [activeTab, setActiveTab] = useState(initialTab);
@@ -300,7 +310,7 @@ const MyNetwork = () => {
                         {[
                             { id: 'connections', label: 'Connections', icon: 'users', count: 482 },
                             { id: 'experts', label: 'Expert Consultations', icon: 'user-tie' },
-                            { id: 'messaging', label: 'Messaging', icon: 'comment-dots' },
+                            { id: 'messaging', label: 'Messaging', icon: 'comment-dots', count: unreadMessagesCount > 0 ? unreadMessagesCount : null },
                             { id: 'following', label: 'Following & Followers', icon: 'user-circle' },
                             { id: 'groups', label: 'Groups', icon: 'users', count: 12 },
                             { id: 'events', label: 'Events', icon: 'calendar-alt', count: 2 },
@@ -329,6 +339,12 @@ const MyNetwork = () => {
                 <main className="network-main" ref={mainContentRef}>
                     {!ACTIVE_TABS.includes(activeTab) ? (
                         <ComingSoon {...COMING_SOON_CONTENT[activeTab]} />
+                    ) : activeTab === 'messaging' ? (
+                        <Messaging 
+                            embedded={true} 
+                            contactId={new URLSearchParams(location.search).get('contactId')} 
+                            initialPartner={location.state?.partner} 
+                        />
                     ) : activeTab === 'experts' ? (
                         <section className="suggestions-section">
                             <div className="modern-teal-badge">TOP EXPERT CONSULTANTS FOR YOU</div>
@@ -518,7 +534,11 @@ const MyNetwork = () => {
                                                     <button className="ignore-btn" style={{ flex: 1, padding: '8px 0', border: '1px solid rgba(255,255,255,0.1)' }} onClick={() => handleRemoveConnection(conn.id)}>
                                                         Disconnect
                                                     </button>
-                                                    <button className="accept-btn" style={{ flex: 1, padding: '8px 0', background: 'var(--emerald-500)', color: 'white' }} onClick={() => navigate(`/mynetwork?tab=messaging`)}>
+                                                    <button 
+                                                        className="accept-btn" 
+                                                        style={{ flex: 1, padding: '8px 0', background: 'var(--emerald-500)', color: 'white' }} 
+                                                        onClick={() => navigate(`/mynetwork?tab=messaging&contactId=${conn.id}`, { state: { partner: { id: conn.id, name: conn.name, avatar: conn.avatar, role: conn.role } } })}
+                                                    >
                                                         Message
                                                     </button>
                                                 </div>

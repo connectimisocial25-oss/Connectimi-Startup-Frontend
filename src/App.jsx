@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { FeedProvider } from "./context/FeedContext";
+import { ChatProvider } from "./context/ChatContext";
 import { useEffect } from "react";
 import Landing from "./pages/Landing";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -132,42 +133,44 @@ function App() {
       <AuthProvider>
         <FeedProvider>
           <BrowserRouter>
-          <Layout>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
-              <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
-              <Route path="/verify-email" element={<PublicRoute><VerifyEmail /></PublicRoute>} />
+            <ChatProvider>
+            <Layout>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
+                <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+                <Route path="/verify-email" element={<PublicRoute><VerifyEmail /></PublicRoute>} />
 
-              {/* Completion Routes */}
-              <Route path="/account-completion" element={<CompletionRoute type="personal"><AccountCompletion /></CompletionRoute>} />
-              <Route path="/org-account-completion" element={<CompletionRoute type="consultant"><OrgAccountCompletion /></CompletionRoute>} />
+                {/* Completion Routes */}
+                <Route path="/account-completion" element={<CompletionRoute type="personal"><AccountCompletion /></CompletionRoute>} />
+                <Route path="/org-account-completion" element={<CompletionRoute type="consultant"><OrgAccountCompletion /></CompletionRoute>} />
 
-              {/* Protected Personal Routes */}
-              <Route path="/home" element={<ProtectedRoute allowedRoles={["personal"]}><Home /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute allowedRoles={["personal"]}><Profile /></ProtectedRoute>} />
-              <Route path="/profile/:userId" element={<ProtectedRoute allowedRoles={["personal"]}><Profile /></ProtectedRoute>} />
-              <Route path="/work" element={<ProtectedRoute allowedRoles={["personal"]}><Work /></ProtectedRoute>} />
-              <Route path="/mynetwork" element={<ProtectedRoute allowedRoles={["personal"]}><MyNetwork /></ProtectedRoute>} />
-              <Route path="/notifications" element={<ProtectedRoute allowedRoles={["personal"]}><Notifications /></ProtectedRoute>} />
-              <Route path="/courses" element={<ProtectedRoute allowedRoles={["personal"]}><Courses /></ProtectedRoute>} />
-              <Route path="/courses/:courseId" element={<ProtectedRoute allowedRoles={["personal"]}><CourseRoadmap /></ProtectedRoute>} />
+                {/* Protected Personal Routes */}
+                <Route path="/home" element={<ProtectedRoute allowedRoles={["personal"]}><Home /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute allowedRoles={["personal"]}><Profile /></ProtectedRoute>} />
+                <Route path="/profile/:userId" element={<ProtectedRoute allowedRoles={["personal"]}><Profile /></ProtectedRoute>} />
+                <Route path="/work" element={<ProtectedRoute allowedRoles={["personal"]}><Work /></ProtectedRoute>} />
+                <Route path="/mynetwork" element={<ProtectedRoute allowedRoles={["personal"]}><MyNetwork /></ProtectedRoute>} />
+                <Route path="/notifications" element={<ProtectedRoute allowedRoles={["personal"]}><Notifications /></ProtectedRoute>} />
+                <Route path="/courses" element={<ProtectedRoute allowedRoles={["personal"]}><Courses /></ProtectedRoute>} />
+                <Route path="/courses/:courseId" element={<ProtectedRoute allowedRoles={["personal"]}><CourseRoadmap /></ProtectedRoute>} />
 
-              {/* Organization Routes */}
-              <Route path="/organization" element={<ProtectedRoute allowedRoles={["consultant"]}><OrganizationLayout /></ProtectedRoute>}>
-                <Route index element={<Navigate to="/organization/feed" replace />} />
-                <Route path="feed" element={<OrgFeed />} />
-                <Route path="profile" element={<OrgProfile />} />
-                <Route path="messages" element={<OrgMessages />} />
-                <Route path="alerts" element={<OrgAlerts />} />
-                <Route path="courses" element={<OrgCourses />} />
-                <Route path="ads" element={<OrgAds />} />
-              </Route>
+                {/* Organization Routes */}
+                <Route path="/organization" element={<ProtectedRoute allowedRoles={["consultant"]}><OrganizationLayout /></ProtectedRoute>}>
+                  <Route index element={<Navigate to="/organization/feed" replace />} />
+                  <Route path="feed" element={<OrgFeed />} />
+                  <Route path="profile" element={<OrgProfile />} />
+                  <Route path="messages" element={<OrgMessages />} />
+                  <Route path="alerts" element={<OrgAlerts />} />
+                  <Route path="courses" element={<OrgCourses />} />
+                  <Route path="ads" element={<OrgAds />} />
+                </Route>
 
-              {/* Catch-all Route */}
-              <Route path="*" element={<NotFoundRedirect />} />
-            </Routes>
-          </Layout>
+                {/* Catch-all Route */}
+                <Route path="*" element={<NotFoundRedirect />} />
+              </Routes>
+            </Layout>
+            </ChatProvider>
           </BrowserRouter>
         </FeedProvider>
       </AuthProvider>

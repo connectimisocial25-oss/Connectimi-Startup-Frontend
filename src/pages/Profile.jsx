@@ -759,7 +759,12 @@ const Profile = () => {
                   <button className="profile-btn primary" onClick={handleAcceptConnection}>Accept Request</button>
                 )}
                 {connectionStatus === "accepted" && (
-                  <button className="profile-btn primary" onClick={() => navigate("/messaging")}>Message</button>
+                  <button 
+                      className="profile-btn primary" 
+                      onClick={() => navigate(`/mynetwork?tab=messaging&contactId=${profileData.id}`, { state: { partner: { id: profileData.id, name: profileData.name, avatar: profileData.profileImage, role: profileData.headline } } })}
+                  >
+                      Message
+                  </button>
                 )}
                 <button 
                   className={`profile-btn ${isFollowing ? '' : 'primary'}`} 
