@@ -299,3 +299,4 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Edit Profile Fixes**: Corrected invalid `updateAuthUser` function call in `Profile.jsx` to `updateUser`.
 - **Comment Styling Distinction**: Styled comment items to make author name, user headline, and comment text visually distinct in sizes and weights.
 - **Consultant UI Scaling**: Scaled down hero banner and large logos on screens below `768px` in `OrgPages.css` to fix consultant profile layout.
+- **Chat Context Safe Map**: Checked `Array.isArray` on fetched conversations and chat history in `ChatContext.jsx` to prevent `TypeError: ie.map is not a function` when backend responses are not arrays (e.g., gateway timeout or service unavailable error pages).

@@ -26,7 +26,7 @@ export const ChatProvider = ({ children }) => {
       const response = await chatApi.get("/user/conversations");
       const rawConversations = response.data;
 
-      if (!rawConversations.length) {
+      if (!Array.isArray(rawConversations) || !rawConversations.length) {
         setConversations([]);
         return;
       }
@@ -78,7 +78,12 @@ export const ChatProvider = ({ children }) => {
     try {
       const response = await chatApi.get(`/message/conversation/${contactId}`);
       // UI expects messages: { id, text, sent, time }
-      const mapped = response.data.map((m) => ({
+      const rawMessages = response.data;
+      if (!Array.isArray(rawMessages)) {
+        setMessages([]);
+        return;
+      }
+      const mapped = rawMessages.map((m) => ({
         id: m.id,
         text: m.message,
         sent: m.sender_id === userId,
