@@ -16,6 +16,9 @@ const OrgEditForm = ({
   const profileInputRef = useRef(null);
   const bannerInputRef = useRef(null);
 
+  const [profilePreview, setProfilePreview] = useState(editData.profileImage);
+  const [bannerPreview, setBannerPreview] = useState(editData.bannerImage);
+
   const handleFileChange = (e, type) => {
     const file = e.target.files[0];
     if (file) {
@@ -29,9 +32,12 @@ const OrgEditForm = ({
   };
 
   const onCropSave = (croppedImage) => {
+    const previewUrl = URL.createObjectURL(croppedImage);
     if (cropType === 'profile') {
+      setProfilePreview(previewUrl);
       handleInputChange('profileImage', croppedImage);
     } else {
+      setBannerPreview(previewUrl);
       handleInputChange('bannerImage', croppedImage);
     }
     setImageToCrop(null);
@@ -101,8 +107,11 @@ const OrgEditForm = ({
             <div className="edit-images-preview">
               <div
                 className="edit-banner-preview"
-                style={{ backgroundImage: `url(${editData.bannerImage})` }}
-                onClick={() => bannerInputRef.current.click()}
+                style={{ backgroundImage: `url(${bannerPreview})` }}
+                onClick={() => {
+                  if (bannerInputRef.current) bannerInputRef.current.value = null;
+                  bannerInputRef.current.click();
+                }}
               >
                 <div className="edit-image-overlay">
                   <FaCamera />
@@ -111,8 +120,11 @@ const OrgEditForm = ({
               </div>
               <div
                 className="edit-avatar-preview"
-                style={{ backgroundImage: `url(${editData.profileImage})` }}
-                onClick={() => profileInputRef.current.click()}
+                style={{ backgroundImage: `url(${profilePreview})` }}
+                onClick={() => {
+                  if (profileInputRef.current) profileInputRef.current.value = null;
+                  profileInputRef.current.click();
+                }}
               >
                 <div className="edit-image-overlay">
                   <FaCamera />

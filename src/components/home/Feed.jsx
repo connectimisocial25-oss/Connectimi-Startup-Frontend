@@ -491,17 +491,19 @@ const Feed = () => {
                 <span className="takeaway-label">KEY TAKEAWAY:</span>
                 <p>
                   {truncateText(insight.takeaway, insight.image ? 100 : 200)}
-                  <span
-                    style={{
-                      color: "var(--primary-green)",
-                      cursor: "pointer",
-                      fontWeight: "500",
-                      marginLeft: "4px",
-                    }}
-                    onClick={() => openProjectModal(insight)}
-                  >
-                    See More...
-                  </span>
+                  {insight.takeaway && insight.takeaway.length > (insight.image ? 100 : 200) && (
+                    <span
+                      style={{
+                        color: "var(--primary-green)",
+                        cursor: "pointer",
+                        fontWeight: "500",
+                        marginLeft: "4px",
+                      }}
+                      onClick={() => openProjectModal(insight)}
+                    >
+                      See More...
+                    </span>
+                  )}
                 </p>
               </div>
 
@@ -526,16 +528,18 @@ const Feed = () => {
               <div className="insight-actions-new">
                 <div className="action-main-row">
                   <button
+                    type="button"
                     className={`btn-like-text ${insight.liked ? "active" : ""}`}
-                    onClick={() => handleLike(insight.id)}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLike(insight.id); }}
                     ref={(el) => (likeRefs.current[insight.id] = el)}
                   >
                     <Icon name="thumbs-up" />
                     Like{insight.likes > 0 && <span className="like-count">{insight.likes}</span>}
                   </button>
                   <button 
+                    type="button"
                     className={`btn-comment-box ${expandedPostComments[insight.id] ? "active" : ""}`}
-                    onClick={() => setExpandedPostComments(prev => ({ ...prev, [insight.id]: !prev[insight.id] }))}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpandedPostComments(prev => ({ ...prev, [insight.id]: !prev[insight.id] })); }}
                   >
                     <Icon name="comment" /> Comment
                   </button>
@@ -582,17 +586,18 @@ const Feed = () => {
                           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
                             <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px 14px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
                               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                                <span style={{ fontWeight: "600", fontSize: "0.8rem", color: "white" }}>{comm.authorName}</span>
-                                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
+                                <span style={{ fontWeight: "700", fontSize: "0.85rem", color: "white" }}>{comm.authorName}</span>
+                                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
                                   {comm.createdAt ? new Date(comm.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
                                 </span>
                               </div>
-                              <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>{comm.authorHeadline}</span>
-                              <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0 }}>{comm.text}</p>
+                              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>{comm.authorHeadline}</span>
+                              <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0 }}>{comm.text}</p>
                             </div>
                             {comm.authorId === user?.id && (
                               <button 
-                                onClick={() => handleDeleteComment(insight.id, comm.id)}
+                                type="button"
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteComment(insight.id, comm.id); }}
                                 style={{ background: "none", border: "none", color: "var(--error)", cursor: "pointer", fontSize: "0.75rem", alignSelf: "flex-start", marginTop: "4px", padding: 0 }}
                               >
                                 Delete
@@ -965,7 +970,7 @@ const Feed = () => {
                                 }}
                               >
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                                  <span style={{ fontWeight: "600", fontSize: "0.85rem", color: "white" }}>
+                                  <span style={{ fontWeight: "700", fontSize: "0.9rem", color: "white" }}>
                                     {comm.authorName}
                                   </span>
                                   <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
@@ -975,7 +980,7 @@ const Feed = () => {
                                 <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>
                                   {comm.authorHeadline}
                                 </span>
-                                <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, whiteSpace: "pre-wrap" }}>
+                                <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0, whiteSpace: "pre-wrap" }}>
                                   {comm.text}
                                 </p>
                               </div>
@@ -1017,8 +1022,9 @@ const Feed = () => {
                   {/* Actions Area */}
                   <div>
                     <button
+                      type="button"
                       className={`btn-like-text ${selectedInsight.liked ? "active" : ""}`}
-                      onClick={() => handleLike(selectedInsight.id)}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLike(selectedInsight.id); }}
                       style={{
                         width: "100%",
                         padding: "10px 16px",

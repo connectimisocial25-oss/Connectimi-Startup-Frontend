@@ -72,19 +72,19 @@ connectimi-web-frontend/
 
 ## Tech Stack
 
-| Dependency | Technology | Version |
-|---|---|---|
-| Runtime | Browser-compatible SPA | — |
-| Core Framework | React (Strict Mode) | ^19.2.0 |
-| Build Tool | Vite | ^7.2.4 |
-| Routing | React Router DOM | ^7.11.0 |
-| Styling | Tailwind CSS (v4) + Vanilla CSS | ^4.1.18 |
-| HTTP Client | Axios | ^1.13.2 |
-| Animations | GSAP (GreenSock) | ^3.14.2 |
-| Image Cropper | react-easy-crop | ^5.5.6 |
-| Icons | react-icons | ^5.5.0 |
-| Compiler | React Compiler (via `babel-plugin-react-compiler`) | ^1.0.0 |
-| Linting | ESLint (v9) | ^9.39.1 |
+| Dependency     | Technology                                         | Version |
+| -------------- | -------------------------------------------------- | ------- |
+| Runtime        | Browser-compatible SPA                             | —       |
+| Core Framework | React (Strict Mode)                                | ^19.2.0 |
+| Build Tool     | Vite                                               | ^7.2.4  |
+| Routing        | React Router DOM                                   | ^7.11.0 |
+| Styling        | Tailwind CSS (v4) + Vanilla CSS                    | ^4.1.18 |
+| HTTP Client    | Axios                                              | ^1.13.2 |
+| Animations     | GSAP (GreenSock)                                   | ^3.14.2 |
+| Image Cropper  | react-easy-crop                                    | ^5.5.6  |
+| Icons          | react-icons                                        | ^5.5.0  |
+| Compiler       | React Compiler (via `babel-plugin-react-compiler`) | ^1.0.0  |
+| Linting        | ESLint (v9)                                        | ^9.39.1 |
 
 ---
 
@@ -157,16 +157,17 @@ The development server runs at `http://localhost:5173` by default.
 
 ### Required Variables
 
-| Variable | Description |
-|---|---|
-| `VITE_API_URL` | Base URL of the backend API (e.g., `http://localhost:3001` or production host). **Note:** This is the official variable name (do not use VITE_API_BASE_URL). |
-| `VITE_CHAT_URL` | Base URL of the RealTimeChat messaging server (e.g., `http://localhost:8000` or production chat host). |
+| Variable        | Description                                                                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `VITE_API_URL`  | Base URL of the backend API (e.g., `http://localhost:3001` or production host). **Note:** This is the official variable name (do not use VITE_API_BASE_URL). |
+| `VITE_CHAT_URL` | Base URL of the RealTimeChat messaging server (e.g., `http://localhost:8000` or production chat host).                                                       |
 
 ---
 
 ## Styling Architecture
 
 Styling uses a hybrid of **Tailwind CSS v4** and **Vanilla CSS**.
+
 - Tailwind v4 is integrated as a Vite plugin (`@tailwindcss/vite`).
 - Design tokens, CSS variables, dark/light theme properties, and global overrides are defined centrally in `src/index.css`.
 - Pages and components typically have a **co-located CSS file** (e.g., `Courses.jsx` has `Courses.css` in the same directory). When creating new pages or components, follow this convention.
@@ -180,7 +181,7 @@ Styling uses a hybrid of **Tailwind CSS v4** and **Vanilla CSS**.
 - **Routing Guards:**
   - `PublicRoute`: Restricts landing, login, signup, forgot password, and email verification routes to unauthenticated users. Logged-in users are automatically redirected to their correct landing/home page depending on profile completion status.
   - `ProtectedRoute`: Restricts routes to authenticated users with completed profiles. Unauthenticated users are redirected to `/`. Users with incomplete profiles are redirected to their respective completion page. Also supports role-based checks (e.g., separating `personal` vs `consultant` routes).
-  - `CompletionRoute`: Restricts onboarding/completion routes to authenticated users with *incomplete* profiles of the correct role. Completed users are redirected to their dashboard; unauthenticated users are redirected to `/`.
+  - `CompletionRoute`: Restricts onboarding/completion routes to authenticated users with _incomplete_ profiles of the correct role. Completed users are redirected to their dashboard; unauthenticated users are redirected to `/`.
 - **Personal Routes:** Located under `/home`, `/profile`, `/work`, `/mynetwork`, `/notifications`, `/courses`. Wrapped in `ProtectedRoute` (allowedRoles: `["personal"]`).
 - **Organization Routes:** Nested under `/organization/` (e.g., `/organization/feed`, `/organization/profile`). Wrapped in `ProtectedRoute` (allowedRoles: `["consultant"]`).
 - **Conditional Layout:** The main `Navbar` is conditionally hidden on public landing pages (`/`), auth screens (`/login`, `/signup`, `/forgot-password`, `/verify-email`), onboarding flows (`/account-completion`, `/org-account-completion`), and any route prefixed with `/organization`.
@@ -191,6 +192,7 @@ Styling uses a hybrid of **Tailwind CSS v4** and **Vanilla CSS**.
 ## State Management & Context
 
 Global state is managed via React Context providers in `src/context/`:
+
 1. `AuthContext.jsx` — Stores user authentication status, holds the JWT token in `localStorage` under `connectimi_token`, stores public user metadata under `connectimi_user`, and exposes helper routines (`login`, `logout`, `updateUser`).
 2. `ChatContext.jsx` — Manages real-time Socket.io chat server connections, incoming/outgoing messaging events, typing indicator states, and user online/offline status tracking.
 3. `ThemeContext.jsx` — Exposes the current visual theme (`light` or `dark`), toggles themes, and updates classes on the HTML `document` element.
@@ -215,6 +217,7 @@ Global state is managed via React Context providers in `src/context/`:
 ## PWA Capabilities
 
 The frontend behaves as a Progressive Web App (PWA):
+
 - **Service Worker (`public/sw.js`):** Intercepts network fetches. Uses a Network-First strategy for navigating HTML pages, and Cache-First strategy for static assets (scripts, styles, images, fonts). If offline, it serves cached `/index.html` as fallback.
 - **Cache Versioning:** Update `CACHE_VERSION` in `public/sw.js` during deployment tasks to ensure clients pull fresh, updated assets.
 - **Manifest (`public/manifest.json`):** Defines icons, colors, scope, and display configurations.
@@ -233,6 +236,7 @@ The frontend behaves as a Progressive Web App (PWA):
 ## Coding Standards
 
 ### JavaScript & React
+
 - Use **ES Module** syntax (`import`/`export`) everywhere.
 - Name component files in PascalCase (e.g., `ImageCropperModal.jsx`).
 - Avoid `console.log` in production-facing components.
@@ -241,6 +245,7 @@ The frontend behaves as a Progressive Web App (PWA):
 - All backend-communicating pages/components must transform payloads using `adapters.js` to prevent casing mismatches.
 
 ### State & Storage
+
 - Always read auth state from `useAuth` hook rather than parsing `localStorage` manually within components.
 - Clean up all custom window event listeners (e.g., resize, scroll, scroll animations) on component unmount.
 
@@ -272,25 +277,25 @@ The frontend behaves as a Progressive Web App (PWA):
 ## Recent Changes
 
 ### Global API Error Handling & Button Spinners
+
 - Added `parseApiError` utility in `src/utils/adapters.js` to extract detailed validation arrays and standard error messages from API payloads.
 - Standardized submit buttons in auth and onboarding forms with dynamic `.auth-btn-spinner` white rotating loaders and fixed layout sizes (`height: 50px`, `font-size: 17px`, `padding: 12px`, `box-sizing: border-box`).
 - Replaced browser `alert()` popups with inline red error alerts on onboarding pages.
 
 ### Dynamic Profile Connection Status & Navigation
+
 - Added state tracking for `connectionStatus` and `connectionId` in `Profile.jsx`.
 - Dynamically rendered profile actions button ("Connect", "Pending", "Accept Request", "Message") based on connection status.
 - Added `handleAcceptConnection` to respond to incoming requests using the connection ID.
 - Updated invitations mapping and navigation in `MyNetwork.jsx` to navigate using the sender's actual `userId` instead of the connection document ID.
 
-### Real-Time Chat & Messaging Integration
-- Installed `socket.io-client` package.
-- Created `chatApi` Axios instance and `ChatContext` for unified state management of conversations, messages, typing indicators, and user presence.
-- Refactored `Messaging.jsx` and `Messaging.css` to use the real-time context and styles for unread counts, status bubbles, and typing dots.
-- Integrated the Messaging view inside the `MyNetwork` tab selection `mynetwork?tab=messaging`, showing a dynamic unread count badge in the network sidebar.
-- Added a fallback effect in `ChatContext` to cleanly disconnect socket sessions and flush chat data upon logout.
-- Fixed the "Message" redirection inside `Profile.jsx` and `MyNetwork.jsx` to pass `contactId` and profile data context, allowing the messaging window to immediately target and initialize a new conversation.
-- Aligned `JWT_SECRET` in the chat server `.env` to match the main API backend secret, resolving the signature mismatch, and updated `ChatContext.jsx` connection error handler to stop infinite reconnect loops on authentication failure.
-- Updated `User` and `Message` models in the chat server to use `STRING(24)` instead of `UUID` to match Mongoose MongoDB ObjectIds.
-- Updated chat server auth and socket middlewares to check both `sub` (FastAPI standard) and `id` (Mongoose standard) fields, preventing Sequelize `undefined` crashes and connection drops.
-- Postponed the initial conversation list fetch so it only executes when the `MyNetwork` page mounts, preventing redundant `/user/conversations` API calls on Home page load/reload.
+### Frontend Bugs & UI Responsiveness Fixes
 
+- **Profile Comment Box Navigation**: Added inline comments drawer toggle in `Profile.jsx` alongside `handleCreateComment` and `handleDeleteComment` API handlers, replacing the broken page navigation bug.
+- **Cropping & Banner Previews**: Created object URLs for cropped logo and banner image previews in `OrgEditForm.jsx` to fix `[object Blob]` rendering issues. Included file input reference resets to fix re-selection behavior.
+- **Like Action Page Reload Prevention**: Appended `type="button"` and event stop-propagation / prevent-default to all post and detail modal action buttons (like, comment, delete) across `Feed.jsx` and `Profile.jsx`.
+- **Takeaway truncation**: Conditionalized the "See More..." link in `Feed.jsx` based on takeaway character length, and removed line-clamping CSS rules from `.insight-card--text-only` in `Home.css` so that the "See More..." button is visible on mobile viewports.
+- **General Mobile Responsiveness**: Fixed mobile bottom navbar rendering issues across the app by correcting the class name mismatch to `mobile-bottom-nav` in both `Navbar.jsx` and `OrganizationNavbar.jsx`, and fetched the real organization logo from authenticated user context. Added media query padding to job and notification container layouts to clear the bottom navbar.
+- **Edit Profile Fixes**: Corrected invalid `updateAuthUser` function call in `Profile.jsx` to `updateUser`.
+- **Comment Styling Distinction**: Styled comment items to make author name, user headline, and comment text visually distinct in sizes and weights.
+- **Consultant UI Scaling**: Scaled down hero banner and large logos on screens below `768px` in `OrgPages.css` to fix consultant profile layout.

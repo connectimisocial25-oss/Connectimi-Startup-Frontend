@@ -13,7 +13,7 @@ const OrganizationNavbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { theme, toggleTheme } = useTheme();
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navBarRef = useRef(null);
 
@@ -101,7 +101,7 @@ const OrganizationNavbar = () => {
                     <div className={`nav-item me-dropdown ${isActive('/organization/profile') ? 'active' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <div className="nav-icon">
                             <Avatar
-                                src="https://via.placeholder.com/150"
+                                src={user?.profileImage || "https://via.placeholder.com/150"}
                                 alt="Organization"
                                 role="organization"
                                 size={24}
@@ -136,7 +136,7 @@ const OrganizationNavbar = () => {
                     </div>
                     <div className={`nav-item me-dropdown ${isActive('/organization/profile') ? 'active' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <Avatar
-                            src="https://via.placeholder.com/150"
+                            src={user?.profileImage || "https://via.placeholder.com/150"}
                             alt="Organization"
                             role="organization"
                             size={32}
@@ -162,15 +162,16 @@ const OrganizationNavbar = () => {
                 </div>
             </nav>
 
+            {/* Mobile bottom navigation bar */}
             <div className="mobile-bottom-nav">
-                {navItems.slice(0, 4).map(item => (
+                {navItems.map(item => (
                     <div
                         key={item.id}
                         className={`mobile-nav-item ${isActive(item.path) ? 'active' : ''}`}
                         onClick={() => navigate(item.path)}
                     >
-                        <Icon name={item.icon} size={24} />
-                        <span>{item.label}</span>
+                        <Icon name={item.icon} />
+                        <span className="mobile-nav-label">{item.label}</span>
                     </div>
                 ))}
             </div>
