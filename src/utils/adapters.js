@@ -43,6 +43,7 @@ export function transformProfileToBackend(data) {
     payload.full_name = data.name;
   }
 
+  if (data.email !== undefined) payload.email = data.email;
   if (data.phone !== undefined) payload.phone = data.phone;
   if (data.headline !== undefined) payload.headline = data.headline;
   if (data.about !== undefined) payload.bio = data.about;
@@ -52,11 +53,17 @@ export function transformProfileToBackend(data) {
   if (data.companySize !== undefined) payload.company_size = data.companySize;
   if (data.industry !== undefined) payload.industry = data.industry;
 
-  if (data.profileImage !== undefined)
-    payload.profile_picture = data.profileImage;
-  if (data.profilePicture !== undefined)
-    payload.profile_picture = data.profilePicture;
-  if (data.bannerImage !== undefined) payload.banner_image = data.bannerImage;
+  const imageVal = data.profileImage !== undefined ? data.profileImage : data.profilePicture !== undefined ? data.profilePicture : data.logo;
+  if (imageVal !== undefined) {
+    payload.profile_picture = imageVal;
+    payload.logo = imageVal;
+  }
+
+  const bannerVal = data.bannerImage !== undefined ? data.bannerImage : data.banner;
+  if (bannerVal !== undefined) {
+    payload.banner_image = bannerVal;
+    payload.banner = bannerVal;
+  }
 
   if (data.specialties !== undefined) payload.specialties = data.specialties;
 

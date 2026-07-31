@@ -78,7 +78,16 @@ const OrgProfile = () => {
     const handleSave = async () => {
         try {
             // 1. Save profile basic details
-            await updateUser(editData);
+            const updatedUser = await updateUser(editData);
+            if (updatedUser) {
+                setOrgData(prev => ({
+                    ...prev,
+                    ...updatedUser,
+                    name: updatedUser.name || prev.name,
+                    profileImage: updatedUser.profileImage || prev.profileImage,
+                    bannerImage: updatedUser.bannerImage || prev.bannerImage,
+                }));
+            }
 
             // 2. Sync services list with backend
             const originalServices = services;

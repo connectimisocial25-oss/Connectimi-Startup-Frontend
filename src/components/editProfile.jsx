@@ -74,8 +74,11 @@ const EditForm = ({
             <div className="edit-images-preview">
               <div
                 className="edit-banner-preview"
-                style={{ backgroundImage: `url(${bannerPreview || editData.bannerImage})` }}
-                onClick={() => bannerInputRef.current.click()}
+                style={{ backgroundImage: `url(${bannerPreview || (typeof editData.bannerImage === "string" ? editData.bannerImage : "")})` }}
+                onClick={() => {
+                  if (bannerInputRef.current) bannerInputRef.current.value = null;
+                  bannerInputRef.current?.click();
+                }}
               >
                 <div className="edit-image-overlay">
                   <FaCamera />
@@ -84,8 +87,11 @@ const EditForm = ({
               </div>
               <div
                 className="edit-avatar-preview"
-                style={{ backgroundImage: `url(${imagePreview || editData.profileImage})` }}
-                onClick={() => profileInputRef.current.click()}
+                style={{ backgroundImage: `url(${imagePreview || (typeof editData.profileImage === "string" ? editData.profileImage : "")})` }}
+                onClick={() => {
+                  if (profileInputRef.current) profileInputRef.current.value = null;
+                  profileInputRef.current?.click();
+                }}
               >
                 <div className="edit-image-overlay">
                   <FaCamera />
@@ -228,7 +234,7 @@ const EditForm = ({
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
                       END DATE
-                      {/* <span style={{ marginLeft: "10px", fontWeight: 400, fontSize: "11px" }}>
+                      <span style={{ marginLeft: "10px", fontWeight: 400, fontSize: "11px" }}>
                         <input
                           type="checkbox"
                           checked={exp.endDate === "Present"}
@@ -238,7 +244,7 @@ const EditForm = ({
                           style={{ marginRight: "4px", cursor: "pointer" }}
                         />
                         Present
-                      </span> */}
+                      </span>
                     </label>
                     <input
                       type="date"
@@ -305,7 +311,7 @@ const EditForm = ({
                   <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
                     END DATE
                     <span style={{ marginLeft: "10px", fontWeight: 400, fontSize: "11px" }}>
-                      {/* <input
+                      <input
                         type="checkbox"
                         checked={editData.newExperience.endDate === "Present"}
                         onChange={(e) =>
@@ -316,7 +322,7 @@ const EditForm = ({
                         }
                         style={{ marginRight: "4px", cursor: "pointer" }}
                       />
-                      Present */}
+                      Present
                     </span>
                   </label>
                   <input

@@ -16,8 +16,8 @@ const OrgEditForm = ({
   const profileInputRef = useRef(null);
   const bannerInputRef = useRef(null);
 
-  const [profilePreview, setProfilePreview] = useState(editData.profileImage);
-  const [bannerPreview, setBannerPreview] = useState(editData.bannerImage);
+  const [profilePreview, setProfilePreview] = useState(typeof editData.profileImage === "string" ? editData.profileImage : "");
+  const [bannerPreview, setBannerPreview] = useState(typeof editData.bannerImage === "string" ? editData.bannerImage : "");
 
   const handleFileChange = (e, type) => {
     const file = e.target.files[0];

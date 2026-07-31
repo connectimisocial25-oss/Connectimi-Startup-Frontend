@@ -515,7 +515,16 @@ const Profile = () => {
       ...cleanData
     } = editData;
     try {
-      await updateUser(cleanData);
+      const updatedUser = await updateUser(cleanData);
+      if (updatedUser) {
+        setProfileData((prev) => ({
+          ...prev,
+          ...updatedUser,
+          name: updatedUser.name || `${updatedUser.firstName || ""} ${updatedUser.lastName || ""}`.trim(),
+          profileImage: updatedUser.profileImage || DEFAULT_PROFILE_IMG,
+          bannerImage: updatedUser.bannerImage || DEFAULT_BANNER,
+        }));
+      }
       setIsEditing(false);
       cleanupPreviewURLs();
       setImagePreview("");

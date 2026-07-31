@@ -206,11 +206,16 @@ export const AuthProvider = ({ children }) => {
       const avatarEndpoint = isConsultant ? "/consultant/profile/me/logo" : "/profile/me/avatar";
       const bannerEndpoint = isConsultant ? "/consultant/profile/me/banner" : "/profile/me/banner";
 
-      let profileImageUrl = updatedData.profileImage;
-      let bannerImageUrl = updatedData.bannerImage;
+      const isBlobOrFile = (val) =>
+        val instanceof Blob ||
+        val instanceof File ||
+        (val && typeof val === "object" && typeof val.size === "number" && typeof val.type === "string" && typeof val.slice === "function");
+
+      let profileImageUrl = isBlobOrFile(updatedData.profileImage) ? null : updatedData.profileImage;
+      let bannerImageUrl = isBlobOrFile(updatedData.bannerImage) ? null : updatedData.bannerImage;
 
       // Upload avatar blob if a new one was cropped
-      if (updatedData.profileImage instanceof Blob || updatedData.profileImage instanceof File) {
+      if (isBlobOrFile(updatedData.profileImage)) {
         const formData = new FormData();
         formData.append("image", updatedData.profileImage);
         const uploadRes = await API.put(avatarEndpoint, formData, {
@@ -222,7 +227,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Upload banner blob if a new one was cropped
-      if (updatedData.bannerImage instanceof Blob || updatedData.bannerImage instanceof File) {
+      if (isBlobOrFile(updatedData.bannerImage)) {
         const formData = new FormData();
         formData.append("image", updatedData.bannerImage);
         const uploadRes = await API.put(bannerEndpoint, formData, {
@@ -236,13 +241,13 @@ export const AuthProvider = ({ children }) => {
       // Strip binary blobs from JSON payload, substitute Cloudinary URLs
       const dataForBackend = {
         ...updatedData,
-        profileImage: profileImageUrl,
-        bannerImage: bannerImageUrl,
+        ...(profileImageUrl && { profileImage: profileImageUrl, logo: profileImageUrl }),
+        ...(bannerImageUrl && { bannerImage: bannerImageUrl, banner: bannerImageUrl }),
       };
 
       // Remove blob fields that are not serializable to JSON
-      if (dataForBackend.profileImage instanceof Blob) delete dataForBackend.profileImage;
-      if (dataForBackend.bannerImage instanceof Blob) delete dataForBackend.bannerImage;
+      if (isBlobOrFile(dataForBackend.profileImage)) delete dataForBackend.profileImage;
+      if (isBlobOrFile(dataForBackend.bannerImage)) delete dataForBackend.bannerImage;
 
       const payload = transformProfileToBackend(dataForBackend);
 
@@ -252,6 +257,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(frontendUser);
       localStorage.setItem("connectimi_user", JSON.stringify(frontendUser));
+      return frontendUser;
     } catch (err) {
       console.error(
         "Profile update failed:",
