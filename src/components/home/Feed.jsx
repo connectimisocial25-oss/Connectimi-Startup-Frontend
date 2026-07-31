@@ -6,13 +6,375 @@ import { useAuth } from "../../context/AuthContext";
 import { useFeed } from "../../context/FeedContext";
 import API from "../../services/api";
 
+const InsightCard = React.memo(({
+  insight,
+  user,
+  expandedComments,
+  commentText,
+  onToggleComments,
+  onCommentTextChange,
+  onCreateComment,
+  onDeleteComment,
+  onDeletePost,
+  onOpenModal,
+  onLike,
+}) => {
+  const [localLiked, setLocalLiked] = useState(insight.liked);
+  const [localLikesCount, setLocalLikesCount] = useState(insight.likes);
+  const likeBtnRef = useRef(null);
+
+  useEffect(() => {
+    setLocalLiked(insight.liked);
+    setLocalLikesCount(insight.likes);
+  }, [insight.liked, insight.likes]);
+
+  const handleLikeClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (likeBtnRef.current) {
+      gsap.fromTo(
+        likeBtnRef.current,
+        { scale: 1 },
+        {
+          scale: 1.35,
+          duration: 0.12,
+          ease: "power2.out",
+          onComplete: () =>
+            gsap.to(likeBtnRef.current, {
+              scale: 1,
+              duration: 0.2,
+              ease: "elastic.out(1.2, 0.4)",
+            }),
+        }
+      );
+    }
+
+    const nextLiked = !localLiked;
+    const nextCount = nextLiked ? localLikesCount + 1 : Math.max(0, localLikesCount - 1);
+    setLocalLiked(nextLiked);
+    setLocalLikesCount(nextCount);
+
+    onLike(insight.id);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+    return text.substr(0, maxLength) + "...";
+  };
+
+  return (
+    <div className={`insight-card ${!insight.image ? "insight-card--text-only" : ""}`}>
+      {insight.image && (
+        <div
+          className="insight-image-wrapper"
+          onClick={() => onOpenModal(insight)}
+          style={{ cursor: "pointer" }}
+        >
+          <img
+            src={insight.image}
+            alt={insight.title}
+            className="insight-image"
+          />
+          <button className="btn-arrow-overlay">
+            <Icon name="arrow-right" />
+          </button>
+        </div>
+      )}
+
+      <div className="insight-body">
+        <h3
+          className="insight-title"
+          style={{ cursor: "pointer" }}
+          onClick={() => onOpenModal(insight)}
+        >
+          {insight.title}
+        </h3>
+
+        <div className="insight-takeaway">
+          <span className="takeaway-label">KEY TAKEAWAY:</span>
+          <p>
+            {truncateText(insight.takeaway, insight.image ? 100 : 200)}
+            {insight.takeaway && insight.takeaway.length > (insight.image ? 100 : 200) && (
+              <span
+                style={{
+                  color: "var(--primary-green)",
+                  cursor: "pointer",
+                  fontWeight: "500",
+                  marginLeft: "4px",
+                }}
+                onClick={() => onOpenModal(insight)}
+              >
+                See More...
+              </span>
+            )}
+          </p>
+        </div>
+
+        <div
+          style={{
+            fontSize: "12px",
+            color: "var(--text-muted)",
+            marginBottom: "8px",
+          }}
+        >
+          {insight.createdAt
+            ? new Date(insight.createdAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })
+            : ""}
+        </div>
+
+        <div className="insight-actions-new">
+          <div className="action-main-row">
+            <button
+              type="button"
+              className={`btn-like-text ${localLiked ? "active" : ""}`}
+              onClick={handleLikeClick}
+              ref={likeBtnRef}
+            >
+              <Icon name="thumbs-up" />
+              Like{localLikesCount > 0 && <span className="like-count">{localLikesCount}</span>}
+            </button>
+            <button
+              type="button"
+              className={`btn-comment-box ${expandedComments ? "active" : ""}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onToggleComments(insight.id);
+              }}
+            >
+              <Icon name="comment" /> Comment
+            </button>
+          </div>
+          <button className="btn-share-center">
+            <Icon name="share" /> Share
+          </button>
+        </div>
+
+        {expandedComments && (
+          <div
+            className="comments-section"
+            style={{
+              borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+              marginTop: "15px",
+              paddingTop: "15px",
+            }}
+          >
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                onCreateComment(insight.id, commentText || "");
+              }}
+              style={{ display: "flex", gap: "10px", marginBottom: "15px" }}
+            >
+              <Avatar src={user?.profileImage} size={32} />
+              <input
+                type="text"
+                placeholder="Add a comment..."
+                value={commentText || ""}
+                onChange={(e) => onCommentTextChange(insight.id, e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: "8px 12px",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  color: "white",
+                  outline: "none",
+                  fontSize: "0.85rem",
+                }}
+              />
+              <button
+                type="submit"
+                disabled={!(commentText || "").trim()}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  border: "none",
+                  background: "var(--emerald-500)",
+                  color: "white",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  opacity: (commentText || "").trim() ? 1 : 0.5,
+                }}
+              >
+                Post
+              </button>
+            </form>
+
+            <div
+              className="comments-list"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                maxHeight: "250px",
+                overflowY: "auto",
+              }}
+            >
+              {(insight.commentsData || []).length === 0 ? (
+                <p
+                  style={{
+                    color: "var(--text-muted)",
+                    fontSize: "0.8rem",
+                    margin: "10px 0",
+                  }}
+                >
+                  No comments yet.
+                </p>
+              ) : (
+                (insight.commentsData || []).map((comm) => (
+                  <div
+                    key={comm.id}
+                    className="comment-item"
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Avatar src={comm.authorImg} size={28} />
+                    <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                      <div
+                        style={{
+                          background: "rgba(255, 255, 255, 0.03)",
+                          padding: "10px 14px",
+                          borderRadius: "12px",
+                          border: "1px solid rgba(255, 255, 255, 0.05)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: "4px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontWeight: "700",
+                              fontSize: "0.85rem",
+                              color: "white",
+                            }}
+                          >
+                            {comm.authorName}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "0.75rem",
+                              color: "var(--text-muted)",
+                            }}
+                          >
+                            {comm.createdAt
+                              ? new Date(comm.createdAt).toLocaleDateString(
+                                  "en-IN",
+                                  { day: "numeric", month: "short" }
+                                )
+                              : ""}
+                          </span>
+                        </div>
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--text-muted)",
+                            display: "block",
+                            marginBottom: "6px",
+                          }}
+                        >
+                          {comm.authorHeadline}
+                        </span>
+                        <p
+                          style={{
+                            fontSize: "0.85rem",
+                            color: "rgba(255, 255, 255, 0.8)",
+                            margin: 0,
+                          }}
+                        >
+                          {comm.text}
+                        </p>
+                      </div>
+                      {comm.authorId === user?.id && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onDeleteComment(insight.id, comm.id);
+                          }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "var(--error)",
+                            cursor: "pointer",
+                            fontSize: "0.75rem",
+                            alignSelf: "flex-start",
+                            marginTop: "4px",
+                            padding: 0,
+                          }}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="insight-footer-author" style={{ position: "relative" }}>
+        <Avatar src={insight.authorImg} size={32} />
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span className="insight-author-name">{insight.author}</span>
+          {insight.authorHeadline && (
+            <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+              {insight.authorHeadline}
+            </span>
+          )}
+        </div>
+        {insight.authorId === user?.id && (
+          <button
+            className="post-delete-btn"
+            onClick={() => onDeletePost(insight.id)}
+            style={{
+              position: "absolute",
+              right: "15px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "var(--error)",
+              fontSize: "1rem",
+              transition: "color 0.2s",
+            }}
+            title="Delete Post"
+          >
+            <Icon name="trash" size={16} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+});
+
+InsightCard.displayName = "InsightCard";
+
 const Feed = () => {
   const feedRef = useRef(null);
   const modalRef = useRef(null);
   const postModalRef = useRef(null);
   const postOverlayRef = useRef(null);
   const postTextareaRef = useRef(null);
-  const likeRefs = useRef({});
+  const hasAnimatedRef = useRef(false);
   const { user } = useAuth();
   const {
     feedPosts,
@@ -81,7 +443,7 @@ const Feed = () => {
   });
 
   // Fallback demo posts shown when API is unavailable
-  const DEMO_POSTS = [
+  const DEMO_POSTS = useMemo(() => [
     {
       id: "demo-1",
       author: user?.fullName || user?.firstName + " " + user?.lastName || "Suroj Swarnakar",
@@ -94,7 +456,7 @@ const Feed = () => {
       liked: false,
       likes: 4,
       comments: 2,
-      createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+      createdAt: "2026-07-28T10:00:00.000Z",
       type: "post",
     },
     {
@@ -109,7 +471,7 @@ const Feed = () => {
       liked: false,
       likes: 12,
       comments: 5,
-      createdAt: new Date(Date.now() - 86400000 * 1).toISOString(),
+      createdAt: "2026-07-30T10:00:00.000Z",
       type: "post",
     },
     {
@@ -124,10 +486,10 @@ const Feed = () => {
       liked: false,
       likes: 8,
       comments: 3,
-      createdAt: new Date(Date.now() - 86400000 * 0.5).toISOString(),
+      createdAt: "2026-07-30T18:00:00.000Z",
       type: "post",
     },
-  ];
+  ], [user]);
 
   useEffect(() => {
     if (!currentUserId) return;
@@ -140,10 +502,11 @@ const Feed = () => {
   const insights = useMemo(() => {
     if (feedPosts.length === 0) return DEMO_POSTS;
     return feedPosts.map((post) => mapPostToInsight(post, currentUserId));
-  }, [feedPosts, currentUserId, user]);
+  }, [feedPosts, currentUserId, DEMO_POSTS]);
 
   useEffect(() => {
     if (!hasFetchedFeed && feedPosts.length === 0) return;
+    if (hasAnimatedRef.current) return;
 
     const timer = setTimeout(() => {
       const cards = feedRef.current?.querySelectorAll(".insight-card");
@@ -160,6 +523,7 @@ const Feed = () => {
       }
 
       if (cards && cards.length > 0) {
+        hasAnimatedRef.current = true;
         gsap.fromTo(
           cards,
           { y: 30, opacity: 0 },
@@ -177,8 +541,6 @@ const Feed = () => {
     return () => clearTimeout(timer);
   }, [feedPosts, hasFetchedFeed]);
 
-  //   console.log();
-
   useEffect(() => {
     if (selectedInsight && modalRef.current) {
       gsap.fromTo(
@@ -189,21 +551,8 @@ const Feed = () => {
     }
   }, [selectedInsight]);
 
-  const handleLike = async (id) => {
+  const handleLike = React.useCallback(async (id) => {
     try {
-      // Micro-animation: scale the button on click
-      const btn = likeRefs.current[id];
-      if (btn) {
-        gsap.fromTo(
-          btn,
-          { scale: 1 },
-          {
-            scale: 1.35, duration: 0.12, ease: "power2.out",
-            onComplete: () => gsap.to(btn, { scale: 1, duration: 0.2, ease: "elastic.out(1.2, 0.4)" })
-          }
-        );
-      }
-
       const res = await API.post(`/posts/${id}/like`);
       const { liked, like_count } = res.data;
 
@@ -222,16 +571,15 @@ const Feed = () => {
         };
       });
 
-      // Keep modal in sync if it's open on this post
       setSelectedInsight((prev) =>
         prev?.id === id ? { ...prev, liked, likes: like_count } : prev
       );
     } catch (err) {
       console.error("Failed to toggle like:", err.message);
     }
-  };
+  }, [currentUserId, patchFeedPost]);
 
-  const handleCreateComment = async (postId, text) => {
+  const handleCreateComment = React.useCallback(async (postId, text) => {
     if (!text.trim()) return;
     try {
       const res = await API.post(`/posts/${postId}/comments`, { text });
@@ -256,9 +604,9 @@ const Feed = () => {
     } catch (err) {
       console.error("Failed to add comment:", err);
     }
-  };
+  }, [user, patchFeedPost]);
 
-  const handleDeleteComment = async (postId, commentId) => {
+  const handleDeleteComment = React.useCallback(async (postId, commentId) => {
     try {
       await API.delete(`/posts/${postId}/comments/${commentId}`);
       patchFeedPost(postId, (post) => ({
@@ -268,9 +616,9 @@ const Feed = () => {
     } catch (err) {
       console.error("Failed to delete comment:", err);
     }
-  };
+  }, [patchFeedPost]);
 
-  const handleDeletePost = async (postId) => {
+  const handleDeletePost = React.useCallback(async (postId) => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
     try {
       await API.delete(`/posts/${postId}`);
@@ -278,27 +626,28 @@ const Feed = () => {
     } catch (err) {
       console.error("Failed to delete post:", err);
     }
-  };
+  }, [removeFeedPost]);
 
-  const openProjectModal = (insight) => {
+  const openProjectModal = React.useCallback((insight) => {
     setSelectedInsight(insight);
-  };
+  }, []);
+
+  const handleToggleComments = React.useCallback((id) => {
+    setExpandedPostComments((prev) => ({ ...prev, [id]: !prev[id] }));
+  }, []);
+
+  const handleCommentTextChange = React.useCallback((id, text) => {
+    setNewCommentText((prev) => ({ ...prev, [id]: text }));
+  }, []);
 
   const closeProjectModal = () => {
     setSelectedInsight(null);
-  };
-
-  const truncateText = (text, maxLength) => {
-    if (!text) return "";
-    if (text.length <= maxLength) return text;
-    return text.substr(0, maxLength) + "...";
   };
 
   const triggerFileSelect = () => {
     openPostModal();
     setTimeout(() => modalFileInputRef.current?.click(), 300);
   };
-  const triggerVideoSelect = () => videoInputRef.current.click();
 
   const openPostModal = () => {
     setIsPostModalOpen(true);
@@ -454,189 +803,20 @@ const Feed = () => {
       {/* Insights Grid */}
       <div className="insights-grid">
         {insights.map((insight) => (
-          <div
+          <InsightCard
             key={insight.id}
-            className={`insight-card ${!insight.image ? "insight-card--text-only" : ""}`}
-          >
-            {/* Image — only render if exists */}
-            {insight.image && (
-              <div
-                className="insight-image-wrapper"
-                onClick={() => openProjectModal(insight)}
-                style={{ cursor: "pointer" }}
-              >
-                <img
-                  src={insight.image}
-                  alt={insight.title}
-                  className="insight-image"
-                />
-                <button className="btn-arrow-overlay">
-                  <Icon name="arrow-right" />
-                </button>
-              </div>
-            )}
-
-            <div className="insight-body">
-              {/* Title — clickable */}
-              <h3
-                className="insight-title"
-                style={{ cursor: "pointer" }}
-                onClick={() => openProjectModal(insight)}
-              >
-                {insight.title}
-              </h3>
-
-              {/* Takeaway */}
-              <div className="insight-takeaway">
-                <span className="takeaway-label">KEY TAKEAWAY:</span>
-                <p>
-                  {truncateText(insight.takeaway, insight.image ? 100 : 200)}
-                  {insight.takeaway && insight.takeaway.length > (insight.image ? 100 : 200) && (
-                    <span
-                      style={{
-                        color: "var(--primary-green)",
-                        cursor: "pointer",
-                        fontWeight: "500",
-                        marginLeft: "4px",
-                      }}
-                      onClick={() => openProjectModal(insight)}
-                    >
-                      See More...
-                    </span>
-                  )}
-                </p>
-              </div>
-
-              {/* Timestamp */}
-              <div
-                style={{
-                  fontSize: "12px",
-                  color: "var(--text-muted)",
-                  marginBottom: "8px",
-                }}
-              >
-                {insight.createdAt
-                  ? new Date(insight.createdAt).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })
-                  : ""}
-              </div>
-
-              {/* Actions */}
-              <div className="insight-actions-new">
-                <div className="action-main-row">
-                  <button
-                    type="button"
-                    className={`btn-like-text ${insight.liked ? "active" : ""}`}
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLike(insight.id); }}
-                    ref={(el) => (likeRefs.current[insight.id] = el)}
-                  >
-                    <Icon name="thumbs-up" />
-                    Like{insight.likes > 0 && <span className="like-count">{insight.likes}</span>}
-                  </button>
-                  <button 
-                    type="button"
-                    className={`btn-comment-box ${expandedPostComments[insight.id] ? "active" : ""}`}
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpandedPostComments(prev => ({ ...prev, [insight.id]: !prev[insight.id] })); }}
-                  >
-                    <Icon name="comment" /> Comment
-                  </button>
-                </div>
-                <button className="btn-share-center">
-                  <Icon name="share" /> Share
-                </button>
-              </div>
-
-              {/* Comments Section */}
-              {expandedPostComments[insight.id] && (
-                <div className="comments-section" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.05)", marginTop: "15px", paddingTop: "15px" }}>
-                  <form 
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleCreateComment(insight.id, newCommentText[insight.id] || "");
-                    }}
-                    style={{ display: "flex", gap: "10px", marginBottom: "15px" }}
-                  >
-                    <Avatar src={user?.profileImage} size={32} />
-                    <input
-                      type="text"
-                      placeholder="Add a comment..."
-                      value={newCommentText[insight.id] || ""}
-                      onChange={(e) => setNewCommentText(prev => ({ ...prev, [insight.id]: e.target.value }))}
-                      style={{ flex: 1, padding: "8px 12px", borderRadius: "20px", border: "1px solid rgba(255, 255, 255, 0.1)", background: "rgba(255, 255, 255, 0.05)", color: "white", outline: "none", fontSize: "0.85rem" }}
-                    />
-                    <button 
-                      type="submit" 
-                      disabled={!(newCommentText[insight.id] || "").trim()}
-                      style={{ padding: "8px 16px", borderRadius: "20px", border: "none", background: "var(--emerald-500)", color: "white", cursor: "pointer", fontWeight: "600", opacity: (newCommentText[insight.id] || "").trim() ? 1 : 0.5 }}
-                    >
-                      Post
-                    </button>
-                  </form>
-
-                  <div className="comments-list" style={{ display: "flex", flexDirection: "column", gap: "12px", maxHeight: "250px", overflowY: "auto" }}>
-                    {(insight.commentsData || []).length === 0 ? (
-                      <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", margin: "10px 0" }}>No comments yet.</p>
-                    ) : (
-                      (insight.commentsData || []).map((comm) => (
-                        <div key={comm.id} className="comment-item" style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                          <Avatar src={comm.authorImg} size={28} />
-                          <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                            <div style={{ background: "rgba(255, 255, 255, 0.03)", padding: "10px 14px", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                                <span style={{ fontWeight: "700", fontSize: "0.85rem", color: "white" }}>{comm.authorName}</span>
-                                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                                  {comm.createdAt ? new Date(comm.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
-                                </span>
-                              </div>
-                              <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>{comm.authorHeadline}</span>
-                              <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0 }}>{comm.text}</p>
-                            </div>
-                            {comm.authorId === user?.id && (
-                              <button 
-                                type="button"
-                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteComment(insight.id, comm.id); }}
-                                style={{ background: "none", border: "none", color: "var(--error)", cursor: "pointer", fontSize: "0.75rem", alignSelf: "flex-start", marginTop: "4px", padding: 0 }}
-                              >
-                                Delete
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Author footer */}
-            <div className="insight-footer-author" style={{ position: "relative" }}>
-              <Avatar src={insight.authorImg} size={32} />
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span className="insight-author-name">{insight.author}</span>
-                {insight.authorHeadline && (
-                  <span
-                    style={{ fontSize: "11px", color: "var(--text-muted)" }}
-                  >
-                    {insight.authorHeadline}
-                  </span>
-                )}
-              </div>
-              {insight.authorId === user?.id && (
-                <button 
-                  className="post-delete-btn" 
-                  onClick={() => handleDeletePost(insight.id)}
-                  style={{ position: "absolute", right: "15px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--error)", fontSize: "1rem", transition: "color 0.2s" }}
-                  title="Delete Post"
-                >
-                  <Icon name="trash" size={16} />
-                </button>
-              )}
-            </div>
-          </div>
+            insight={insight}
+            user={user}
+            expandedComments={!!expandedPostComments[insight.id]}
+            commentText={newCommentText[insight.id] || ""}
+            onToggleComments={handleToggleComments}
+            onCommentTextChange={handleCommentTextChange}
+            onCreateComment={handleCreateComment}
+            onDeleteComment={handleDeleteComment}
+            onDeletePost={handleDeletePost}
+            onOpenModal={openProjectModal}
+            onLike={handleLike}
+          />
         ))}
       </div>
 

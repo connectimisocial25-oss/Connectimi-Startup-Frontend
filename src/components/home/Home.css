@@ -282,20 +282,19 @@
 .insights-grid {
     columns: 2;
     column-gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* ── Responsive — single column on mobile ── */
-@media (max-width: 640px) {
+/* ── Responsive — single column on mobile & tablet ── */
+@media (max-width: 900px) {
     .insights-grid {
         columns: 1;
+        column-gap: 0;
+        width: 100%;
     }
 }
 
-@media (max-width: 1024px) {
-    .insights-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* ── Base card ── */
 .insight-card {
@@ -803,7 +802,8 @@
     }
 
     .insight-image-wrapper {
-        height: 200px;
+        height: auto;
+        max-height: 320px;
     }
 }
 

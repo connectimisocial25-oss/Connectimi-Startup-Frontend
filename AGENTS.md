@@ -307,3 +307,10 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Profile Save Data Refresh**: Updated `handleSave` in `Profile.jsx` to call `fetchProfileData()` after a successful `updateUser()` call, ensuring the profile page immediately displays fresh data from the API. Switched error handling to use `parseApiError` for consistent error messaging.
 - **Mobile-Responsive Edit Modal CSS**: Replaced the single `640px` media query in `editProfile.css` with comprehensive breakpoints at `768px` (tablet) and `480px` (mobile). Reduces overlay/content padding, shrinks banner/avatar sizing, stacks form fields in single columns, and provides full-width action buttons on small screens.
 - **Inline Grid Style Removal**: Replaced all inline `gridTemplateColumns: "1fr 1fr"` styles in `editProfile.jsx` with a new `.form-row-2col` CSS class that can be properly overridden by responsive media queries. Inline styles were the root cause of the two-column layout being forced on all screen sizes.
+
+### Post Card Re-render on Like & Mobile Insight Grid Layout Fixes
+
+- **Post Card Re-render Prevention**: Extracted post card rendering into a memoized `InsightCard` sub-component (`React.memo`) in `Feed.jsx` with local optimistic state (`localLiked`, `localLikesCount`). Clicking Like updates the button and count instantly in local state without triggering re-renders of the full card component or sibling cards.
+- **GSAP Animation Control**: Added `hasAnimatedRef` in `Feed.jsx` so the entrance animation runs only once when posts load into the DOM, preventing cards from jumping/re-animating when post state changes.
+- **Mobile Insight Grid Responsive Layout**: Reordered media queries in `Home.css` so mobile/tablet rules (`@media (max-width: 900px)`) override base multi-column styles, setting `.insights-grid` to `columns: 1; column-gap: 0; width: 100%`. Removed invalid `grid-template-columns` declaration on CSS multi-column elements and updated `.insight-image-wrapper` to use responsive height (`height: auto; max-height: 320px;`) on mobile screens.
+
