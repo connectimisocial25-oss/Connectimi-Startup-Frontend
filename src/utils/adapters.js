@@ -60,6 +60,8 @@ export function transformProfileToBackend(data) {
 
   if (data.specialties !== undefined) payload.specialties = data.specialties;
 
+  if (data.website !== undefined) payload.website = data.website;
+
   if (data.skills !== undefined) {
     payload.skills = data.skills.map((skill) => {
       if (typeof skill === "string") {
@@ -175,6 +177,7 @@ export function transformProfileToFrontend(user) {
       endYear: formatDatePart(edu.end_date, 4),
       description: edu.description,
     })),
+    website: user.website || "",
     urls: user.urls || [],
     following: user.following || [],
     followers: user.followers || [],

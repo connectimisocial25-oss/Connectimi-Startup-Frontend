@@ -214,7 +214,7 @@ const EditForm = ({
                 </div>
 
                 {/* Start / End date with Present toggle */}
-                <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem" }}>
+                <div className="form-row-2col" style={{ marginTop: "0.5rem" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
                       START DATE
@@ -251,7 +251,7 @@ const EditForm = ({
                 </div>
 
                 {/* Location + Description */}
-                <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem" }}>
+                <div className="form-row-2col" style={{ marginTop: "0.5rem" }}>
                   <input
                     type="text"
                     placeholder="Location"
@@ -288,7 +288,7 @@ const EditForm = ({
                   }
                 />
               </div>
-              <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem" }}>
+              <div className="form-row-2col" style={{ marginTop: "0.5rem" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                   <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
                     START DATE
@@ -330,7 +330,7 @@ const EditForm = ({
                   />
                 </div>
               </div>
-              <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem", marginBottom: 0 }}>
+              <div className="form-row-2col" style={{ marginTop: "0.5rem", marginBottom: 0 }}>
                 <input
                   type="text"
                   placeholder="Location"
@@ -443,7 +443,7 @@ const EditForm = ({
                 </div>
 
                 {/* Start Year / End Year with Present toggle */}
-                <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem" }}>
+                <div className="form-row-2col" style={{ marginTop: "0.5rem" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
                       START YEAR
@@ -488,7 +488,7 @@ const EditForm = ({
                 </div>
 
                 {/* Field of Study + Description */}
-                <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem" }}>
+                <div className="form-row-2col" style={{ marginTop: "0.5rem" }}>
                   <input
                     type="text"
                     placeholder="Field of Study"
@@ -525,7 +525,7 @@ const EditForm = ({
                   }
                 />
               </div>
-              <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem" }}>
+              <div className="form-row-2col" style={{ marginTop: "0.5rem" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                   <label style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.05em" }}>
                     START YEAR
@@ -575,7 +575,7 @@ const EditForm = ({
                   </select>
                 </div>
               </div>
-              <div className="form-row" style={{ gridTemplateColumns: "1fr 1fr", marginTop: "0.5rem", marginBottom: 0 }}>
+              <div className="form-row-2col" style={{ marginTop: "0.5rem", marginBottom: 0 }}>
                 <input
                   type="text"
                   placeholder="Field of Study"

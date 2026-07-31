@@ -300,3 +300,10 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Comment Styling Distinction**: Styled comment items to make author name, user headline, and comment text visually distinct in sizes and weights.
 - **Consultant UI Scaling**: Scaled down hero banner and large logos on screens below `768px` in `OrgPages.css` to fix consultant profile layout.
 - **Chat Context Safe Map**: Checked `Array.isArray` on fetched conversations and chat history in `ChatContext.jsx` to prevent `TypeError: ie.map is not a function` when backend responses are not arrays (e.g., gateway timeout or service unavailable error pages).
+
+### Edit Profile Persistence & Mobile Layout Fixes
+
+- **Website Field Adapter**: Added `website` field mapping in both `transformProfileToBackend` and `transformProfileToFrontend` in `src/utils/adapters.js`. Previously, the `website` field was silently dropped from API payloads, so edits were never persisted.
+- **Profile Save Data Refresh**: Updated `handleSave` in `Profile.jsx` to call `fetchProfileData()` after a successful `updateUser()` call, ensuring the profile page immediately displays fresh data from the API. Switched error handling to use `parseApiError` for consistent error messaging.
+- **Mobile-Responsive Edit Modal CSS**: Replaced the single `640px` media query in `editProfile.css` with comprehensive breakpoints at `768px` (tablet) and `480px` (mobile). Reduces overlay/content padding, shrinks banner/avatar sizing, stacks form fields in single columns, and provides full-width action buttons on small screens.
+- **Inline Grid Style Removal**: Replaced all inline `gridTemplateColumns: "1fr 1fr"` styles in `editProfile.jsx` with a new `.form-row-2col` CSS class that can be properly overridden by responsive media queries. Inline styles were the root cause of the two-column layout being forced on all screen sizes.

@@ -194,6 +194,14 @@
     align-items: start;
 }
 
+.form-row-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: start;
+}
+
 .form-row>input {
     flex: 1 1 150px;
     min-width: 150px;
@@ -322,16 +330,186 @@
     background: var(--bg-color);
 }
 
-@media (max-width: 640px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-group.full-width {
-        grid-column: span 1;
+/* ── Tablet breakpoint ──────────────────────────────────── */
+@media (max-width: 768px) {
+    .edit-form-overlay {
+        padding: 1rem;
     }
 
     .edit-form-content {
         padding: 1.5rem;
+        border-radius: 16px;
+        max-height: 95vh;
+        overflow-x: hidden;
+    }
+
+    .edit-form-content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width,
+    .form-section.full-width {
+        grid-column: span 1;
+    }
+
+    .edit-images-preview {
+        height: 160px;
+    }
+
+    .edit-banner-preview {
+        height: 130px;
+    }
+
+    .edit-avatar-preview {
+        width: 80px;
+        height: 80px;
+        left: 1.5rem;
+    }
+
+    .form-row,
+    .form-row-2col {
+        flex-direction: column;
+        display: flex;
+        grid-template-columns: none;
+    }
+
+    .form-row > input {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .form-row > div {
+        width: 100%;
+    }
+
+    .skill-input-container {
+        flex-direction: column;
+    }
+
+    .form-actions {
+        margin-top: 2rem;
+    }
+}
+
+/* ── Mobile breakpoint ──────────────────────────────────── */
+@media (max-width: 480px) {
+    .edit-form-overlay {
+        padding: 0.5rem;
+        align-items: flex-end;
+    }
+
+    .edit-form-content {
+        padding: 1rem;
+        border-radius: 16px 16px 0 0;
+        max-height: 96vh;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .edit-form-content h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .form-group.full-width,
+    .form-section.full-width {
+        grid-column: span 1;
+    }
+
+    .edit-images-preview {
+        height: 140px;
+        margin-bottom: 1.5rem;
+    }
+
+    .edit-banner-preview {
+        height: 110px;
+    }
+
+    .edit-avatar-preview {
+        width: 64px;
+        height: 64px;
+        left: 1rem;
+        border-width: 3px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .skill-input-container input {
+        padding: 0.65rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .form-row,
+    .form-row-2col {
+        flex-direction: column;
+        display: flex;
+        grid-template-columns: none;
+        gap: 0.75rem;
+    }
+
+    .form-row-2col > input,
+    .form-row-2col > div,
+    .form-row-2col > select {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .form-row > input,
+    .form-row > div,
+    .form-row > select {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .form-section {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+    }
+
+    .form-section h4 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .skill-input-container {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .skills-edit {
+        gap: 0.5rem;
+    }
+
+    .skill-tag {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    .form-actions {
+        margin-top: 1.5rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .form-actions .btn-save,
+    .form-actions .btn-cancel {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .btn-save,
+    .btn-cancel {
+        padding: 0.75rem 1.5rem;
     }
 }

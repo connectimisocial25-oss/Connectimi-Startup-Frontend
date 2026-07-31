@@ -7,7 +7,7 @@ import EditForm from "../components/editProfile";
 import { gsap } from "gsap";
 import { useAuth } from "../context/AuthContext";
 import API from "../services/api";
-import { transformProfileToFrontend } from "../utils/adapters";
+import { transformProfileToFrontend, parseApiError } from "../utils/adapters";
 import Avatar from "../components/Avatar";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80";
@@ -520,8 +520,11 @@ const Profile = () => {
       cleanupPreviewURLs();
       setImagePreview("");
       setBannerPreview("");
+      // Re-fetch fresh profile data from the API so the page reflects saved changes
+      await fetchProfileData();
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to save profile. Please try again.");
+      const message = parseApiError(err);
+      alert(message);
     } finally {
       setIsUploading(false);
     }
