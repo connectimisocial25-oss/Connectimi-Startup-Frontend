@@ -18,10 +18,12 @@ const InsightCard = React.memo(({
   onDeletePost,
   onOpenModal,
   onLike,
+  onShare,
 }) => {
   const [localLiked, setLocalLiked] = useState(insight.liked);
   const [localLikesCount, setLocalLikesCount] = useState(insight.likes);
   const likeBtnRef = useRef(null);
+  const shareBtnRef = useRef(null);
 
   useEffect(() => {
     setLocalLiked(insight.liked);
@@ -56,6 +58,31 @@ const InsightCard = React.memo(({
     setLocalLikesCount(nextCount);
 
     onLike(insight.id);
+  };
+
+  const handleShareClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (shareBtnRef.current) {
+      gsap.fromTo(
+        shareBtnRef.current,
+        { scale: 1 },
+        {
+          scale: 1.15,
+          duration: 0.12,
+          ease: "power2.out",
+          onComplete: () =>
+            gsap.to(shareBtnRef.current, {
+              scale: 1,
+              duration: 0.2,
+              ease: "elastic.out(1.2, 0.4)",
+            }),
+        }
+      );
+    }
+
+    onShare(insight);
   };
 
   const truncateText = (text, maxLength) => {
@@ -151,7 +178,12 @@ const InsightCard = React.memo(({
               <Icon name="comment" /> Comment
             </button>
           </div>
-          <button className="btn-share-center">
+          <button
+            type="button"
+            className="btn-share-center"
+            onClick={handleShareClick}
+            ref={shareBtnRef}
+          >
             <Icon name="share" /> Share
           </button>
         </div>
@@ -368,6 +400,115 @@ const InsightCard = React.memo(({
 
 InsightCard.displayName = "InsightCard";
 
+const ShareModal = React.memo(({ insight, onClose, onCopyLink, onNativeShare, onSocialShare, onRepost }) => {
+  const shareModalRef = useRef(null);
+  const shareOverlayRef = useRef(null);
+
+  useEffect(() => {
+    if (shareOverlayRef.current && shareModalRef.current) {
+      gsap.fromTo(
+        shareOverlayRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.2, ease: "power2.out" }
+      );
+      gsap.fromTo(
+        shareModalRef.current,
+        { scale: 0.92, opacity: 0, y: 16 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.4)" }
+      );
+    }
+  }, []);
+
+  const handleClose = () => {
+    if (shareOverlayRef.current && shareModalRef.current) {
+      gsap.to(shareModalRef.current, { scale: 0.94, opacity: 0, y: 12, duration: 0.2, ease: "power2.in" });
+      gsap.to(shareOverlayRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.in",
+        onComplete: onClose,
+      });
+    } else {
+      onClose();
+    }
+  };
+
+  if (!insight) return null;
+
+  return (
+    <div
+      ref={shareOverlayRef}
+      className="post-modal-overlay"
+      onClick={(e) => { if (e.target === shareOverlayRef.current) handleClose(); }}
+    >
+      <div ref={shareModalRef} className="share-modal-card">
+        <button className="post-modal-close" onClick={handleClose}>
+          <Icon name="close" size={18} />
+        </button>
+
+        <h3 className="share-modal-title">Share Insight</h3>
+        <p className="share-modal-subtitle">Share this post by {insight.author} with your network.</p>
+
+        <div className="share-options-grid">
+          <button type="button" className="share-option-btn" onClick={() => { onCopyLink(insight); handleClose(); }}>
+            <div className="share-option-icon">
+              <Icon name="link" size={18} />
+            </div>
+            <div>
+              <span className="share-option-label">Copy Link</span>
+              <span className="share-option-desc">Copy direct post URL to your clipboard</span>
+            </div>
+          </button>
+
+          {typeof navigator !== "undefined" && navigator.share && (
+            <button type="button" className="share-option-btn" onClick={() => { onNativeShare(insight); handleClose(); }}>
+              <div className="share-option-icon">
+                <Icon name="share" size={18} />
+              </div>
+              <div>
+                <span className="share-option-label">Native Share</span>
+                <span className="share-option-desc">Share using your device's native app menu</span>
+              </div>
+            </button>
+          )}
+
+          <button type="button" className="share-option-btn" onClick={() => { onRepost(insight); handleClose(); }}>
+            <div className="share-option-icon" style={{ background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6" }}>
+              <Icon name="project" size={18} />
+            </div>
+            <div>
+              <span className="share-option-label">Repost on Connectimi</span>
+              <span className="share-option-desc">Quote this insight in a new feed post</span>
+            </div>
+          </button>
+        </div>
+
+        <div className="share-socials-header">Share directly to</div>
+        <div className="share-socials-row">
+          <button type="button" className="social-share-btn" onClick={() => { onSocialShare("linkedin", insight); handleClose(); }}>
+            <Icon name="linkedin" size={20} style={{ color: "#0a66c2" }} />
+            LinkedIn
+          </button>
+          <button type="button" className="social-share-btn" onClick={() => { onSocialShare("twitter", insight); handleClose(); }}>
+            <Icon name="twitter" size={20} style={{ color: "#1da1f2" }} />
+            Twitter
+          </button>
+          <button type="button" className="social-share-btn" onClick={() => { onSocialShare("whatsapp", insight); handleClose(); }}>
+            <Icon name="whatsapp" size={20} style={{ color: "#25d366" }} />
+            WhatsApp
+          </button>
+          <button type="button" className="social-share-btn" onClick={() => { onSocialShare("email", insight); handleClose(); }}>
+            <Icon name="mail" size={20} style={{ color: "#f59e0b" }} />
+            Email
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+ShareModal.displayName = "ShareModal";
+
 const Feed = () => {
   const feedRef = useRef(null);
   const modalRef = useRef(null);
@@ -385,8 +526,10 @@ const Feed = () => {
     hasFetchedFeed,
   } = useFeed();
 
-  // State for managing "See More" modal
+  // State for managing "See More" modal, post modal, share modal, and toast feedback
   const [selectedInsight, setSelectedInsight] = useState(null);
+  const [sharingInsight, setSharingInsight] = useState(null);
+  const [toastMessage, setToastMessage] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [postImages, setPostImages] = useState([]);
@@ -551,6 +694,88 @@ const Feed = () => {
     }
   }, [selectedInsight]);
 
+  const showToast = React.useCallback((msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage((prev) => (prev === msg ? null : prev)), 3000);
+  }, []);
+
+  const handleOpenShareModal = React.useCallback((insight) => {
+    setSharingInsight(insight);
+  }, []);
+
+  const handleCopyLink = React.useCallback((insight) => {
+    const postUrl = `${window.location.origin}/home?post=${insight.id}`;
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(postUrl).then(() => {
+        showToast("Link copied to clipboard!");
+      }).catch(() => {
+        showToast(`Post link: ${postUrl}`);
+      });
+    } else {
+      const textArea = document.createElement("textarea");
+      textArea.value = postUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        showToast("Link copied to clipboard!");
+      } catch {
+        showToast(`Post link: ${postUrl}`);
+      }
+      document.body.removeChild(textArea);
+    }
+  }, [showToast]);
+
+  const handleNativeShare = React.useCallback(async (insight) => {
+    const postUrl = `${window.location.origin}/home?post=${insight.id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Post by ${insight.author} on Connectimi`,
+          text: insight.takeaway || "Check out this insight on Connectimi",
+          url: postUrl,
+        });
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          handleCopyLink(insight);
+        }
+      }
+    } else {
+      handleCopyLink(insight);
+    }
+  }, [handleCopyLink]);
+
+  const handleSocialShare = React.useCallback((platform, insight) => {
+    const postUrl = encodeURIComponent(`${window.location.origin}/home?post=${insight.id}`);
+    const text = encodeURIComponent(`Check out this post by ${insight.author} on Connectimi: "${insight.takeaway?.slice(0, 100) || ""}"`);
+    let shareUrl = "";
+
+    switch (platform) {
+      case "linkedin":
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${postUrl}`;
+        break;
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${postUrl}`;
+        break;
+      case "whatsapp":
+        shareUrl = `https://api.whatsapp.com/send?text=${text}%20${postUrl}`;
+        break;
+      case "email":
+        shareUrl = `mailto:?subject=${encodeURIComponent(`Insight by ${insight.author} on Connectimi`)}&body=${text}%0A%0A${postUrl}`;
+        break;
+      default:
+        break;
+    }
+
+    if (shareUrl) {
+      if (platform === "email") {
+        window.location.href = shareUrl;
+      } else {
+        window.open(shareUrl, "_blank", "noopener,noreferrer,width=600,height=500");
+      }
+    }
+  }, []);
+
   const handleLike = React.useCallback(async (id) => {
     try {
       const res = await API.post(`/posts/${id}/like`);
@@ -640,16 +865,7 @@ const Feed = () => {
     setNewCommentText((prev) => ({ ...prev, [id]: text }));
   }, []);
 
-  const closeProjectModal = () => {
-    setSelectedInsight(null);
-  };
-
-  const triggerFileSelect = () => {
-    openPostModal();
-    setTimeout(() => modalFileInputRef.current?.click(), 300);
-  };
-
-  const openPostModal = () => {
+  const openPostModal = React.useCallback(() => {
     setIsPostModalOpen(true);
     setTimeout(() => {
       if (postOverlayRef.current && postModalRef.current) {
@@ -667,7 +883,12 @@ const Feed = () => {
       }
     }, 10);
     document.body.style.overflow = "hidden";
-  };
+  }, []);
+
+  const handleRepost = React.useCallback((insight) => {
+    setNewPostContent(`Quote from @${insight.author}: "${insight.takeaway?.slice(0, 150) || ""}"\n\n`);
+    openPostModal();
+  }, [openPostModal]);
 
   const closePostModal = () => {
     if (postOverlayRef.current && postModalRef.current) {
@@ -778,7 +999,7 @@ const Feed = () => {
           <button
             type="button"
             className="btn-icon-text"
-            onClick={triggerFileSelect}
+            onClick={() => { openPostModal(); setTimeout(() => modalFileInputRef.current?.click(), 300); }}
           >
             <Icon name="image" style={{ color: "#10b981" }} /> Photo
           </button>
@@ -816,9 +1037,30 @@ const Feed = () => {
             onDeletePost={handleDeletePost}
             onOpenModal={openProjectModal}
             onLike={handleLike}
+            onShare={handleOpenShareModal}
           />
         ))}
       </div>
+
+      {/* Share Modal Overlay */}
+      {sharingInsight && (
+        <ShareModal
+          insight={sharingInsight}
+          onClose={() => setSharingInsight(null)}
+          onCopyLink={handleCopyLink}
+          onNativeShare={handleNativeShare}
+          onSocialShare={handleSocialShare}
+          onRepost={handleRepost}
+        />
+      )}
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="share-toast">
+          <Icon name="check" size={16} />
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       {/* ── Post Creation Modal Overlay ────────────────────── */}
       {isPostModalOpen && (
