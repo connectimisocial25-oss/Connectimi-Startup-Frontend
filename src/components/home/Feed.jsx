@@ -516,6 +516,7 @@ const Feed = () => {
   const postOverlayRef = useRef(null);
   const postTextareaRef = useRef(null);
   const hasAnimatedRef = useRef(false);
+  const likeRefs = useRef({});
   const { user } = useAuth();
   const {
     feedPosts,

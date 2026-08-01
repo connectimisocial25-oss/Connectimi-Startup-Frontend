@@ -323,4 +323,6 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Enabled Edit Options**: Enabled `email` and `website` field persistence in `transformProfileToBackend` (`adapters.js`), backend validation (`profile.validation.js`), and controller updates (`profile.controller.js`). Relaxed phone regex validation to accept optional empty strings. Un-commented and enabled "Present" job position checkboxes for Experience items in `editProfile.jsx`.
 - **API URL Fallback Fix**: Updated default fallback URL in `src/services/api.js` from `http://localhost:3000` to `https://backend.connectimi.in` to ensure local frontend connects seamlessly to the active backend service without throwing Network Errors.
 
+### Post Details Modal Crash Fix
 
+- **Declared Missing `likeRefs`**: Added `const likeRefs = useRef({});` declaration in `src/components/home/Feed.jsx` to resolve a React runtime crash. Previously, clicking on any post to open the details modal/see more about that post threw a `TypeError: Cannot read properties of undefined (reading 'current')` because the like button in the details modal attempted to store a reference in `likeRefs.current` which was not defined.
