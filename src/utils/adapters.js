@@ -174,6 +174,7 @@ export function transformProfileToFrontend(user) {
       title: p.project_name,
       link: p.project_url,
       description: p.description,
+      projectRef: p.projectRef || null,
     })),
     education: (user.educations || []).map((edu) => ({
       id: edu._id || edu.id,

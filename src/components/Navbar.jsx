@@ -187,6 +187,10 @@ const Navbar = () => {
                                     <Icon name="user" />
                                     View Profile
                                 </div>
+                                <div className="dropdown-item" onClick={() => { navigate('/projects/new'); setIsDropdownOpen(false); }}>
+                                    <Icon name="project" />
+                                    Share Project
+                                </div>
                                 <div className="dropdown-item" onClick={() => { navigate('/notifications'); setIsDropdownOpen(false); }}>
                                     <Icon name="bell" />
                                     Notifications

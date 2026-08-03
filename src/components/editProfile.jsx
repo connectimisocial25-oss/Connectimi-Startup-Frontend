@@ -363,61 +363,9 @@ const EditForm = ({
           {/* ── Projects Section ───────────────────────────────────────────── */}
           <div className="form-section full-width">
             <h4>Projects</h4>
-            {editData.projects.map((proj, index) => (
-              <div key={proj.id || index} className="form-row">
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={proj.title}
-                  onChange={(e) => handleProjectChange(index, "title", e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Link"
-                  value={proj.link}
-                  onChange={(e) => handleProjectChange(index, "link", e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Description"
-                  value={proj.description}
-                  onChange={(e) => handleProjectChange(index, "description", e.target.value)}
-                />
-                <button type="button" className="btn-remove" onClick={() => removeProject(index)}>
-                  <Icon name="close" />
-                </button>
-              </div>
-            ))}
-
-            <div className="form-row">
-              <input
-                type="text"
-                placeholder="New Project Title"
-                value={editData.newProject.title}
-                onChange={(e) =>
-                  setEditData((prev) => ({ ...prev, newProject: { ...prev.newProject, title: e.target.value } }))
-                }
-              />
-              <input
-                type="text"
-                placeholder="Link"
-                value={editData.newProject.link}
-                onChange={(e) =>
-                  setEditData((prev) => ({ ...prev, newProject: { ...prev.newProject, link: e.target.value } }))
-                }
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                value={editData.newProject.description}
-                onChange={(e) =>
-                  setEditData((prev) => ({ ...prev, newProject: { ...prev.newProject, description: e.target.value } }))
-                }
-              />
-              <button type="button" className="btn-add" onClick={addProject}>
-                <Icon name="plus" /> Add
-              </button>
-            </div>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", margin: "0.5rem 0" }}>
+              Projects are showcased and managed via the <strong>Showcase Project</strong> button on your profile page.
+            </p>
           </div>
 
           {/* ── Education Section ──────────────────────────────────────────── */}

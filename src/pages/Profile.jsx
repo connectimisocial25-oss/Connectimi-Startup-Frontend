@@ -9,6 +9,7 @@ import { useAuth } from "../context/AuthContext";
 import API from "../services/api";
 import { transformProfileToFrontend, parseApiError } from "../utils/adapters";
 import Avatar from "../components/Avatar";
+import ProjectCard from "../components/home/ProjectCard";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80";
 const DEFAULT_PROFILE_IMG = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
@@ -558,22 +559,62 @@ const Profile = () => {
     </div>
   );
 
-  const renderProjects = () => (
-    <div className="glass-panel gsap-reveal">
-      <h3 className="panel-title"><Icon name="folder" /> Projects</h3>
-      {profileData.projects.length > 0 ? (
-        profileData.projects.map((proj, i) => (
-          <div key={i} className="exp-item">
-            <div className="exp-role">{proj.title}</div>
-            {proj.link && <a href={proj.link} className="exp-org" target="_blank" rel="noopener noreferrer">{proj.link}</a>}
-            {proj.description && <div className="exp-desc">{proj.description}</div>}
+  const renderProjects = () => {
+    const validProjects = profileData.projects.filter(
+      (proj) => proj.projectRef || proj.title
+    );
+
+    return (
+      <div className="glass-panel gsap-reveal">
+        <h3 className="panel-title"><Icon name="folder" /> Projects</h3>
+        {validProjects.length > 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", marginTop: "1rem" }}>
+            {validProjects.map((proj, i) => {
+              const fullProject =
+                typeof proj.projectRef === "object" && proj.projectRef !== null
+                  ? proj.projectRef
+                  : {};
+              const targetProjectId = fullProject._id || (typeof proj.projectRef === "string" ? proj.projectRef : null) || proj.id;
+
+              const insightObj = {
+                id: targetProjectId,
+                author: profileData.name || "User",
+                authorHeadline: profileData.headline || "",
+                authorImg: profileData.profileImage || DEFAULT_PROFILE_IMG,
+                authorId: profileData.id,
+                title: fullProject.title || proj.title || "Untitled Project",
+                takeaway: fullProject.shortDescription || proj.description || "",
+                image: fullProject.coverImage?.url || null,
+                createdAt: fullProject.createdAt || proj.createdAt,
+                type: "project",
+                projectId: targetProjectId,
+                project: fullProject.title ? fullProject : null,
+              };
+
+              return (
+                <ProjectCard
+                  key={targetProjectId || i}
+                  insight={insightObj}
+                  user={authUser}
+                  expandedComments={false}
+                  commentText=""
+                  onToggleComments={() => targetProjectId && navigate(`/projects/${targetProjectId}`)}
+                  onCommentTextChange={() => {}}
+                  onCreateComment={() => {}}
+                  onDeleteComment={() => {}}
+                  onDeletePost={() => {}}
+                  onLike={() => {}}
+                  onShare={() => targetProjectId && navigate(`/projects/${targetProjectId}`)}
+                />
+              );
+            })}
           </div>
-        ))
-      ) : (
-        <p className="empty-msg">No projects listed</p>
-      )}
-    </div>
-  );
+        ) : (
+          <p className="empty-msg">No projects listed</p>
+        )}
+      </div>
+    );
+  };
 
   const renderEducation = () => (
     <div className="glass-panel gsap-reveal">
@@ -609,9 +650,7 @@ const Profile = () => {
       return (
         <div className="glass-panel posts-section gsap-reveal">
           <h3 className="panel-title"><Icon name="newspaper" /> Latest Posts</h3>
-          <div className="posts-loading-container" style={{ display: 'flex', justifyContent: 'center', padding: '2rem 0' }}>
-            <div className="loading-spinner" style={{ border: '3px solid rgba(255, 255, 255, 0.1)', borderLeftColor: 'var(--primary-emerald)', borderRadius: '50%', width: '30px', height: '30px', animation: 'spin 1s linear infinite' }} />
-          </div>
+          <p className="loading-msg">Loading posts...</p>
         </div>
       );
     }
@@ -625,15 +664,17 @@ const Profile = () => {
       );
     }
 
+    const regularPosts = posts.filter((post) => post.type !== "project");
+
     return (
       <div className="glass-panel posts-section gsap-reveal">
         <h3 className="panel-title">
           <Icon name="newspaper" /> Latest Posts
         </h3>
 
-        {posts.length > 0 ? (
+        {regularPosts.length > 0 ? (
           <div className="profile-posts-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {posts.map((post) => {
+            {regularPosts.map((post) => {
               const liked = isLikedByMe(post.likes);
               const authorName = post.author?.full_name || profileData.name || "User";
               const authorHeadline = post.author?.headline || profileData.headline || "";
@@ -920,18 +961,23 @@ const Profile = () => {
               <Icon name="play" /> AI Podcast
             </button>
             {isOwnProfile && (
-              <button className="profile-btn" onClick={() => {
-                setEditData({
-                  ...profileData,
-                  newSkill: "",
-                  newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false },
-                  newProject: { title: "", description: "", link: "" },
-                  newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" },
-                });
-                setIsEditing(true);
-              }}>
-                <Icon name="edit" /> Edit
-              </button>
+              <>
+                <button className="profile-btn primary" onClick={() => navigate("/projects/new")}>
+                  <Icon name="project" /> Showcase Project
+                </button>
+                <button className="profile-btn" onClick={() => {
+                  setEditData({
+                    ...profileData,
+                    newSkill: "",
+                    newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false },
+                    newProject: { title: "", description: "", link: "" },
+                    newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" },
+                  });
+                  setIsEditing(true);
+                }}>
+                  <Icon name="edit" /> Edit
+                </button>
+              </>
             )}
           </div>
         </div>
