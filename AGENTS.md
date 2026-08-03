@@ -8,6 +8,10 @@
 
 **Connectimi** is a professional networking platform. This directory (`Connectimi-Startup-Frontend/`) contains the React/Vite SPA (Single Page Application) that serves as the web frontend for the platform. The frontend features a responsive, glassmorphic UI with animations, supporting both **personal/individual users** and a dedicated **B2B/organization portal**.
 
+For high-level system documentation and overall system architecture, see:
+- [PROJECT_OVERVIEW.md](file:///d:/StartUp/Connectme/Connectimi-Production/PROJECT_OVERVIEW.md)
+- [ARCHITECTURE.md](file:///d:/StartUp/Connectme/Connectimi-Production/ARCHITECTURE.md)
+
 ---
 
 ## Repository Structure
