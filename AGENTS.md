@@ -53,11 +53,15 @@ connectimi-web-frontend/
 │   │   ├── MyNetwork.jsx       # Network dashboard (connections, invitations, followers)
 │   │   ├── Notifications.jsx   # Live notifications history page
 │   │   ├── Profile.jsx         # Public/private professional profile page
+│   │   ├── ProjectCreate.jsx   # 5-step multi-step project showcase creation wizard
+│   │   ├── ProjectDetails.jsx  # Full project details showcase and social comment view
+│   │   ├── ProjectEdit.jsx     # 5-step project showcase text editor page
 │   │   ├── Signup.jsx          # Register account form page
 │   │   ├── VerifyEmail.jsx     # OTP input page
 │   │   └── Work.jsx            # Job discovery and search board
 │   ├── services/
-│   │   └── api.js              # Axios instance configured with JWT authorization interceptors
+│   │   ├── api.js              # Axios instance configured with JWT authorization interceptors
+│   │   └── projectApi.js       # Project showcase CRUD endpoint methods
 │   ├── utils/
 │   │   └── adapters.js         # Data adapter transforming camelCase (FE) <-> snake_case (BE)
 │   ├── App.jsx                 # Central router & navigation visibility setup
@@ -330,3 +334,12 @@ The frontend behaves as a Progressive Web App (PWA):
 ### Post Details Modal Crash Fix
 
 - **Declared Missing `likeRefs`**: Added `const likeRefs = useRef({});` declaration in `src/components/home/Feed.jsx` to resolve a React runtime crash. Previously, clicking on any post to open the details modal/see more about that post threw a `TypeError: Cannot read properties of undefined (reading 'current')` because the like button in the details modal attempted to store a reference in `likeRefs.current` which was not defined.
+
+### Profile Projects Section & Edit Form Unification
+
+- **Populated Project Card Rendering**: Updated `renderProjects()` in `src/pages/Profile.jsx` to render full `<ProjectCard>` instances for projects in `profileData.projects`. Enhanced property resolution to extract titles and descriptions from `fullProject` or fallback to `proj.title` / `proj.description` when `projectRef` is an unpopulated string ID. Cards link directly to `/projects/${targetProjectId}`.
+- **Filtered Latest Posts**: Updated `renderPosts()` in `src/pages/Profile.jsx` to filter out project-type posts so they are exclusively displayed in the "Projects" section.
+- **Data Adapter Preservation**: Updated `transformProfileToFrontend` in `src/utils/adapters.js` to preserve the `projectRef` object on project entries.
+- **Simplified Edit Profile Form**: Replaced the manual text project creation inputs in `src/components/editProfile.jsx` with a notice directing users to the "Showcase Project" wizard button on their profile.
+- **Navbar Clearance Fix**: Updated `.project-details-container` in `ProjectDetails.css` and `.project-create-container` in `ProjectCreate.css` with `padding-top: 100px` to clear the fixed top navigation bar and prevent header element overlap.
+- **Automated Frontend Tests**: Added `testsprite_tests/TC016_Project_Showcase_Create_and_Profile_Sync.py` (Playwright/TestSprite) and `testsprite_tests/TC016_Project_Showcase_Selenium.py` (Selenium WebDriver) for testing authentication, project creation, profile panel rendering, feed filtering, and edit modal state.
