@@ -1,6 +1,8 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Avatar from "../Avatar";
 import Icon from "../Icon";
+import ProjectCard from "./ProjectCard";
 import gsap from "gsap";
 import { useAuth } from "../../context/AuthContext";
 import { useFeed } from "../../context/FeedContext";
@@ -517,6 +519,7 @@ const Feed = () => {
   const postTextareaRef = useRef(null);
   const hasAnimatedRef = useRef(false);
   const likeRefs = useRef({});
+  const navigate = useNavigate();
   const { user } = useAuth();
   const {
     feedPosts,
@@ -582,8 +585,10 @@ const Feed = () => {
     // Timestamp
     createdAt: post.created_at,
 
-    // Post type
+    // Post type & project data
     type: post.type || "post",
+    projectId: post.projectId?._id || post.projectId || null,
+    project: typeof post.projectId === "object" ? post.projectId : null,
   });
 
   // Fallback demo posts shown when API is unavailable
@@ -993,7 +998,7 @@ const Feed = () => {
           <button
             type="button"
             className="btn-icon-text"
-            onClick={() => alert("Project creation coming soon!")}
+            onClick={() => navigate("/projects/new")}
           >
             <Icon name="project" style={{ color: "#3b82f6" }} /> Project
           </button>
@@ -1024,23 +1029,40 @@ const Feed = () => {
 
       {/* Insights Grid */}
       <div className="insights-grid">
-        {insights.map((insight) => (
-          <InsightCard
-            key={insight.id}
-            insight={insight}
-            user={user}
-            expandedComments={!!expandedPostComments[insight.id]}
-            commentText={newCommentText[insight.id] || ""}
-            onToggleComments={handleToggleComments}
-            onCommentTextChange={handleCommentTextChange}
-            onCreateComment={handleCreateComment}
-            onDeleteComment={handleDeleteComment}
-            onDeletePost={handleDeletePost}
-            onOpenModal={openProjectModal}
-            onLike={handleLike}
-            onShare={handleOpenShareModal}
-          />
-        ))}
+        {insights.map((insight) =>
+          insight.type === "project" ? (
+            <ProjectCard
+              key={insight.id}
+              insight={insight}
+              user={user}
+              expandedComments={!!expandedPostComments[insight.id]}
+              commentText={newCommentText[insight.id] || ""}
+              onToggleComments={handleToggleComments}
+              onCommentTextChange={handleCommentTextChange}
+              onCreateComment={handleCreateComment}
+              onDeleteComment={handleDeleteComment}
+              onDeletePost={handleDeletePost}
+              onLike={handleLike}
+              onShare={handleOpenShareModal}
+            />
+          ) : (
+            <InsightCard
+              key={insight.id}
+              insight={insight}
+              user={user}
+              expandedComments={!!expandedPostComments[insight.id]}
+              commentText={newCommentText[insight.id] || ""}
+              onToggleComments={handleToggleComments}
+              onCommentTextChange={handleCommentTextChange}
+              onCreateComment={handleCreateComment}
+              onDeleteComment={handleDeleteComment}
+              onDeletePost={handleDeletePost}
+              onOpenModal={openProjectModal}
+              onLike={handleLike}
+              onShare={handleOpenShareModal}
+            />
+          ),
+        )}
       </div>
 
       {/* Share Modal Overlay */}
