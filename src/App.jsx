@@ -16,6 +16,9 @@ import AccountCompletion from "./pages/AccountCompletion";
 
 import Courses from "./pages/Courses";
 import CourseRoadmap from "./pages/CourseRoadmap";
+import ProjectCreate from "./pages/ProjectCreate";
+import ProjectDetails from "./pages/ProjectDetails";
+import ProjectEdit from "./pages/ProjectEdit";
 
 import Navbar from "./components/Navbar";
 
@@ -154,6 +157,9 @@ function App() {
                 <Route path="/notifications" element={<ProtectedRoute allowedRoles={["personal"]}><Notifications /></ProtectedRoute>} />
                 <Route path="/courses" element={<ProtectedRoute allowedRoles={["personal"]}><Courses /></ProtectedRoute>} />
                 <Route path="/courses/:courseId" element={<ProtectedRoute allowedRoles={["personal"]}><CourseRoadmap /></ProtectedRoute>} />
+                <Route path="/projects/new" element={<ProtectedRoute allowedRoles={["personal"]}><ProjectCreate /></ProtectedRoute>} />
+                <Route path="/projects/:id" element={<ProtectedRoute allowedRoles={["personal"]}><ProjectDetails /></ProtectedRoute>} />
+                <Route path="/projects/:id/edit" element={<ProtectedRoute allowedRoles={["personal"]}><ProjectEdit /></ProtectedRoute>} />
 
                 {/* Organization Routes */}
                 <Route path="/organization" element={<ProtectedRoute allowedRoles={["consultant"]}><OrganizationLayout /></ProtectedRoute>}>
