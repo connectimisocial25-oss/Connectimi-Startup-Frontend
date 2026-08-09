@@ -123,8 +123,8 @@ const MyNetwork = () => {
     const [activeFollowingSubTab, setActiveFollowingSubTab] = useState('following');
 
     const mapInvitation = (invite) => ({
-        id: invite._id,
-        userId: invite.requester?._id || invite.requester?.id,
+        id: invite.id || invite._id,
+        userId: invite.requester?.id || invite.requester?._id,
         name: invite.requester?.full_name || invite.requester?.consultant_name || "Anonymous",
         role: invite.requester?.headline || invite.requester?.industry || "Connectimi Member",
         userRole: invite.requester?.role || "professional",
@@ -133,7 +133,7 @@ const MyNetwork = () => {
     });
 
     const mapSuggestion = (sug) => ({
-        id: sug._id,
+        id: sug.id || sug._id,
         name: sug.full_name || sug.consultant_name || "Anonymous",
         role: sug.headline || sug.industry || "Connectimi Member",
         userRole: sug.role || "professional",
@@ -142,7 +142,7 @@ const MyNetwork = () => {
     });
 
     const mapConnection = (conn) => ({
-        id: conn.profile?._id,
+        id: conn.profile?.id || conn.profile?._id,
         name: conn.profile?.full_name || conn.profile?.consultant_name || "Anonymous",
         role: conn.profile?.headline || conn.profile?.industry || "Connectimi Member",
         userRole: conn.profile?.role || "professional",
@@ -153,10 +153,10 @@ const MyNetwork = () => {
     });
 
     const mapExpert = (c) => ({
-        id: c._id,
+        id: c.id || c._id,
         name: c.consultant_name || "Consultant",
         role: c.current_position || c.industry || "Consultant",
-        avatar: c.logo || `https://i.pravatar.cc/150?u=${c._id}`,
+        avatar: c.logo || c.profile_picture || `https://i.pravatar.cc/150?u=${c.id || c._id}`,
         // Use the first active service price for the session fee display
         fee: c.services?.[0]?.price ?? null,
         accountType: "consultant",
@@ -195,7 +195,7 @@ const MyNetwork = () => {
                     ]);
                     
                     const mapFollowerOrFollowing = (item) => ({
-                        id: item._id,
+                        id: item.id || item._id,
                         name: item.full_name || item.consultant_name || "Anonymous",
                         role: item.headline || item.industry || "Connectimi Member",
                         avatar: item.profile_picture || item.logo || "https://i.pravatar.cc/150",
@@ -282,7 +282,7 @@ const MyNetwork = () => {
                 // Fetch updated following list
                 const followingRes = await API.get("/network/following");
                 const mapFollowerOrFollowing = (item) => ({
-                    id: item._id,
+                    id: item.id || item._id,
                     name: item.full_name || item.consultant_name || "Anonymous",
                     role: item.headline || item.industry || "Connectimi Member",
                     avatar: item.profile_picture || item.logo || "https://i.pravatar.cc/150",

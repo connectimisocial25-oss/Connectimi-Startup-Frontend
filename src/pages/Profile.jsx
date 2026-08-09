@@ -192,24 +192,24 @@ const Profile = () => {
 
   const isLikedByMe = (likesArray) => {
     if (!authUser?.id || !likesArray) return false;
-    return likesArray.some(like => (like._id || like).toString() === authUser.id.toString());
+    return likesArray.some(like => (like.user_id || like.id || like._id || like).toString() === authUser.id.toString());
   };
 
   const handleLikePost = async (postId) => {
     try {
       const res = await API.post(`/posts/${postId}/like`);
       setPosts(prev => prev.map(post => {
-        if (post._id === postId) {
+        if ((post.id || post._id) === postId) {
           const isLiked = res.data.liked;
           const currentUserId = authUser?.id;
           let newLikes = [...(post.likes || [])];
           if (isLiked) {
-            if (currentUserId && !newLikes.some(id => (id._id || id).toString() === currentUserId.toString())) {
+            if (currentUserId && !newLikes.some(id => (id.user_id || id.id || id._id || id).toString() === currentUserId.toString())) {
               newLikes.push(currentUserId);
             }
           } else {
             if (currentUserId) {
-              newLikes = newLikes.filter(id => (id._id || id).toString() !== currentUserId.toString());
+              newLikes = newLikes.filter(id => (id.user_id || id.id || id._id || id).toString() !== currentUserId.toString());
             }
           }
           return {
@@ -228,7 +228,7 @@ const Profile = () => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
     try {
       await API.delete(`/posts/${postId}`);
-      setPosts(prev => prev.filter(post => post._id !== postId));
+      setPosts(prev => prev.filter(post => (post.id || post._id) !== postId));
     } catch (err) {
       console.error("Failed to delete post:", err);
       alert(err.response?.data?.error || "Failed to delete post.");
@@ -243,16 +243,16 @@ const Profile = () => {
       
       const hydratedComment = {
         ...newComment,
-        id: newComment._id,
-        authorId: newComment.author?._id || newComment.author,
+        id: newComment.id || newComment._id,
+        authorId: newComment.author?.id || newComment.author?._id || newComment.author,
         authorName: newComment.author?.full_name || authUser?.name || "You",
         authorImg: newComment.author?.profile_picture || authUser?.profileImage || null,
         authorHeadline: newComment.author?.headline || authUser?.headline || "",
-        createdAt: newComment.created_at
+        createdAt: newComment.created_at || newComment.createdAt
       };
 
       setPosts(prev => prev.map(post => {
-        if (post._id === postId) {
+        if ((post.id || post._id) === postId) {
           return {
             ...post,
             comments: [...(post.comments || []), hydratedComment]
@@ -270,10 +270,10 @@ const Profile = () => {
     try {
       await API.delete(`/posts/${postId}/comments/${commentId}`);
       setPosts(prev => prev.map(post => {
-        if (post._id === postId) {
+        if ((post.id || post._id) === postId) {
           return {
             ...post,
-            comments: (post.comments || []).filter(c => (c._id || c.id) !== commentId)
+            comments: (post.comments || []).filter(c => (c.id || c._id) !== commentId)
           };
         }
         return post;
@@ -682,8 +682,10 @@ const Profile = () => {
               const hasMedia = post.media && post.media.length > 0;
               const formattedDate = post.created_at ? new Date(post.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "";
 
+              const postId = post.id || post._id;
+
               return (
-                <div key={post._id} className="profile-post-card">
+                <div key={postId} className="profile-post-card">
                   <div className="post-card-header">
                     <img src={authorImg} alt={authorName} className="post-author-img" />
                     <div className="post-author-info">
@@ -696,7 +698,7 @@ const Profile = () => {
                         type="button"
                         className="post-delete-btn" 
                         title="Delete post" 
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeletePost(post._id); }}
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeletePost(postId); }}
                       >
                         <Icon name="trash" size={14} />
                       </button>
@@ -720,15 +722,15 @@ const Profile = () => {
                     <button 
                       type="button"
                       className={`post-action-btn like-btn ${liked ? 'active' : ''}`}
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLikePost(post._id); }}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLikePost(postId); }}
                     >
                       <Icon name="thumbs-up" size={14} />
                       <span>{liked ? "Liked" : "Like"} ({post.likes?.length || 0})</span>
                     </button>
                     <button 
                       type="button"
-                      className={`post-action-btn comment-btn ${expandedPostComments[post._id] ? 'active' : ''}`}
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpandedPostComments(prev => ({ ...prev, [post._id]: !prev[post._id] })); }}
+                      className={`post-action-btn comment-btn ${expandedPostComments[postId] ? 'active' : ''}`}
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpandedPostComments(prev => ({ ...prev, [postId]: !prev[postId] })); }}
                       title="Comments"
                     >
                       <Icon name="comment" size={14} />
@@ -737,12 +739,12 @@ const Profile = () => {
                   </div>
 
                   {/* Comments Section */}
-                  {expandedPostComments[post._id] && (
+                  {expandedPostComments[postId] && (
                     <div className="comments-section" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.05)", marginTop: "15px", paddingTop: "15px" }}>
                       <form 
                         onSubmit={(e) => {
                           e.preventDefault();
-                          handleCreateComment(post._id, newCommentText[post._id] || "");
+                          handleCreateComment(postId, newCommentText[postId] || "");
                         }}
                         style={{ display: "flex", gap: "10px", marginBottom: "15px" }}
                       >
@@ -750,14 +752,14 @@ const Profile = () => {
                         <input
                           type="text"
                           placeholder="Add a comment..."
-                          value={newCommentText[post._id] || ""}
-                          onChange={(e) => setNewCommentText(prev => ({ ...prev, [post._id]: e.target.value }))}
+                          value={newCommentText[postId] || ""}
+                          onChange={(e) => setNewCommentText(prev => ({ ...prev, [postId]: e.target.value }))}
                           style={{ flex: 1, padding: "8px 12px", borderRadius: "20px", border: "1px solid rgba(255, 255, 255, 0.1)", background: "rgba(255, 255, 255, 0.05)", color: "white", outline: "none", fontSize: "0.85rem" }}
                         />
                         <button 
                           type="submit" 
-                          disabled={!(newCommentText[post._id] || "").trim()}
-                          style={{ padding: "8px 16px", borderRadius: "20px", border: "none", background: "var(--emerald-500)", color: "white", cursor: "pointer", fontWeight: "600", opacity: (newCommentText[post._id] || "").trim() ? 1 : 0.5 }}
+                          disabled={!(newCommentText[postId] || "").trim()}
+                          style={{ padding: "8px 16px", borderRadius: "20px", border: "none", background: "var(--emerald-500)", color: "white", cursor: "pointer", fontWeight: "600", opacity: (newCommentText[postId] || "").trim() ? 1 : 0.5 }}
                         >
                           Post
                         </button>

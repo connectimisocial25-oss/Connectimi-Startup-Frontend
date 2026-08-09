@@ -122,7 +122,7 @@ const Notifications = ({ embedded = false }) => {
         }
 
         return {
-            id: n._id,
+            id: n.id || n._id,
             text,
             time,
             read: n.is_read,
@@ -131,8 +131,8 @@ const Notifications = ({ embedded = false }) => {
             icon,
             iconBg,
             iconColor,
-            postId: n.post?._id || n.post,
-            senderId: n.sender?._id || n.sender
+            postId: n.post?.id || n.post?._id || n.post,
+            senderId: n.sender?.id || n.sender?._id || n.sender
         };
     };
 
@@ -141,7 +141,7 @@ const Notifications = ({ embedded = false }) => {
     const handleMarkAsRead = async (id) => {
         try {
             await API.put("/notifications/read", { notificationId: id });
-            setNotifications(prev => prev.map(n => n._id === id ? { ...n, is_read: true } : n));
+            setNotifications(prev => prev.map(n => (n.id || n._id) === id ? { ...n, is_read: true } : n));
             window.dispatchEvent(new Event('notifications_updated'));
         } catch (err) {
             console.error("Failed to mark notification as read:", err.message);
