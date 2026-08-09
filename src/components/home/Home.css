@@ -1244,4 +1244,99 @@
         opacity: 1;
         transform: translate(-50%, 0);
     }
+}
+
+/* ─── Feed Skeleton Loader ────────────────────────────── */
+@keyframes feedSkeletonShimmer {
+    0% { background-position: -600px 0; }
+    100% { background-position: 600px 0; }
+}
+
+.feed-skeleton-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow: hidden;
+}
+
+.feed-skeleton-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.feed-skeleton-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.10) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 600px 100%;
+    animation: feedSkeletonShimmer 1.6s infinite linear;
+}
+
+.feed-skeleton-author-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.feed-skeleton-line {
+    height: 14px;
+    border-radius: 8px;
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.10) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 600px 100%;
+    animation: feedSkeletonShimmer 1.6s infinite linear;
+}
+
+.feed-skeleton-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.feed-skeleton-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.feed-skeleton-btn {
+    width: 80px;
+    height: 32px;
+    border-radius: 20px;
+    background: linear-gradient(
+        90deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.10) 50%,
+        rgba(255,255,255,0.04) 75%
+    );
+    background-size: 600px 100%;
+    animation: feedSkeletonShimmer 1.6s infinite linear;
+}
+
+/* ─── Feed Empty State ─────────────────────────────────── */
+.feed-empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    border: 1px dashed var(--glass-border);
+    border-radius: 20px;
+    background: var(--glass-bg);
 }

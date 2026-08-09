@@ -205,6 +205,7 @@ Global state is managed via React Context providers in `src/context/`:
 2. `ChatContext.jsx` — Manages real-time Socket.io chat server connections, incoming/outgoing messaging events, typing indicator states, and user online/offline status tracking.
 3. `ThemeContext.jsx` — Exposes the current visual theme (`light` or `dark`), toggles themes, and updates classes on the HTML `document` element.
 4. `ProfileContext.jsx` — Caches user profile information for editing, completing profile details, and syncing across screens.
+5. `FeedContext.jsx` — Manages the home feed posts per user. Exposes `feedPosts`, `feedLoading`, `feedError`, `hasFetchedFeed`, `fetchFeed`, `prependFeedPost`, `removeFeedPost`, `patchFeedPost`, `replaceFeedPosts`, and `clearFeed`. Feed is cached per-user-ID to avoid refetching on navigation. While `feedLoading` is `true` or `hasFetchedFeed` is `false`, the Feed component displays skeleton loader cards (no mock/demo data is shown). Post identification supports both `id` and `_id` (`post.id || post._id`), `likes` mapping checks `user_id`, and `mapPostToInsight` conditionally renders content without fallback "Untitled Post" or empty "KEY TAKEAWAY:" headers when content is empty.
 
 ---
 

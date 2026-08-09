@@ -102,13 +102,13 @@ export const FeedProvider = ({ children }) => {
   }, [replaceFeedPosts]);
 
   const removeFeedPost = useCallback((postId) => {
-    replaceFeedPosts((prev) => prev.filter((post) => post._id !== postId));
+    replaceFeedPosts((prev) => prev.filter((post) => (post.id || post._id) !== postId));
   }, [replaceFeedPosts]);
 
   const patchFeedPost = useCallback((postId, updater) => {
     replaceFeedPosts((prev) =>
       prev.map((post) => {
-        if (post._id !== postId) return post;
+        if ((post.id || post._id) !== postId) return post;
         return typeof updater === "function" ? updater(post) : { ...post, ...updater };
       }),
     );

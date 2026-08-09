@@ -95,10 +95,19 @@ const ProjectCard = React.memo(({
     onShare(insight);
   };
 
-  const coverImage = projectInfo.coverImage?.url || insight.image;
+  const coverImage =
+    projectInfo.coverImage?.url ||
+    (typeof projectInfo.cover_image === "object"
+      ? projectInfo.cover_image?.url
+      : projectInfo.cover_image) ||
+    insight.image;
   const projectTitle = projectInfo.title || insight.title || "Untitled Project";
-  const shortDesc = projectInfo.shortDescription || insight.takeaway || "";
-  const techStack = projectInfo.techStack || [];
+  const shortDesc =
+    projectInfo.shortDescription ||
+    projectInfo.short_description ||
+    insight.takeaway ||
+    "";
+  const techStack = projectInfo.techStack || projectInfo.tech_stack || [];
   const status = projectInfo.status || "completed";
 
   // Limit tech stack chips to max 3 on the feed card

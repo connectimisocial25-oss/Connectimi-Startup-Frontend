@@ -113,33 +113,39 @@ const InsightCard = React.memo(({
       )}
 
       <div className="insight-body">
-        <h3
-          className="insight-title"
-          style={{ cursor: "pointer" }}
-          onClick={() => onOpenModal(insight)}
-        >
-          {insight.title}
-        </h3>
+        {insight.title && insight.title !== "Untitled Post" && insight.title !== insight.takeaway && (
+          <h3
+            className="insight-title"
+            style={{ cursor: "pointer" }}
+            onClick={() => onOpenModal(insight)}
+          >
+            {insight.title}
+          </h3>
+        )}
 
-        <div className="insight-takeaway">
-          <span className="takeaway-label">KEY TAKEAWAY:</span>
-          <p>
-            {truncateText(insight.takeaway, insight.image ? 100 : 200)}
-            {insight.takeaway && insight.takeaway.length > (insight.image ? 100 : 200) && (
-              <span
-                style={{
-                  color: "var(--primary-green)",
-                  cursor: "pointer",
-                  fontWeight: "500",
-                  marginLeft: "4px",
-                }}
-                onClick={() => onOpenModal(insight)}
-              >
-                See More...
-              </span>
+        {insight.takeaway && (
+          <div className="insight-takeaway">
+            {insight.title && insight.title !== "Untitled Post" && insight.title !== insight.takeaway && (
+              <span className="takeaway-label">KEY TAKEAWAY:</span>
             )}
-          </p>
-        </div>
+            <p>
+              {truncateText(insight.takeaway, insight.image ? 100 : 200)}
+              {insight.takeaway && insight.takeaway.length > (insight.image ? 100 : 200) && (
+                <span
+                  style={{
+                    color: "var(--primary-green)",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                    marginLeft: "4px",
+                  }}
+                  onClick={() => onOpenModal(insight)}
+                >
+                  See More...
+                </span>
+              )}
+            </p>
+          </div>
+        )}
 
         <div
           style={{
@@ -523,6 +529,7 @@ const Feed = () => {
   const { user } = useAuth();
   const {
     feedPosts,
+    feedLoading,
     fetchFeed,
     patchFeedPost,
     prependFeedPost,
@@ -546,99 +553,73 @@ const Feed = () => {
   const currentUserId = user?.id ?? null;
 
   // ─── Fixed mapper ─────────────────────────────────────────────
-  const mapPostToInsight = (post, currentUserId) => ({
-    id: post._id,
+  const mapPostToInsight = (post, currentUserId) => {
+    const projectObj =
+      post.project ||
+      (typeof post.projectId === "object" ? post.projectId : null) ||
+      (typeof post.project_id === "object" ? post.project_id : null);
 
-    // Author fields
-    author: post.author?.full_name || "Anonymous",
-    authorHeadline: post.author?.headline || "",
-    authorImg: post.author?.profile_picture || null,
-    authorId: post.author?._id,
+    const postTitle = post.title || (projectObj ? projectObj.title : null);
+    const postContent =
+      post.content ||
+      post.takeaway ||
+      (projectObj ? projectObj.short_description || projectObj.shortDescription : "");
 
-    // Content — no title field in API, use content for both
-    title: post.content || "Untitled Post",
-    takeaway: post.content || "",
+    return {
+      id: post.id || post._id,
 
-    // Media — array of objects with url, or empty
-    image: post.media?.length > 0 ? post.media[0].url : null,
+      // Author fields
+      author: post.author?.full_name || post.author?.fullName || "Anonymous",
+      authorHeadline: post.author?.headline || "",
+      authorImg: post.author?.profile_picture || post.author?.profileImage || null,
+      authorId: post.author?.id || post.author?._id || post.author_id,
 
-    // Likes — array of user ref objects, check by _id string
-    liked: currentUserId
-      ? post.likes?.some(
-        (like) => (like._id || like).toString() === currentUserId.toString(),
-      )
-      : false,
-    likes: post.likes?.length || 0,
+      // Content
+      title: postTitle,
+      takeaway: postContent,
 
-    // Comments count
-    comments: post.comments?.length || 0,
-    commentsData: (post.comments || []).map(c => ({
-        id: c._id,
-        authorId: c.author?._id || c.author,
-        authorName: c.author?.full_name || "Anonymous",
-        authorImg: c.author?.profile_picture || null,
+      // Media
+      image:
+        post.media?.length > 0
+          ? post.media[0].url
+          : projectObj?.cover_image?.url || projectObj?.coverImage?.url || null,
+
+      // Likes — check user_id (PG) or id/_id
+      liked: currentUserId
+        ? post.likes?.some(
+            (like) =>
+              (like.user_id || like.id || like._id || like).toString() ===
+              currentUserId.toString()
+          )
+        : false,
+      likes: post.likes?.length || 0,
+
+      // Comments count
+      comments: post.comments?.length || 0,
+      commentsData: (post.comments || []).map((c) => ({
+        id: c.id || c._id,
+        authorId: c.author?.id || c.author?._id || c.author_id || c.author,
+        authorName: c.author?.full_name || c.author?.fullName || "Anonymous",
+        authorImg: c.author?.profile_picture || c.author?.profileImage || null,
         authorHeadline: c.author?.headline || "",
         text: c.text,
-        createdAt: c.created_at
-    })),
+        createdAt: c.created_at || c.createdAt,
+      })),
 
-    // Timestamp
-    createdAt: post.created_at,
+      // Timestamp
+      createdAt: post.created_at || post.createdAt,
 
-    // Post type & project data
-    type: post.type || "post",
-    projectId: post.projectId?._id || post.projectId || null,
-    project: typeof post.projectId === "object" ? post.projectId : null,
-  });
-
-  // Fallback demo posts shown when API is unavailable
-  const DEMO_POSTS = useMemo(() => [
-    {
-      id: "demo-1",
-      author: user?.fullName || user?.firstName + " " + user?.lastName || "Suroj Swarnakar",
-      authorHeadline: user?.headline || "Full-Stack Developer | Building at Connectimi",
-      authorImg: user?.profileImage || null,
-      authorId: "demo",
-      title: "Analyzed customer acquisition data this week. Interesting trends emerging from organic traffic sources.",
-      takeaway: "Analyzed customer acquisition data this week. Interesting trends emerging from organic traffic sources.",
-      image: null,
-      liked: false,
-      likes: 4,
-      comments: 2,
-      createdAt: "2026-07-28T10:00:00.000Z",
-      type: "post",
-    },
-    {
-      id: "demo-2",
-      author: "Arnab Dinda",
-      authorHeadline: "Web Developer | React & TypeScript",
-      authorImg: null,
-      authorId: "demo-2",
-      title: "Just launched my portfolio! Check it out — built with React, TypeScript, and a lot of coffee ☕",
-      takeaway: "Just launched my portfolio! Check it out — built with React, TypeScript, and a lot of coffee ☕",
-      image: null,
-      liked: false,
-      likes: 12,
-      comments: 5,
-      createdAt: "2026-07-30T10:00:00.000Z",
-      type: "post",
-    },
-    {
-      id: "demo-3",
-      author: "Sanniv Kumar",
-      authorHeadline: "Backend Engineer | Node.js & MongoDB",
-      authorImg: null,
-      authorId: "demo-3",
-      title: "Built a rate-limiting middleware from scratch today. It's amazing how much you learn when you avoid using libraries.",
-      takeaway: "Built a rate-limiting middleware from scratch today. It's amazing how much you learn when you avoid using libraries.",
-      image: null,
-      liked: false,
-      likes: 8,
-      comments: 3,
-      createdAt: "2026-07-30T18:00:00.000Z",
-      type: "post",
-    },
-  ], [user]);
+      // Post type & project data
+      type: post.type || (projectObj ? "project" : "post"),
+      projectId:
+        post.project_id ||
+        post.projectId?.id ||
+        post.projectId?._id ||
+        post.projectId ||
+        null,
+      project: projectObj,
+    };
+  };
 
   useEffect(() => {
     if (!currentUserId) return;
@@ -649,12 +630,11 @@ const Feed = () => {
   }, [currentUserId, fetchFeed]);
 
   const insights = useMemo(() => {
-    if (feedPosts.length === 0) return DEMO_POSTS;
     return feedPosts.map((post) => mapPostToInsight(post, currentUserId));
-  }, [feedPosts, currentUserId, DEMO_POSTS]);
+  }, [feedPosts, currentUserId]);
 
   useEffect(() => {
-    if (!hasFetchedFeed && feedPosts.length === 0) return;
+    if (feedLoading || !hasFetchedFeed) return;
     if (hasAnimatedRef.current) return;
 
     const timer = setTimeout(() => {
@@ -791,7 +771,7 @@ const Feed = () => {
         const existingLikes = post.likes || [];
         const normalizedCurrentUserId = currentUserId?.toString();
         const otherLikes = existingLikes.filter(
-          (like) => (like._id || like).toString() !== normalizedCurrentUserId,
+          (like) => (like.id || like._id || like).toString() !== normalizedCurrentUserId,
         );
 
         return {
@@ -819,7 +799,8 @@ const Feed = () => {
       const hydratedComment = {
         ...newComment,
         author: {
-          _id: user?.id,
+          id: user?.id || user?._id,
+          _id: user?.id || user?._id,
           full_name: user?.fullName || user?.name || "You",
           profile_picture: user?.profileImage || null,
           headline: user?.headline || "",
@@ -842,7 +823,7 @@ const Feed = () => {
       await API.delete(`/posts/${postId}/comments/${commentId}`);
       patchFeedPost(postId, (post) => ({
         ...post,
-        comments: (post.comments || []).filter((comment) => comment._id !== commentId),
+        comments: (post.comments || []).filter((comment) => (comment.id || comment._id) !== commentId),
       }));
     } catch (err) {
       console.error("Failed to delete comment:", err);
@@ -1028,42 +1009,74 @@ const Feed = () => {
       </div>
 
       {/* Insights Grid */}
-      <div className="insights-grid">
-        {insights.map((insight) =>
-          insight.type === "project" ? (
-            <ProjectCard
-              key={insight.id}
-              insight={insight}
-              user={user}
-              expandedComments={!!expandedPostComments[insight.id]}
-              commentText={newCommentText[insight.id] || ""}
-              onToggleComments={handleToggleComments}
-              onCommentTextChange={handleCommentTextChange}
-              onCreateComment={handleCreateComment}
-              onDeleteComment={handleDeleteComment}
-              onDeletePost={handleDeletePost}
-              onLike={handleLike}
-              onShare={handleOpenShareModal}
-            />
+      {feedLoading || !hasFetchedFeed ? (
+        <div className="insights-grid">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="feed-skeleton-card">
+              <div className="feed-skeleton-author">
+                <div className="feed-skeleton-avatar" />
+                <div className="feed-skeleton-author-info">
+                  <div className="feed-skeleton-line" style={{ width: "45%" }} />
+                  <div className="feed-skeleton-line" style={{ width: "30%", height: "10px", marginTop: "6px" }} />
+                </div>
+              </div>
+              <div className="feed-skeleton-body">
+                <div className="feed-skeleton-line" style={{ width: "90%" }} />
+                <div className="feed-skeleton-line" style={{ width: "75%" }} />
+                <div className="feed-skeleton-line" style={{ width: "60%" }} />
+              </div>
+              <div className="feed-skeleton-actions">
+                <div className="feed-skeleton-btn" />
+                <div className="feed-skeleton-btn" />
+                <div className="feed-skeleton-btn" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="insights-grid">
+          {insights.length === 0 ? (
+            <div className="feed-empty-state">
+              <p>No posts yet. Be the first to share something!</p>
+            </div>
           ) : (
-            <InsightCard
-              key={insight.id}
-              insight={insight}
-              user={user}
-              expandedComments={!!expandedPostComments[insight.id]}
-              commentText={newCommentText[insight.id] || ""}
-              onToggleComments={handleToggleComments}
-              onCommentTextChange={handleCommentTextChange}
-              onCreateComment={handleCreateComment}
-              onDeleteComment={handleDeleteComment}
-              onDeletePost={handleDeletePost}
-              onOpenModal={openProjectModal}
-              onLike={handleLike}
-              onShare={handleOpenShareModal}
-            />
-          ),
-        )}
-      </div>
+            insights.map((insight) =>
+              insight.type === "project" ? (
+                <ProjectCard
+                  key={insight.id}
+                  insight={insight}
+                  user={user}
+                  expandedComments={!!expandedPostComments[insight.id]}
+                  commentText={newCommentText[insight.id] || ""}
+                  onToggleComments={handleToggleComments}
+                  onCommentTextChange={handleCommentTextChange}
+                  onCreateComment={handleCreateComment}
+                  onDeleteComment={handleDeleteComment}
+                  onDeletePost={handleDeletePost}
+                  onLike={handleLike}
+                  onShare={handleOpenShareModal}
+                />
+              ) : (
+                <InsightCard
+                  key={insight.id}
+                  insight={insight}
+                  user={user}
+                  expandedComments={!!expandedPostComments[insight.id]}
+                  commentText={newCommentText[insight.id] || ""}
+                  onToggleComments={handleToggleComments}
+                  onCommentTextChange={handleCommentTextChange}
+                  onCreateComment={handleCreateComment}
+                  onDeleteComment={handleDeleteComment}
+                  onDeletePost={handleDeletePost}
+                  onOpenModal={openProjectModal}
+                  onLike={handleLike}
+                  onShare={handleOpenShareModal}
+                />
+              )
+            )
+          )}
+        </div>
+      )}
 
       {/* Share Modal Overlay */}
       {sharingInsight && (
