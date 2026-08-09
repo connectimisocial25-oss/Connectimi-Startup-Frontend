@@ -283,9 +283,23 @@ const Profile = () => {
     }
   };
 
+  const getProfileViewsCount = (id) => {
+    if (!id) return 5;
+    const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return 5 + (hash % 16); // stable 5 to 20
+  };
+
   const fetchProfileData = async () => {
     if (isOwnProfile) {
       if (authUser) {
+        let ownConnCount = 0;
+        try {
+          const connRes = await API.get("/network/connections");
+          ownConnCount = connRes.data.total || 0;
+        } catch (err) {
+          console.error("Failed to load own connections count:", err);
+        }
+
         setProfileData({
           ...authUser,
           name: authUser.name || `${authUser.firstName} ${authUser.lastName}`,
@@ -295,8 +309,8 @@ const Profile = () => {
           projects: authUser.projects || [],
           education: authUser.education || [],
           skills: authUser.skills || [],
-          connections: authUser.connections || 543,
-          profileViews: authUser.profileViews || 1287,
+          connections: ownConnCount,
+          profileViews: getProfileViewsCount(authUser.id || authUser._id),
           postImpressions: authUser.postImpressions || 3256,
         });
         fetchUserPosts(authUser.id);
@@ -310,17 +324,20 @@ const Profile = () => {
       let publicUser;
       let connStatus = "none";
       let connId = null;
+      let connCount = 0;
       try {
         const res = await API.get(`/profile/${userId}`);
         publicUser = res.data.user;
         connStatus = res.data.connectionStatus || "none";
         connId = res.data.connectionId || null;
+        connCount = res.data.connectionCount || 0;
       } catch (err) {
         if (err.response?.status === 404) {
           const res = await API.get(`/consultant/profile/${userId}`);
           publicUser = res.data.consultant;
           connStatus = res.data.connectionStatus || "none";
           connId = res.data.connectionId || null;
+          connCount = res.data.connectionCount || 0;
         } else {
           throw err;
         }
@@ -333,8 +350,8 @@ const Profile = () => {
       const adapted = transformProfileToFrontend(publicUser);
       setProfileData({
         ...adapted,
-        connections: publicUser.connections || 0,
-        profileViews: publicUser.profile_views || 0,
+        connections: connCount,
+        profileViews: getProfileViewsCount(publicUser.id || publicUser._id),
         postImpressions: publicUser.post_impressions || 0,
       });
       setConnectionStatus(connStatus);

@@ -115,6 +115,7 @@ const MyNetwork = () => {
     const [invitations, setInvitations] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const [connections, setConnections] = useState([]);
+    const [connectionsCount, setConnectionsCount] = useState(0);
     const [experts, setExperts] = useState([]);
     const [expertsLoading, setExpertsLoading] = useState(false);
     const [followers, setFollowers] = useState([]);
@@ -162,6 +163,19 @@ const MyNetwork = () => {
         accountType: "consultant",
     });
 
+    // Load initial connection count on mount
+    useEffect(() => {
+        const loadInitialCount = async () => {
+            try {
+                const connRes = await API.get("/network/connections");
+                setConnectionsCount(connRes.data.total || 0);
+            } catch (err) {
+                console.error("Failed to load initial connections count:", err.message);
+            }
+        };
+        loadInitialCount();
+    }, []);
+
     // Load active invitations, suggestions, and connections from API
     useEffect(() => {
         if (activeTab === 'connections') {
@@ -175,6 +189,7 @@ const MyNetwork = () => {
                     setInvitations((inviteRes.data.invitations || []).map(mapInvitation));
                     setSuggestions((sugRes.data.suggestions || []).map(mapSuggestion));
                     setConnections((connRes.data.connections || []).map(mapConnection));
+                    setConnectionsCount(connRes.data.total || 0);
                 } catch (err) {
                     console.error("Failed to load network data:", err.message);
                 }
@@ -240,6 +255,7 @@ const MyNetwork = () => {
             // Reload connections after accepting an invitation
             const connRes = await API.get("/network/connections");
             setConnections(connRes.data.connections.map(mapConnection));
+            setConnectionsCount(connRes.data.total || 0);
         } catch (err) {
             console.error("Failed to accept connection:", err.message);
         }
@@ -267,6 +283,7 @@ const MyNetwork = () => {
         try {
             await API.delete(`/network/remove/${targetId}`);
             setConnections(connections.filter(c => c.id !== targetId));
+            setConnectionsCount(prev => Math.max(0, prev - 1));
         } catch (err) {
             console.error("Failed to remove connection:", err.message);
         }
@@ -308,7 +325,7 @@ const MyNetwork = () => {
                     <div className="network-sidebar-card">
                         <div className="sidebar-title">Manage Network</div>
                         {[
-                            { id: 'connections', label: 'Connections', icon: 'users', count: 482 },
+                            { id: 'connections', label: 'Connections', icon: 'users', count: connectionsCount },
                             { id: 'experts', label: 'Expert Consultations', icon: 'user-tie' },
                             { id: 'messaging', label: 'Messaging', icon: 'comment-dots', count: unreadMessagesCount > 0 ? unreadMessagesCount : null },
                             { id: 'following', label: 'Following & Followers', icon: 'user-circle' },
@@ -330,7 +347,7 @@ const MyNetwork = () => {
                             >
                                 <Icon name={item.icon} />
                                 <span>{item.label}</span>
-                                {item.count && <span className="sidebar-count">{item.count}</span>}
+                                {item.count !== undefined && item.count !== null && <span className="sidebar-count">{item.count}</span>}
                             </div>
                         ))}
                     </div>
