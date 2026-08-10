@@ -174,7 +174,7 @@ const Landing = () => {
                             <span>🚀 OVER 10,000+ STUDENTS JOINED</span>
                         </div>
                         <h1 className="hero-title">
-                            Stop Sending Resumes into the LinkedIn Void. <br />
+                            Stop Sending Resumes into the HR Black Hole. <br />
                             <span className="text-gradient">Get Discovered Directly.</span>
                         </h1>
                         <p className="hero-subtitle">
