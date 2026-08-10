@@ -16,7 +16,30 @@ export const AuthProvider = ({ children }) => {
   // Check for existing session in localStorage and fetch /me
   useEffect(() => {
     const checkSession = async () => {
-      const token = localStorage.getItem("connectimi_token");
+      let token = localStorage.getItem("connectimi_token");
+
+      // Dev-only auto-login. Skips the landing/login screen on every reload so
+      // UI work can be checked directly. Active only in `vite dev` AND only
+      // when VITE_DEV_AUTOLOGIN_EMAIL is set in .env — stripped from builds.
+      if (!token && import.meta.env.DEV && import.meta.env.VITE_DEV_AUTOLOGIN_EMAIL) {
+        try {
+          const res = await API.post("/auth/login", {
+            email: import.meta.env.VITE_DEV_AUTOLOGIN_EMAIL,
+            password: import.meta.env.VITE_DEV_AUTOLOGIN_PASSWORD,
+            account_type: import.meta.env.VITE_DEV_AUTOLOGIN_ACCOUNT_TYPE || "personal",
+          });
+          localStorage.setItem("connectimi_token", res.data.accessToken);
+          localStorage.setItem("connectimi_refresh_token", res.data.refreshToken);
+          token = res.data.accessToken;
+          console.info("[dev auto-login] signed in as", res.data.user?.email);
+        } catch (err) {
+          console.error(
+            "[dev auto-login] failed:",
+            err.response?.data?.error || err.message,
+          );
+        }
+      }
+
       if (token) {
         try {
           const res = await API.get("/auth/me");

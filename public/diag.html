@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Connectimi Network Diagnostic</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; padding: 24px; line-height: 1.5; }
+    h1 { font-size: 20px; margin-bottom: 4px; }
+    .sub { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+    .row { border: 1px solid #334155; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+    .name { font-weight: 700; margin-bottom: 6px; }
+    .ok { color: #34d399; }
+    .bad { color: #f87171; }
+    .pending { color: #fbbf24; }
+    pre { margin: 6px 0 0; white-space: pre-wrap; word-break: break-all; font-size: 12px; color: #cbd5e1; }
+    code { background: #1e293b; padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Connectimi Network Diagnostic</h1>
+  <div class="sub">
+    Page origin: <code id="origin"></code><br />
+    Run from the same browser that shows "Network Error". Screenshot this whole page.
+  </div>
+
+  <div class="row" id="r1">
+    <div class="name">1. Same-origin via Vite proxy &mdash; <code>POST /api/v1/auth/login</code></div>
+    <div class="pending" id="s1">running&hellip;</div>
+    <pre id="d1"></pre>
+  </div>
+
+  <div class="row" id="r2">
+    <div class="name">2. Direct cross-origin &mdash; <code>POST https://backend.connectimi.in/api/v1/auth/login</code></div>
+    <div class="pending" id="s2">running&hellip;</div>
+    <pre id="d2"></pre>
+  </div>
+
+  <div class="row" id="r3">
+    <div class="name">3. Chat host &mdash; <code>https://chat.connectimi.in</code></div>
+    <div class="pending" id="s3">running&hellip;</div>
+    <pre id="d3"></pre>
+  </div>
+
+  <div class="row">
+    <div class="name">4. Browser</div>
+    <pre id="d4"></pre>
+  </div>
+
+<script>
+  document.getElementById('origin').textContent = location.origin;
+
+  // Deliberately invalid credentials: we only care whether a response arrives,
+  // not whether it authenticates.
+  const body = JSON.stringify({
+    email: 'diagnostic-probe@example.invalid',
+    password: 'not-a-real-password',
+    account_type: 'personal'
+  });
+
+  async function probe(url, statusEl, detailEl) {
+    const started = performance.now();
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body
+      });
+      const ms = Math.round(performance.now() - started);
+      const text = await res.text();
+      statusEl.className = 'ok';
+      statusEl.textContent = 'RESPONSE RECEIVED — HTTP ' + res.status + ' (' + ms + 'ms)';
+      detailEl.textContent = text.slice(0, 300);
+    } catch (err) {
+      const ms = Math.round(performance.now() - started);
+      statusEl.className = 'bad';
+      statusEl.textContent = 'FAILED — no response (' + ms + 'ms)';
+      detailEl.textContent = err.name + ': ' + err.message;
+    }
+  }
+
+  probe('/api/v1/auth/login', document.getElementById('s1'), document.getElementById('d1'));
+  probe('https://backend.connectimi.in/api/v1/auth/login', document.getElementById('s2'), document.getElementById('d2'));
+
+  (async () => {
+    const s3 = document.getElementById('s3'), d3 = document.getElementById('d3');
+    try {
+      await fetch('https://chat.connectimi.in/socket.io/?EIO=4&transport=polling', { mode: 'no-cors' });
+      s3.className = 'ok'; s3.textContent = 'host reachable';
+    } catch (err) {
+      s3.className = 'bad';
+      s3.textContent = 'FAILED — host unreachable';
+      d3.textContent = err.name + ': ' + err.message;
+    }
+  })();
+
+  document.getElementById('d4').textContent =
+    'userAgent: ' + navigator.userAgent + '\n' +
+    'onLine: ' + navigator.onLine;
+</script>
+</body>
+</html>

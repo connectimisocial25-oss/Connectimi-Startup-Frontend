@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const url = import.meta.env.VITE_API_URL || "https://backend.connectimi.in";
+// `??` (not `||`) so an explicitly empty VITE_API_URL yields a relative
+// baseURL of "/api/v1", letting the Vite dev proxy handle the request.
+const url = import.meta.env.VITE_API_URL ?? "https://backend.connectimi.in";
 const API = axios.create({
   baseURL: `${url}/api/v1`,
   headers: {

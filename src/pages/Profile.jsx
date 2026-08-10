@@ -32,22 +32,22 @@ const Profile = () => {
   // State for user profile data
   const [profileData, setProfileData] = useState({
     role: "professional",
-    name: "Alex Johnson",
-    headline: "Senior Software Engineer at TechCorp",
-    location: "San Francisco, California",
-    connections: 543,
-    profileViews: 1287,
-    postImpressions: 3256,
-    about: "Passionate software engineer with 8+ years of experience building scalable web applications. Specialized in React, Node.js, and cloud technologies.",
+    name: "",
+    headline: "",
+    location: "",
+    connections: 0,
+    profileViews: 0,
+    postImpressions: 0,
+    about: "",
     experience: [],
     projects: [],
     education: [],
     skills: [],
-    website: "https://alexjohnson.dev",
+    website: "",
     profileImage: DEFAULT_PROFILE_IMG,
     bannerImage: DEFAULT_BANNER,
-    email: "alex.johnson@example.com",
-    phone: "+1 (555) 123-4567",
+    email: "",
+    phone: "",
   });
 
   const isFollowing = authUser?.following?.includes(profileData.id);
@@ -93,7 +93,6 @@ const Profile = () => {
     phone: "",
     newSkill: "",
     newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false },
-    newProject: { title: "", description: "", link: "" },
     newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" },
   });
 
@@ -247,7 +246,6 @@ const Profile = () => {
         authorId: newComment.author?.id || newComment.author?._id || newComment.author,
         authorName: newComment.author?.full_name || authUser?.name || "You",
         authorImg: newComment.author?.profile_picture || authUser?.profileImage || null,
-        authorHeadline: newComment.author?.headline || authUser?.headline || "",
         createdAt: newComment.created_at || newComment.createdAt
       };
 
@@ -452,12 +450,6 @@ const Profile = () => {
     setEditData(prev => ({ ...prev, education: updated }));
   };
 
-  const handleProjectChange = (index, field, value) => {
-    const updated = [...editData.projects];
-    updated[index] = { ...updated[index], [field]: value };
-    setEditData(prev => ({ ...prev, projects: updated }));
-  };
-
   const addExperience = () => {
     if (editData.newExperience.title && editData.newExperience.company) {
       setEditData(prev => ({
@@ -474,16 +466,6 @@ const Profile = () => {
         ...prev,
         education: [...prev.education, { ...prev.newEducation, id: Date.now() }],
         newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" }
-      }));
-    }
-  };
-
-  const addProject = () => {
-    if (editData.newProject.title) {
-      setEditData(prev => ({
-        ...prev,
-        projects: [...prev.projects, { ...prev.newProject, id: Date.now() }],
-        newProject: { title: "", description: "", link: "" }
       }));
     }
   };
@@ -512,13 +494,6 @@ const Profile = () => {
     }));
   };
 
-  const removeProject = (index) => {
-    setEditData(prev => ({
-      ...prev,
-      projects: prev.projects.filter((_, i) => i !== index)
-    }));
-  };
-
   const removeSkill = (index) => {
     setEditData(prev => ({
       ...prev,
@@ -529,7 +504,7 @@ const Profile = () => {
   const handleSave = async () => {
     setIsUploading(true);
     const {
-      newSkill, newExperience, newProject, newEducation,
+      newSkill, newExperience, newEducation,
       ...cleanData
     } = editData;
     try {
@@ -790,7 +765,6 @@ const Profile = () => {
                             const commId = comm._id || comm.id;
                             const authorId = comm.author?._id || comm.authorId || comm.author;
                             const authorName = comm.author?.full_name || comm.authorName || "User";
-                            const authorHeadline = comm.author?.headline || comm.authorHeadline || "";
                             const authorImg = comm.author?.profile_picture || comm.authorImg || DEFAULT_PROFILE_IMG;
                             const createdAt = comm.created_at || comm.createdAt;
 
@@ -805,7 +779,6 @@ const Profile = () => {
                                         {createdAt ? new Date(createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
                                       </span>
                                     </div>
-                                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>{authorHeadline}</span>
                                     <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0 }}>{comm.text}</p>
                                   </div>
                                   {authorId === authUser?.id && (
@@ -932,14 +905,18 @@ const Profile = () => {
               <span className="meta-item"><Icon name="link" /> <a href={profileData.website}>{profileData.website}</a></span>
             </div>
             <div className="profile-stats-bar">
-              <div className="stat-box">
-                <span className="stat-value">{profileData.connections}+</span>
-                <span className="stat-label">Connections</span>
-              </div>
-              <div className="stat-box">
-                <span className="stat-value">{profileData.profileViews}</span>
-                <span className="stat-label">Profile Views</span>
-              </div>
+              {profileData.connections !== null && profileData.connections !== undefined && (
+                <div className="stat-box">
+                  <span className="stat-value">{profileData.connections}</span>
+                  <span className="stat-label">Connections</span>
+                </div>
+              )}
+              {isOwnProfile && (
+                <div className="stat-box">
+                  <span className="stat-value">{profileData.profileViews}</span>
+                  <span className="stat-label">Profile Views</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -989,7 +966,6 @@ const Profile = () => {
                     ...profileData,
                     newSkill: "",
                     newExperience: { title: "", company: "", startDate: "", endDate: "", location: "", description: "", current: false },
-                    newProject: { title: "", description: "", link: "" },
                     newEducation: { school: "", degree: "", field: "", startYear: "", endYear: "", description: "" },
                   });
                   setIsEditing(true);
@@ -1047,10 +1023,6 @@ const Profile = () => {
                 <span style={{ color: 'var(--text-muted)' }}>Post Impressions</span>
                 <span style={{ fontWeight: '700' }}>{profileData.postImpressions}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Search Appearances</span>
-                <span style={{ fontWeight: '700' }}>99+</span>
-              </div>
             </div>
           </div>
         </div>
@@ -1065,14 +1037,11 @@ const Profile = () => {
           handleInputChange={handleInputChange}
           handleExperienceChange={handleExperienceChange}
           handleEducationChange={handleEducationChange}
-          handleProjectChange={handleProjectChange}
           addExperience={addExperience}
           addEducation={addEducation}
-          addProject={addProject}
           addSkill={addSkill}
           removeExperience={removeExperience}
           removeEducation={removeEducation}
-          removeProject={removeProject}
           removeSkill={removeSkill}
           handleSave={handleSave}
           isUploading={isUploading}

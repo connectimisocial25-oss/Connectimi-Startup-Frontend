@@ -8,7 +8,8 @@
 
 .messaging-content {
     display: flex;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 120px); /* fallback for browsers without dvh support */
+    height: calc(100dvh - 120px);
     min-height: 600px;
     gap: 24px;
 }
@@ -266,13 +267,64 @@
 }
 
 @media (max-width: 768px) {
+    .messaging-content {
+        min-height: 0;
+        height: calc(100vh - 70px);
+        height: calc(100dvh - 70px);
+    }
+
     .conversations-sidebar {
         width: 100%;
         border-right: none;
     }
 
+    /* On mobile, show either the conversation list or the open chat, never both.
+       .has-active-chat is toggled based on whether a conversation is selected. */
     .chat-window {
         display: none;
+    }
+
+    .messaging-main.has-active-chat .conversations-sidebar {
+        display: none;
+    }
+
+    .messaging-main.has-active-chat .chat-window {
+        display: flex;
+        width: 100%;
+    }
+
+    .chat-header {
+        padding: 12px 16px;
+    }
+
+    .chat-messages {
+        padding: 12px 16px;
+    }
+
+    .chat-input-area {
+        padding: 12px 16px;
+    }
+
+    .message-bubble {
+        max-width: 85%;
+    }
+}
+
+@media (max-width: 480px) {
+    .conversations-header {
+        padding: 16px;
+    }
+
+    .conversation-item {
+        padding: 12px 16px;
+    }
+
+    .chat-input {
+        padding: 10px 16px;
+    }
+
+    .chat-send-btn {
+        padding: 10px 18px;
     }
 }
 

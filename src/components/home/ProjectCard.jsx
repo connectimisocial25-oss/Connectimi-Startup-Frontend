@@ -409,16 +409,6 @@ const ProjectCard = React.memo(({
                               : ""}
                           </span>
                         </div>
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "var(--text-muted)",
-                            display: "block",
-                            marginBottom: "6px",
-                          }}
-                        >
-                          {comm.authorHeadline}
-                        </span>
                         <p
                           style={{
                             fontSize: "0.85rem",

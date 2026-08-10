@@ -83,6 +83,11 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
+// Where an authenticated personal account lands when it hits a public route.
+// VITE_DEV_LANDING lets dev sessions jump straight to a page under test.
+const PERSONAL_LANDING =
+  (import.meta.env.DEV && import.meta.env.VITE_DEV_LANDING) || "/home";
+
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
@@ -98,7 +103,7 @@ const PublicRoute = ({ children }) => {
     if (!user.accountCompleted) {
       return <Navigate to={user.accountType === "consultant" ? "/org-account-completion" : "/account-completion"} replace />;
     }
-    return <Navigate to={user.accountType === "consultant" ? "/organization" : "/home"} replace />;
+    return <Navigate to={user.accountType === "consultant" ? "/organization" : PERSONAL_LANDING} replace />;
   }
 
   return children;

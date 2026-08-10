@@ -127,7 +127,10 @@ const Messaging = ({ embedded = false, contactId = null, initialPartner = null }
     return (
         <div className="messaging-container" style={embedded ? { padding: 0, height: '100%' } : {}}>
             <div className="messaging-content" style={embedded ? { maxWidth: 'none', height: '100%' } : {}}>
-                <div className="messaging-main" style={embedded ? { height: '100%' } : {}}>
+                <div
+                    className={`messaging-main${activeContactId ? ' has-active-chat' : ''}`}
+                    style={embedded ? { height: '100%' } : {}}
+                >
                     {/* Conversations Sidebar */}
                     <div className="conversations-sidebar">
                         <div className="conversations-header">

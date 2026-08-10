@@ -319,16 +319,6 @@ const InsightCard = React.memo(({
                               : ""}
                           </span>
                         </div>
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "var(--text-muted)",
-                            display: "block",
-                            marginBottom: "6px",
-                          }}
-                        >
-                          {comm.authorHeadline}
-                        </span>
                         <p
                           style={{
                             fontSize: "0.85rem",
@@ -601,7 +591,6 @@ const Feed = () => {
         authorId: c.author?.id || c.author?._id || c.author_id || c.author,
         authorName: c.author?.full_name || c.author?.fullName || "Anonymous",
         authorImg: c.author?.profile_picture || c.author?.profileImage || null,
-        authorHeadline: c.author?.headline || "",
         text: c.text,
         createdAt: c.created_at || c.createdAt,
       })),
@@ -803,7 +792,6 @@ const Feed = () => {
           _id: user?.id || user?._id,
           full_name: user?.fullName || user?.name || "You",
           profile_picture: user?.profileImage || null,
-          headline: user?.headline || "",
         },
       };
 
@@ -1435,9 +1423,6 @@ const Feed = () => {
                                     {comm.createdAt ? new Date(comm.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
                                   </span>
                                 </div>
-                                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", display: "block", marginBottom: "6px" }}>
-                                  {comm.authorHeadline}
-                                </span>
                                 <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0, whiteSpace: "pre-wrap" }}>
                                   {comm.text}
                                 </p>
