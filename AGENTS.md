@@ -47,7 +47,7 @@ connectimi-web-frontend/
 │   │   ├── Courses.jsx         # Course discovery catalog page (Coming Soon placeholder)
 │   │   ├── ForgotPassword.jsx  # Password recovery email trigger
 │   │   ├── Home.jsx            # Main dashboard / feed container
-│   │   ├── Landing.jsx         # Public marketing page with PWA install promo
+│   │   ├── Landing.jsx         # Public animated high-conversion landing page with slim modern glass header, team section (Animesh, Suroj, Sanniv, Arnab), Tier 2/3 pitch, product features & FOMO grid
 │   │   ├── Login.jsx           # Sign-in page
 │   │   ├── Messaging.jsx       # Real-time messages page
 │   │   ├── MyNetwork.jsx       # Network dashboard (connections, invitations, followers)
