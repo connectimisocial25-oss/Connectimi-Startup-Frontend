@@ -37,17 +37,20 @@ const formatDatePart = (value, length) => {
 export function transformProfileToBackend(data) {
   const payload = {};
 
-  if (data.firstName !== undefined || data.lastName !== undefined) {
-    payload.full_name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
-  } else if (data.name !== undefined) {
+  // `name` is what edit forms bind to; firstName/lastName are derived duplicates
+  // transformProfileToFrontend adds, so they are stale after an edit — name wins.
+  if (data.name) {
     payload.full_name = data.name;
+  } else if (data.firstName !== undefined || data.lastName !== undefined) {
+    payload.full_name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
   }
 
   if (data.email !== undefined) payload.email = data.email;
   if (data.phone !== undefined) payload.phone = data.phone;
   if (data.headline !== undefined) payload.headline = data.headline;
-  if (data.about !== undefined) payload.bio = data.about;
+  // Same deal: forms edit `about`, `bio` is the stale mirror — about wins.
   if (data.bio !== undefined) payload.bio = data.bio;
+  if (data.about !== undefined) payload.bio = data.about;
   if (data.location !== undefined) payload.location = data.location;
   if (data.role !== undefined) payload.role = data.role;
   if (data.companySize !== undefined) payload.company_size = data.companySize;

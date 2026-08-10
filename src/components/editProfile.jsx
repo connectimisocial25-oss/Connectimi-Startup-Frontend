@@ -258,8 +258,10 @@ const EditForm = ({
     </div>
   );
 
+  // `profile-edit-modal` scopes editProfile.css — OrgEditForm.css declares the
+  // same global class names and, landing later in the bundle, otherwise wins.
   return (
-    <div className="edit-form-overlay" onClick={onCancel}>
+    <div className="edit-form-overlay profile-edit-modal" onClick={onCancel}>
       <div className="edit-form-content" onClick={(e) => e.stopPropagation()}>
         <h3>Edit Profile Information</h3>
 

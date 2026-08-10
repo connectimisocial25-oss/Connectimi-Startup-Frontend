@@ -75,8 +75,10 @@ const ImageCropperModal = ({
     }
   };
 
+  // ponytail: callers render this inside `.edit-form-overlay`, which closes the
+  // edit form on any click. Stop the bubble here so it works for every caller.
   return (
-    <div className="cropper-modal-overlay">
+    <div className="cropper-modal-overlay" onClick={(e) => e.stopPropagation()}>
       <div className="cropper-modal-content">
         <div className="cropper-header">
           <h3>{title}</h3>

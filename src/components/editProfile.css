@@ -1,4 +1,4 @@
-.edit-form-overlay {
+.edit-form-overlay.profile-edit-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,19 +13,36 @@
     padding: 2rem;
 }
 
-.edit-form-content {
+.profile-edit-modal .edit-form-content {
     background: var(--card-bg);
     backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 24px;
     width: 100%;
     max-width: 800px;
-    max-height: 90vh;
+    /* 100% = overlay height minus its padding, so the top never overflows offscreen */
+    max-height: 100%;
     overflow-y: auto;
     padding: 2.5rem;
     box-shadow: var(--premium-shadow);
     position: relative;
     animation: slideUp 0.4s ease-out;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+/* Always-visible scrollbar — the tall "Profile & Basics" section needs the affordance */
+.profile-edit-modal .edit-form-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.profile-edit-modal .edit-form-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.profile-edit-modal .edit-form-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
 }
 
 @keyframes slideUp {
@@ -40,7 +57,7 @@
     }
 }
 
-.edit-form-content h3 {
+.profile-edit-modal .edit-form-content h3 {
     font-size: 1.75rem;
     font-weight: 800;
     margin-bottom: 2rem;
@@ -48,20 +65,20 @@
     letter-spacing: -0.02em;
 }
 
-.form-grid {
+.profile-edit-modal .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
 }
 
-.edit-images-preview {
+.profile-edit-modal .edit-images-preview {
   position: relative;
   margin-top: 10px;
   margin-bottom: 2rem;
   height: 180px;
 }
 
-.edit-banner-preview {
+.profile-edit-modal .edit-banner-preview {
   height: 150px;
   border-radius: 12px;
   background-size: cover;
@@ -73,11 +90,11 @@
   transition: all 0.3s ease;
 }
 
-.edit-banner-preview:hover {
+.profile-edit-modal .edit-banner-preview:hover {
   border-color: var(--primary-emerald);
 }
 
-.edit-avatar-preview {
+.profile-edit-modal .edit-avatar-preview {
   position: absolute;
   bottom: 0;
   left: 2rem;
@@ -93,11 +110,11 @@
   transition: all 0.3s ease;
 }
 
-.edit-avatar-preview:hover {
+.profile-edit-modal .edit-avatar-preview:hover {
   transform: scale(1.05);
 }
 
-.edit-image-overlay {
+.profile-edit-modal .edit-image-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -115,31 +132,31 @@
   transition: opacity 0.3s ease;
 }
 
-.edit-banner-preview:hover .edit-image-overlay,
-.edit-avatar-preview:hover .edit-image-overlay {
+.profile-edit-modal .edit-banner-preview:hover .edit-image-overlay,
+.profile-edit-modal .edit-avatar-preview:hover .edit-image-overlay {
   opacity: 1;
 }
 
-.form-group {
+.profile-edit-modal .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.form-group.full-width,
-.full-width {
+.profile-edit-modal .form-group.full-width,
+.profile-edit-modal .full-width {
     grid-column: span 2;
 }
 
-.form-group label {
+.profile-edit-modal .form-group label {
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-secondary);
 }
 
-.form-group input,
-.form-group textarea,
-.skill-input-container input {
+.profile-edit-modal .form-group input,
+.profile-edit-modal .form-group textarea,
+.profile-edit-modal .skill-input-container input {
     padding: 0.8rem 1rem;
     border-radius: 12px;
     border: 1px solid var(--border-color);
@@ -149,20 +166,20 @@
     transition: all 0.2s;
 }
 
-.dark .form-group input,
-.dark .form-group textarea,
-.dark .skill-input-container input {
+.dark .profile-edit-modal .form-group input,
+.dark .profile-edit-modal .form-group textarea,
+.dark .profile-edit-modal .skill-input-container input {
     background: rgba(30, 41, 59, 0.7);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-.dark .form-row input {
+.dark .profile-edit-modal .form-row input {
     background: rgba(30, 41, 59, 0.5);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-.form-row select,
-.entry-card select {
+.profile-edit-modal .form-row select,
+.profile-edit-modal .entry-card select {
     padding: 0.7rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
@@ -172,29 +189,29 @@
     transition: all 0.2s;
 }
 
-.dark .form-row select,
-.dark .entry-card select {
+.dark .profile-edit-modal .form-row select,
+.dark .profile-edit-modal .entry-card select {
     background: rgba(30, 41, 59, 0.5);
     border-color: rgba(255, 255, 255, 0.1);
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-row input:focus,
-.form-row select:focus,
-.skill-input-container input:focus {
+.profile-edit-modal .form-group input:focus,
+.profile-edit-modal .form-group textarea:focus,
+.profile-edit-modal .form-row input:focus,
+.profile-edit-modal .form-row select:focus,
+.profile-edit-modal .skill-input-container input:focus {
     outline: none;
     border-color: var(--primary-emerald);
     box-shadow: 0 0 0 4px var(--emerald-glow);
 }
 
-.section-hint {
+.profile-edit-modal .section-hint {
     font-size: 0.85rem;
     color: var(--text-muted);
     margin: 0.25rem 0 0;
 }
 
-.form-row {
+.profile-edit-modal .form-row {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -202,7 +219,7 @@
     align-items: start;
 }
 
-.form-row-2col {
+.profile-edit-modal .form-row-2col {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -210,12 +227,12 @@
     align-items: start;
 }
 
-.form-row>input {
+.profile-edit-modal .form-row>input {
     flex: 1 1 150px;
     min-width: 150px;
 }
 
-.form-row input {
+.profile-edit-modal .form-row input {
     padding: 0.7rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
@@ -225,7 +242,7 @@
     transition: all 0.2s;
 }
 
-.btn-remove {
+.profile-edit-modal .btn-remove {
     width: 36px;
     height: 36px;
     flex: 0 0 36px;
@@ -240,17 +257,17 @@
     transition: all 0.2s;
 }
 
-.dark .btn-remove {
+.dark .profile-edit-modal .btn-remove {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.2);
 }
 
-.btn-remove:hover {
+.profile-edit-modal .btn-remove:hover {
     background: #ef4444;
     color: white;
 }
 
-.btn-add {
+.profile-edit-modal .btn-add {
     background: var(--primary-emerald);
     color: white;
     border: none;
@@ -264,14 +281,14 @@
     flex: 0 0 auto;
 }
 
-.skills-edit {
+.profile-edit-modal .skills-edit {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-bottom: 1rem;
 }
 
-.skill-tag {
+.profile-edit-modal .skill-tag {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -283,12 +300,12 @@
     font-weight: 600;
 }
 
-.dark .skill-tag {
+.dark .profile-edit-modal .skill-tag {
     background: rgba(16, 185, 129, 0.15);
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
-.skill-remove {
+.profile-edit-modal .skill-remove {
     background: none;
     border: none;
     color: inherit;
@@ -297,29 +314,29 @@
     padding: 2px;
 }
 
-.skill-input-container {
+.profile-edit-modal .skill-input-container {
     display: flex;
     gap: 1rem;
 }
 
-.skill-input-container input {
+.profile-edit-modal .skill-input-container input {
     flex: 1;
 }
 
 /* ── Accordion ─────────────────────────────────────────── */
-.accordion-list {
+.profile-edit-modal .accordion-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.accordion-section {
+.profile-edit-modal .accordion-section {
     border: 1px solid var(--border-color);
     border-radius: 14px;
     overflow: hidden;
 }
 
-.accordion-header {
+.profile-edit-modal .accordion-header {
     width: 100%;
     display: flex;
     align-items: center;
@@ -334,17 +351,17 @@
     text-align: left;
 }
 
-.accordion-header:hover {
+.profile-edit-modal .accordion-header:hover {
     background: var(--emerald-glow);
 }
 
-.accordion-title {
+.profile-edit-modal .accordion-title {
     display: flex;
     align-items: center;
     gap: 0.6rem;
 }
 
-.accordion-count {
+.profile-edit-modal .accordion-count {
     background: var(--emerald-glow);
     color: var(--primary-emerald);
     font-size: 0.75rem;
@@ -353,26 +370,26 @@
     border-radius: 100px;
 }
 
-.dark .accordion-count {
+.dark .profile-edit-modal .accordion-count {
     background: rgba(16, 185, 129, 0.15);
 }
 
-.accordion-chevron {
+.profile-edit-modal .accordion-chevron {
     transition: transform 0.2s ease;
     flex-shrink: 0;
     color: var(--text-muted);
 }
 
-.accordion-section.open .accordion-chevron {
+.profile-edit-modal .accordion-section.open .accordion-chevron {
     transform: rotate(180deg);
 }
 
-.accordion-body {
+.profile-edit-modal .accordion-body {
     padding: 1.25rem;
     border-top: 1px solid var(--border-color);
 }
 
-.accordion-empty {
+.profile-edit-modal .accordion-empty {
     color: var(--text-muted);
     font-style: italic;
     font-size: 0.9rem;
@@ -380,34 +397,34 @@
 }
 
 /* ── Repeatable entry cards (Experience / Education) ──────── */
-.entry-card {
+.profile-edit-modal .entry-card {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1rem;
 }
 
-.entry-card:last-child {
+.profile-edit-modal .entry-card:last-child {
     margin-bottom: 0;
 }
 
-.entry-card.new-entry {
+.profile-edit-modal .entry-card.new-entry {
     border-style: dashed;
     border-color: var(--primary-emerald);
     background: var(--emerald-glow);
 }
 
-.dark .entry-card.new-entry {
+.dark .profile-edit-modal .entry-card.new-entry {
     background: rgba(16, 185, 129, 0.06);
 }
 
-.field-col {
+.profile-edit-modal .field-col {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.field-label-sm {
+.profile-edit-modal .field-label-sm {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -417,7 +434,7 @@
     letter-spacing: 0.05em;
 }
 
-.present-check {
+.profile-edit-modal .present-check {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -427,18 +444,18 @@
     cursor: pointer;
 }
 
-.present-check input {
+.profile-edit-modal .present-check input {
     cursor: pointer;
 }
 
-.entry-add-actions {
+.profile-edit-modal .entry-add-actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
     margin-top: 0.75rem;
 }
 
-.btn-cancel-inline {
+.profile-edit-modal .btn-cancel-inline {
     background: none;
     border: none;
     color: var(--text-secondary);
@@ -447,7 +464,7 @@
     padding: 0.7rem 0.5rem;
 }
 
-.btn-add-trigger {
+.profile-edit-modal .btn-add-trigger {
     width: 100%;
     padding: 0.75rem;
     border-radius: 10px;
@@ -463,19 +480,19 @@
     transition: all 0.2s;
 }
 
-.btn-add-trigger:hover {
+.profile-edit-modal .btn-add-trigger:hover {
     border-color: var(--primary-emerald);
     background: var(--emerald-glow);
 }
 
-.form-actions {
+.profile-edit-modal .form-actions {
     margin-top: 3rem;
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
 }
 
-.btn-save {
+.profile-edit-modal .btn-save {
     padding: 0.8rem 2rem;
     background: var(--emerald-grad);
     color: white;
@@ -486,7 +503,7 @@
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
-.btn-cancel {
+.profile-edit-modal .btn-cancel {
     padding: 0.8rem 2rem;
     background: transparent;
     border: 1px solid var(--border-color);
@@ -496,211 +513,209 @@
     cursor: pointer;
 }
 
-.btn-cancel:hover {
+.profile-edit-modal .btn-cancel:hover {
     background: var(--bg-color);
 }
 
 /* ── Tablet breakpoint ──────────────────────────────────── */
 @media (max-width: 768px) {
-    .edit-form-overlay {
+    .edit-form-overlay.profile-edit-modal {
         padding: 1rem;
     }
 
-    .edit-form-content {
+    .profile-edit-modal .edit-form-content {
         padding: 1.5rem;
         border-radius: 16px;
-        max-height: 95vh;
         overflow-x: hidden;
     }
 
-    .edit-form-content h3 {
+    .profile-edit-modal .edit-form-content h3 {
         font-size: 1.4rem;
         margin-bottom: 1.5rem;
     }
 
-    .form-grid {
+    .profile-edit-modal .form-grid {
         grid-template-columns: 1fr;
     }
 
-    .form-group.full-width,
-    .full-width {
+    .profile-edit-modal .form-group.full-width,
+    .profile-edit-modal .full-width {
         grid-column: span 1;
     }
 
-    .edit-images-preview {
+    .profile-edit-modal .edit-images-preview {
         height: 160px;
     }
 
-    .edit-banner-preview {
+    .profile-edit-modal .edit-banner-preview {
         height: 130px;
     }
 
-    .edit-avatar-preview {
+    .profile-edit-modal .edit-avatar-preview {
         width: 80px;
         height: 80px;
         left: 1.5rem;
     }
 
-    .form-row,
-    .form-row-2col {
+    .profile-edit-modal .form-row,
+    .profile-edit-modal .form-row-2col {
         flex-direction: column;
         display: flex;
         grid-template-columns: none;
     }
 
-    .form-row > input {
+    .profile-edit-modal .form-row > input {
         min-width: 0;
         width: 100%;
     }
 
-    .form-row > div {
+    .profile-edit-modal .form-row > div {
         width: 100%;
     }
 
-    .skill-input-container {
+    .profile-edit-modal .skill-input-container {
         flex-direction: column;
     }
 
-    .form-actions {
+    .profile-edit-modal .form-actions {
         margin-top: 2rem;
     }
 
-    .accordion-header {
+    .profile-edit-modal .accordion-header {
         padding: 0.9rem 1rem;
     }
 
-    .accordion-body {
+    .profile-edit-modal .accordion-body {
         padding: 1rem;
     }
 }
 
 /* ── Mobile breakpoint ──────────────────────────────────── */
 @media (max-width: 480px) {
-    .edit-form-overlay {
+    .edit-form-overlay.profile-edit-modal {
         padding: 0.5rem;
         align-items: flex-end;
     }
 
-    .edit-form-content {
+    .profile-edit-modal .edit-form-content {
         padding: 1rem;
         border-radius: 16px 16px 0 0;
-        max-height: 96vh;
         max-width: 100%;
         overflow-x: hidden;
     }
 
-    .edit-form-content h3 {
+    .profile-edit-modal .edit-form-content h3 {
         font-size: 1.2rem;
         margin-bottom: 1rem;
     }
 
-    .form-grid {
+    .profile-edit-modal .form-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
 
-    .form-group.full-width,
-    .full-width {
+    .profile-edit-modal .form-group.full-width,
+    .profile-edit-modal .full-width {
         grid-column: span 1;
     }
 
-    .edit-images-preview {
+    .profile-edit-modal .edit-images-preview {
         height: 140px;
         margin-bottom: 1.5rem;
     }
 
-    .edit-banner-preview {
+    .profile-edit-modal .edit-banner-preview {
         height: 110px;
     }
 
-    .edit-avatar-preview {
+    .profile-edit-modal .edit-avatar-preview {
         width: 64px;
         height: 64px;
         left: 1rem;
         border-width: 3px;
     }
 
-    .form-group input,
-    .form-group textarea,
-    .skill-input-container input {
+    .profile-edit-modal .form-group input,
+    .profile-edit-modal .form-group textarea,
+    .profile-edit-modal .skill-input-container input {
         padding: 0.65rem 0.8rem;
         font-size: 0.9rem;
     }
 
-    .form-row,
-    .form-row-2col {
+    .profile-edit-modal .form-row,
+    .profile-edit-modal .form-row-2col {
         flex-direction: column;
         display: flex;
         grid-template-columns: none;
         gap: 0.75rem;
     }
 
-    .form-row-2col > input,
-    .form-row-2col > div,
-    .form-row-2col > select {
+    .profile-edit-modal .form-row-2col > input,
+    .profile-edit-modal .form-row-2col > div,
+    .profile-edit-modal .form-row-2col > select {
         min-width: 0 !important;
         width: 100% !important;
     }
 
-    .form-row > input,
-    .form-row > div,
-    .form-row > select {
+    .profile-edit-modal .form-row > input,
+    .profile-edit-modal .form-row > div,
+    .profile-edit-modal .form-row > select {
         min-width: 0 !important;
         width: 100% !important;
     }
 
-    .skill-input-container {
+    .profile-edit-modal .skill-input-container {
         flex-direction: column;
         gap: 0.75rem;
     }
 
-    .skills-edit {
+    .profile-edit-modal .skills-edit {
         gap: 0.5rem;
     }
 
-    .skill-tag {
+    .profile-edit-modal .skill-tag {
         font-size: 0.8rem;
         padding: 0.3rem 0.6rem;
     }
 
-    .accordion-header {
+    .profile-edit-modal .accordion-header {
         padding: 0.8rem 0.9rem;
         font-size: 0.95rem;
     }
 
-    .accordion-body {
+    .profile-edit-modal .accordion-body {
         padding: 0.9rem;
     }
 
-    .entry-card {
+    .profile-edit-modal .entry-card {
         padding: 0.8rem;
     }
 
-    .entry-add-actions {
+    .profile-edit-modal .entry-add-actions {
         flex-direction: column-reverse;
         gap: 0.5rem;
     }
 
-    .entry-add-actions .btn-add {
+    .profile-edit-modal .entry-add-actions .btn-add {
         width: 100%;
         justify-content: center;
     }
 
-    .form-actions {
+    .profile-edit-modal .form-actions {
         margin-top: 1.5rem;
         flex-direction: column;
         gap: 0.75rem;
     }
 
-    .form-actions .btn-save,
-    .form-actions .btn-cancel {
+    .profile-edit-modal .form-actions .btn-save,
+    .profile-edit-modal .form-actions .btn-cancel {
         width: 100%;
         text-align: center;
         justify-content: center;
     }
 
-    .btn-save,
-    .btn-cancel {
+    .profile-edit-modal .btn-save,
+    .profile-edit-modal .btn-cancel {
         padding: 0.75rem 1.5rem;
     }
 }

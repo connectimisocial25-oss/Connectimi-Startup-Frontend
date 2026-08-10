@@ -522,8 +522,9 @@ const Profile = () => {
       cleanupPreviewURLs();
       setImagePreview("");
       setBannerPreview("");
-      // Re-fetch fresh profile data from the API so the page reflects saved changes
-      await fetchProfileData();
+      // No refetch here: fetchProfileData closes over the pre-save authUser and
+      // would write stale values back. updateUser replaced authUser, so the
+      // [userId, authUser] effect refetches with the fresh one.
     } catch (err) {
       const message = parseApiError(err);
       alert(message);
