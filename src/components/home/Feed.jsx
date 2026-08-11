@@ -832,6 +832,10 @@ const Feed = () => {
     setSelectedInsight(insight);
   }, []);
 
+  const closeProjectModal = React.useCallback(() => {
+    setSelectedInsight(null);
+  }, []);
+
   const handleToggleComments = React.useCallback((id) => {
     setExpandedPostComments((prev) => ({ ...prev, [id]: !prev[id] }));
   }, []);
