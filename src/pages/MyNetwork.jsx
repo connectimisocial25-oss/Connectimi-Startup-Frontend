@@ -12,7 +12,8 @@ import API from '../services/api';
 import { useChat } from '../context/ChatContext';
 
 // Tabs whose backend is fully implemented — everything else shows ComingSoon
-const ACTIVE_TABS = ['connections', 'experts', 'following', 'messaging'];
+// 'experts' tab disabled — no separate Consultant model
+const ACTIVE_TABS = ['connections', /* 'experts', */ 'following', 'messaging'];
 
 // Per-tab copy for the ComingSoon placeholder
 const COMING_SOON_CONTENT = {
@@ -126,28 +127,28 @@ const MyNetwork = () => {
     const mapInvitation = (invite) => ({
         id: invite.id || invite._id,
         userId: invite.requester?.id || invite.requester?._id,
-        name: invite.requester?.full_name || invite.requester?.consultant_name || "Anonymous",
+        name: invite.requester?.name || invite.requester?.consultant_name || "Anonymous",
         role: invite.requester?.headline || invite.requester?.industry || "Connectimi Member",
         userRole: invite.requester?.role || "professional",
-        avatar: invite.requester?.profile_picture || invite.requester?.logo || "https://i.pravatar.cc/150",
+        avatar: invite.requester?.profile_picture || invite.requester?.logo || "/images/default_profile_picture.png",
         accountType: invite.requester?.account_type || (invite.requester?.role === "professional" ? "personal" : "consultant"),
     });
 
     const mapSuggestion = (sug) => ({
         id: sug.id || sug._id,
-        name: sug.full_name || sug.consultant_name || "Anonymous",
+        name: sug.name || sug.consultant_name || "Anonymous",
         role: sug.headline || sug.industry || "Connectimi Member",
         userRole: sug.role || "professional",
-        avatar: sug.profile_picture || sug.logo || "https://i.pravatar.cc/150",
+        avatar: sug.profile_picture || sug.logo || "/images/default_profile_picture.png",
         accountType: sug.account_type || (sug.role === "professional" ? "personal" : "consultant"),
     });
 
     const mapConnection = (conn) => ({
         id: conn.profile?.id || conn.profile?._id,
-        name: conn.profile?.full_name || conn.profile?.consultant_name || "Anonymous",
+        name: conn.profile?.name || conn.profile?.consultant_name || "Anonymous",
         role: conn.profile?.headline || conn.profile?.industry || "Connectimi Member",
         userRole: conn.profile?.role || "professional",
-        avatar: conn.profile?.profile_picture || conn.profile?.logo || "https://i.pravatar.cc/150",
+        avatar: conn.profile?.profile_picture || conn.profile?.logo || "/images/default_profile_picture.png",
         accountType: conn.profile?.account_type || (conn.profile?.role === "professional" ? "personal" : "consultant"),
         connectionId: conn.connection_id,
         connectedAt: conn.connected_at
@@ -157,7 +158,7 @@ const MyNetwork = () => {
         id: c.id || c._id,
         name: c.consultant_name || "Consultant",
         role: c.current_position || c.industry || "Consultant",
-        avatar: c.logo || c.profile_picture || `https://i.pravatar.cc/150?u=${c.id || c._id}`,
+        avatar: c.logo || c.profile_picture || `/images/default_profile_picture.png?u=${c.id || c._id}`,
         // Use the first active service price for the session fee display
         fee: c.services?.[0]?.price ?? null,
         accountType: "consultant",
@@ -211,9 +212,9 @@ const MyNetwork = () => {
                     
                     const mapFollowerOrFollowing = (item) => ({
                         id: item.id || item._id,
-                        name: item.full_name || item.consultant_name || "Anonymous",
+                        name: item.name || item.consultant_name || "Anonymous",
                         role: item.headline || item.industry || "Connectimi Member",
-                        avatar: item.profile_picture || item.logo || "https://i.pravatar.cc/150",
+                        avatar: item.profile_picture || item.logo || "/images/default_profile_picture.png",
                         accountType: item._type || (item.role === "professional" ? "personal" : "consultant"),
                         userRole: item.role || "professional"
                     });
@@ -300,9 +301,9 @@ const MyNetwork = () => {
                 const followingRes = await API.get("/network/following");
                 const mapFollowerOrFollowing = (item) => ({
                     id: item.id || item._id,
-                    name: item.full_name || item.consultant_name || "Anonymous",
+                    name: item.name || item.consultant_name || "Anonymous",
                     role: item.headline || item.industry || "Connectimi Member",
-                    avatar: item.profile_picture || item.logo || "https://i.pravatar.cc/150",
+                    avatar: item.profile_picture || item.logo || "/images/default_profile_picture.png",
                     accountType: item._type || (item.role === "professional" ? "personal" : "consultant"),
                     userRole: item.role || "professional"
                 });
@@ -326,7 +327,8 @@ const MyNetwork = () => {
                         <div className="sidebar-title">Manage Network</div>
                         {[
                             { id: 'connections', label: 'Connections', icon: 'users', count: connectionsCount },
-                            { id: 'experts', label: 'Expert Consultations', icon: 'user-tie' },
+                            // Expert Consultations tab disabled — no separate Consultant model
+                            // { id: 'experts', label: 'Expert Consultations', icon: 'user-tie' },
                             { id: 'messaging', label: 'Messaging', icon: 'comment-dots', count: unreadMessagesCount > 0 ? unreadMessagesCount : null },
                             { id: 'following', label: 'Following & Followers', icon: 'user-circle' },
                             { id: 'groups', label: 'Groups', icon: 'users', count: 12 },
@@ -362,44 +364,6 @@ const MyNetwork = () => {
                             contactId={new URLSearchParams(location.search).get('contactId')} 
                             initialPartner={location.state?.partner} 
                         />
-                    ) : activeTab === 'experts' ? (
-                        <section className="suggestions-section">
-                            <div className="modern-teal-badge">TOP EXPERT CONSULTANTS FOR YOU</div>
-                            {expertsLoading ? (
-                                <p style={{ color: 'var(--text-muted)', padding: '32px', textAlign: 'center' }}>Loading consultants…</p>
-                            ) : experts.length === 0 ? (
-                                <p style={{ color: 'var(--text-muted)', padding: '32px', textAlign: 'center' }}>No expert consultants found yet.</p>
-                            ) : (
-                                <div className="suggestions-grid">
-                                    {experts.map((expert, index) => (
-                                        <div
-                                            key={expert.id}
-                                            className="suggestion-card"
-                                            ref={el => suggestionsRef.current[index] = el}
-                                        >
-                                            <div className="expert-banner"></div>
-                                            <Avatar
-                                                src={expert.avatar}
-                                                alt={expert.name}
-                                                role={expert.userRole}
-                                                size={110}
-                                                className="suggestion-avatar"
-                                            />
-                                            <div className="suggestion-info">
-                                                <div className="suggestion-name">{expert.name}</div>
-                                                <div className="suggestion-role">{expert.role}</div>
-                                                {expert.fee != null && (
-                                                    <div className="expert-fee">₹{expert.fee} / session</div>
-                                                )}
-                                            </div>
-                                            <button className="consult-btn" onClick={() => handleConsultClick(expert)}>
-                                                <Icon name="comment" /> Consult Now
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </section>
                     ) : activeTab === 'following' ? (
                         <section className="suggestions-section">
                             <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
