@@ -1324,15 +1324,8 @@ const Feed = () => {
               )}
 
               {/* Two Column Layout for Body & Interactions */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 280px",
-                  gap: "24px",
-                  padding: "24px",
-                  alignItems: "start",
-                }}
-              >
+              <div className="post-modal-body-grid">
+
                 {/* Left Column: Post Content & Comments */}
                 <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: "24px" }}>
                   {/* Post Content Text */}
@@ -1457,15 +1450,8 @@ const Feed = () => {
                 </div>
 
                 {/* Right Column: Actions Sidebar */}
-                <div
-                  style={{
-                    paddingLeft: "20px",
-                    borderLeft: "1px solid rgba(255, 255, 255, 0.08)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "20px",
-                  }}
-                >
+                <div className="post-modal-sidebar">
+
                   {/* Actions Area */}
                   <div>
                     <button

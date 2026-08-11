@@ -351,9 +351,6 @@
     margin-bottom: 10px;
 }
 
-.insight-card--text-only .insight-takeaway p {
-    /* More text visible since no image competes for space */
-}
 
 .insight-header {
     padding: 12px 16px;
@@ -1339,4 +1336,39 @@
     border: 1px dashed var(--glass-border);
     border-radius: 20px;
     background: var(--glass-bg);
-}
+}
+
+/* ─── Post Detail Modal Grid ──────────────────────────── */
+.post-modal-body-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    padding: 24px;
+    align-items: start;
+}
+
+.post-modal-sidebar {
+    padding-left: 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .post-modal-body-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    /* Move sidebar (actions) above the content on mobile */
+    .post-modal-sidebar {
+        order: -1;
+        padding-left: 0;
+        border-left: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 16px;
+    }
+}
+
