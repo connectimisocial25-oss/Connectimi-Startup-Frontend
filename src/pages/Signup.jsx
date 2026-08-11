@@ -59,17 +59,17 @@ export function SignupForm({ onToggle, compact = false }) {
       <div className="auth-toggle">
         <button
           type="button"
-          className={`toggle-btn ${accountType === "consultant" ? "active" : ""}`}
-          onClick={() => setAccountType("consultant")}
-        >
-          Consultant
-        </button>
-        <button
-          type="button"
           className={`toggle-btn ${accountType === "personal" ? "active" : ""}`}
           onClick={() => setAccountType("personal")}
         >
           Personal
+        </button>
+        <button
+          type="button"
+          className={`toggle-btn ${accountType === "organization" || accountType === "consultant" ? "active" : ""}`}
+          onClick={() => setAccountType("organization")}
+        >
+          Organization
         </button>
       </div>
 
@@ -102,7 +102,7 @@ export function SignupForm({ onToggle, compact = false }) {
             <input
               type="text"
               className="auth-input"
-              placeholder="Consultant name"
+              placeholder="Organization name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
