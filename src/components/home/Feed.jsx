@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "../Avatar";
 import Icon from "../Icon";
 import ProjectCard from "./ProjectCard";
+import ProjectModal from "./ProjectModal";
 import gsap from "gsap";
 import { useAuth } from "../../context/AuthContext";
 import { useFeed } from "../../context/FeedContext";
@@ -529,6 +530,7 @@ const Feed = () => {
 
   // State for managing "See More" modal, post modal, share modal, and toast feedback
   const [selectedInsight, setSelectedInsight] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [sharingInsight, setSharingInsight] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
   const [newPostContent, setNewPostContent] = useState("");
@@ -572,7 +574,25 @@ const Feed = () => {
       image:
         post.media?.length > 0
           ? post.media[0].url
-          : projectObj?.cover_image?.url || projectObj?.coverImage?.url || null,
+          : projectObj?.cover_image_url ||
+            projectObj?.coverImageUrl ||
+            (typeof projectObj?.cover_image === "string" ? projectObj.cover_image : projectObj?.cover_image?.url) ||
+            projectObj?.coverImage?.url ||
+            null,
+      images: (() => {
+        if (post.media?.length > 0) return post.media.map((m) => m.url);
+        if (!projectObj) return [];
+        const cover =
+          projectObj.cover_image_url ||
+          projectObj.coverImageUrl ||
+          (typeof projectObj.cover_image === "string" ? projectObj.cover_image : projectObj.cover_image?.url) ||
+          projectObj.coverImage?.url;
+        const galleryUrls = (projectObj.gallery || [])
+          .map((item) => (typeof item === "string" ? item : item?.url))
+          .filter(Boolean);
+        const all = [cover, ...galleryUrls].filter(Boolean);
+        return Array.from(new Set(all)).slice(0, 3);
+      })(),
 
       // Likes — check user_id (PG) or id/_id
       liked: currentUserId
@@ -1047,6 +1067,7 @@ const Feed = () => {
                   onDeletePost={handleDeletePost}
                   onLike={handleLike}
                   onShare={handleOpenShareModal}
+                  onOpenProjectModal={(pId, ins) => setSelectedProject({ id: pId, insight: ins })}
                 />
               ) : (
                 <InsightCard
@@ -1518,6 +1539,16 @@ const Feed = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Project Details Modal Component */}
+      {selectedProject && (
+        <ProjectModal
+          projectId={selectedProject.id}
+          initialInsight={selectedProject.insight}
+          onClose={() => setSelectedProject(null)}
+          currentUser={user}
+        />
       )}
     </main>
   );

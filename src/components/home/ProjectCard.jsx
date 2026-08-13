@@ -16,6 +16,8 @@ const ProjectCard = React.memo(({
   onDeletePost,
   onLike,
   onShare,
+  onOpenProjectModal,
+  onOpenModal,
 }) => {
   const navigate = useNavigate();
   const [localLiked, setLocalLiked] = useState(insight.liked);
@@ -29,11 +31,15 @@ const ProjectCard = React.memo(({
   }, [insight.liked, insight.likes]);
 
   const projectInfo = insight.project || {};
-  const projectId = projectInfo._id || insight.projectId || insight.id;
+  const projectId = projectInfo._id || projectInfo.id || insight.projectId || insight.id;
 
   const handleCardClick = (e) => {
     e.stopPropagation();
-    if (projectId) {
+    if (onOpenProjectModal && projectId) {
+      onOpenProjectModal(projectId, insight);
+    } else if (onOpenModal) {
+      onOpenModal(insight);
+    } else if (projectId) {
       navigate(`/projects/${projectId}`);
     }
   };
@@ -95,12 +101,26 @@ const ProjectCard = React.memo(({
     onShare(insight);
   };
 
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+
   const coverImage =
+    projectInfo.cover_image_url ||
+    projectInfo.coverImageUrl ||
+    (typeof projectInfo.cover_image === "string"
+      ? projectInfo.cover_image
+      : projectInfo.cover_image?.url) ||
     projectInfo.coverImage?.url ||
-    (typeof projectInfo.cover_image === "object"
-      ? projectInfo.cover_image?.url
-      : projectInfo.cover_image) ||
     insight.image;
+
+  const galleryItems = (projectInfo.gallery || [])
+    .map((item) => (typeof item === "string" ? item : item?.url))
+    .filter(Boolean);
+
+  const allProjectPhotos = Array.from(
+    new Set([coverImage, ...galleryItems].filter(Boolean))
+  ).slice(0, 3);
+
+  const displayImage = allProjectPhotos[activePhotoIndex] || coverImage;
   const projectTitle = projectInfo.title || insight.title || "Untitled Project";
   const shortDesc =
     projectInfo.shortDescription ||
@@ -125,14 +145,72 @@ const ProjectCard = React.memo(({
         position: "relative",
       }}
     >
-      {/* Cover Image Header */}
-      {coverImage && (
+      {/* Cover / Multi-photo Image Header */}
+      {displayImage && (
         <div
           className="insight-image-wrapper"
           onClick={handleCardClick}
-          style={{ cursor: "pointer", maxHeight: "240px" }}
+          style={{ cursor: "pointer", maxHeight: "240px", position: "relative" }}
         >
-          <img src={coverImage} alt={projectTitle} className="insight-image" />
+          <img src={displayImage} alt={projectTitle} className="insight-image" />
+
+          {/* Multi-photo Badge & Navigation */}
+          {allProjectPhotos.length > 1 && (
+            <div
+              style={{
+                position: "absolute",
+                top: "12px",
+                right: "12px",
+                background: "rgba(0, 0, 0, 0.65)",
+                backdropFilter: "blur(6px)",
+                color: "#fff",
+                padding: "3px 10px",
+                borderRadius: "12px",
+                fontSize: "0.75rem",
+                fontWeight: "700",
+                zIndex: 2,
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+              }}
+            >
+              <Icon name="image" size={12} />
+              {activePhotoIndex + 1} / {allProjectPhotos.length}
+            </div>
+          )}
+
+          {allProjectPhotos.length > 1 && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                gap: "6px",
+                zIndex: 2,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {allProjectPhotos.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActivePhotoIndex(idx)}
+                  style={{
+                    width: activePhotoIndex === idx ? "16px" : "6px",
+                    height: "6px",
+                    borderRadius: "3px",
+                    border: "none",
+                    background: activePhotoIndex === idx ? "var(--emerald-400, #34d399)" : "rgba(255, 255, 255, 0.5)",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                    padding: 0,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
           <button className="btn-arrow-overlay">
             <Icon name="arrow-right" />
           </button>
