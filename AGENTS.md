@@ -344,3 +344,20 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Simplified Edit Profile Form**: Replaced the manual text project creation inputs in `src/components/editProfile.jsx` with a notice directing users to the "Showcase Project" wizard button on their profile.
 - **Navbar Clearance Fix**: Updated `.project-details-container` in `ProjectDetails.css` and `.project-create-container` in `ProjectCreate.css` with `padding-top: 100px` to clear the fixed top navigation bar and prevent header element overlap.
 - **Automated Frontend Tests**: Added `testsprite_tests/TC016_Project_Showcase_Create_and_Profile_Sync.py` (Playwright/TestSprite) and `testsprite_tests/TC016_Project_Showcase_Selenium.py` (Selenium WebDriver) for testing authentication, project creation, profile panel rendering, feed filtering, and edit modal state.
+
+### Organization Account Type Frontend Compatibility
+- **Account Type Mapping**: Updated `transformProfileToFrontend` in `src/utils/adapters.js` to map the backend `'organization'` account type to `'consultant'` on the frontend. This resolves the routing guard mismatch in `App.jsx` which expects `'consultant'` or `'personal'`, preventing infinite redirect loops and enabling the feed API to be correctly triggered for organization users.
+
+### Consultant UI Temporarily Commented Out
+- **`src/pages/Signup.jsx`**: Commented out the "Consultant" toggle button in the account-type toggle group. Only the "Personal" option is now visible.
+- **`src/pages/Login.jsx`**: Commented out the "Consultant" toggle button and the `accountType === "consultant"` placeholder condition (email placeholder is now always "Email or Phone").
+- **`src/pages/MyNetwork.jsx`**: Commented out `'experts'` from `ACTIVE_TABS`, removed the "Expert Consultations" sidebar item from the navigation list, and removed the full `activeTab === 'experts'` render block. All consultant-specific UI is preserved in comments for future re-enablement when the Consultant/Organization feature is restored.
+
+### Landing Page & Auth Form Toggle Enhancements
+- **Sign In Form (`src/pages/Login.jsx`)**: Removed the account-type toggle button container completely. The Sign In form now directly displays Email/Phone and Password input fields with no extra buttons.
+- **Sign Up Form (`src/pages/Signup.jsx`)**: Added clear side-by-side buttons for **Personal** and **Organization** account registration. Selecting "Organization" updates the name input placeholder to "Organization name".
+- **Toggle UX Styling (`src/pages/Auth.css`)**: Enhanced `.toggle-btn` and `.auth-toggle` styles. Selected/active buttons render with a solid vibrant emerald gradient, white text, and glowing shadow, while unselected buttons render with muted grey text and transparent background for unambiguous active state feedback.
+- **Hero Top Alignment & Gap Stability (`src/pages/Landing.css`)**: Updated `.hero-section` to use `align-items: flex-start` with fixed `padding-top: 130px`. This keeps `hero-left` at the exact same vertical distance from `landing-header` when toggling between Sign In and Sign Up forms.
+- **Subtitle Spacing (`src/pages/Landing.css`)**: Added `margin-bottom: 24px` to `.auth-header-minimal` so there is a clean gap between "Enter your credentials..." / "Claim your profile..." and the email field / toggle buttons.
+
+

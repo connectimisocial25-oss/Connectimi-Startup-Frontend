@@ -162,10 +162,10 @@
 .hero-section {
     min-height: calc(100vh - 60px);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 48px;
-    padding: 100px 0 50px 0;
+    padding: 130px 0 50px 0;
 }
 
 .hero-left {
@@ -348,6 +348,24 @@
     background: #10b981;
     color: #ffffff;
     box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.auth-header-minimal {
+    margin-bottom: 24px;
+}
+
+.auth-header-minimal h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+    color: var(--text-primary, #f8fafc);
+}
+
+.auth-header-minimal p {
+    font-size: 14px;
+    color: var(--text-secondary, #94a3b8);
+    margin: 0;
+    line-height: 1.5;
 }
 
 /* SECTIONS COMMON */

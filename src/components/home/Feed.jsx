@@ -559,9 +559,9 @@ const Feed = () => {
       id: post.id || post._id,
 
       // Author fields
-      author: post.author?.full_name || post.author?.fullName || "Anonymous",
+      author: post.author?.name || post.author?.fullName || "Anonymous",
       authorHeadline: post.author?.headline || "",
-      authorImg: post.author?.profile_picture || post.author?.profileImage || null,
+      authorImg: post.author?.profile_picture || post.author?.profileImage || "/images/default_profile_picture.png",
       authorId: post.author?.id || post.author?._id || post.author_id,
 
       // Content
@@ -589,7 +589,7 @@ const Feed = () => {
       commentsData: (post.comments || []).map((c) => ({
         id: c.id || c._id,
         authorId: c.author?.id || c.author?._id || c.author_id || c.author,
-        authorName: c.author?.full_name || c.author?.fullName || "Anonymous",
+        authorName: c.author?.name || c.author?.fullName || "Anonymous",
         authorImg: c.author?.profile_picture || c.author?.profileImage || null,
         text: c.text,
         createdAt: c.created_at || c.createdAt,
@@ -790,7 +790,7 @@ const Feed = () => {
         author: {
           id: user?.id || user?._id,
           _id: user?.id || user?._id,
-          full_name: user?.fullName || user?.name || "You",
+          name: user?.fullName || user?.name || "You",
           profile_picture: user?.profileImage || null,
         },
       };
