@@ -143,16 +143,25 @@ export default function ProjectDetails() {
     );
   }
 
-  const isOwner = user?.id && projectData.createdBy?._id === user.id;
+  const author = projectData.created_by || projectData.createdBy || {};
+  const isOwner = user?.id && (author._id || author.id) === user.id;
+
+  const coverUrl =
+    projectData.cover_image_url ||
+    projectData.coverImageUrl ||
+    (typeof projectData.cover_image === "string"
+      ? projectData.cover_image
+      : projectData.cover_image?.url) ||
+    projectData.coverImage?.url;
 
   return (
     <div className="project-details-container">
       <div className="project-details-content">
         {/* Hero Card */}
         <div className="project-details-hero">
-          {projectData.coverImage?.url && (
+          {coverUrl && (
             <div className="project-cover-banner">
-              <img src={projectData.coverImage.url} alt={projectData.title} />
+              <img src={coverUrl} alt={projectData.title} />
             </div>
           )}
 
