@@ -200,7 +200,7 @@ const InsightCard = React.memo(({
           <div
             className="comments-section"
             style={{
-              borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+              borderTop: "1px solid var(--surface-border)",
               marginTop: "15px",
               paddingTop: "15px",
             }}
@@ -222,9 +222,9 @@ const InsightCard = React.memo(({
                   flex: 1,
                   padding: "8px 12px",
                   borderRadius: "20px",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  background: "rgba(255, 255, 255, 0.05)",
-                  color: "white",
+                  border: "1px solid var(--surface-border)",
+                  background: "var(--surface-faint)",
+                  color: "var(--text-primary)",
                   outline: "none",
                   fontSize: "0.85rem",
                 }}
@@ -237,7 +237,7 @@ const InsightCard = React.memo(({
                   borderRadius: "20px",
                   border: "none",
                   background: "var(--emerald-500)",
-                  color: "white",
+                  color: "var(--on-primary)",
                   cursor: "pointer",
                   fontWeight: "600",
                   opacity: (commentText || "").trim() ? 1 : 0.5,
@@ -282,10 +282,10 @@ const InsightCard = React.memo(({
                     <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
                       <div
                         style={{
-                          background: "rgba(255, 255, 255, 0.03)",
+                          background: "var(--surface-faint)",
                           padding: "10px 14px",
                           borderRadius: "12px",
-                          border: "1px solid rgba(255, 255, 255, 0.05)",
+                          border: "1px solid var(--surface-border)",
                         }}
                       >
                         <div
@@ -300,7 +300,7 @@ const InsightCard = React.memo(({
                             style={{
                               fontWeight: "700",
                               fontSize: "0.85rem",
-                              color: "white",
+                              color: "var(--text-primary)",
                             }}
                           >
                             {comm.authorName}
@@ -322,7 +322,7 @@ const InsightCard = React.memo(({
                         <p
                           style={{
                             fontSize: "0.85rem",
-                            color: "rgba(255, 255, 255, 0.8)",
+                            color: "var(--text-secondary)",
                             margin: 0,
                           }}
                         >
@@ -1255,11 +1255,11 @@ const Feed = () => {
             <div
               style={{
                 padding: "20px 24px",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                borderBottom: "1px solid var(--surface-border)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "rgba(255, 255, 255, 0.02)",
+                background: "var(--surface-faint)",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -1276,7 +1276,7 @@ const Feed = () => {
               <button
                 onClick={closeProjectModal}
                 style={{
-                  background: "rgba(255, 255, 255, 0.08)",
+                  background: "var(--surface-hover)",
                   border: "none",
                   cursor: "pointer",
                   width: "32px",
@@ -1304,7 +1304,7 @@ const Feed = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     backgroundColor: "rgba(0, 0, 0, 0.25)",
-                    borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                    borderBottom: "1px solid var(--surface-border)",
                     padding: "10px 0",
                   }}
                 >
@@ -1344,7 +1344,7 @@ const Feed = () => {
                   </div>
 
                   {/* Interactive Comments Section */}
-                  <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "20px" }}>
+                  <div style={{ borderTop: "1px solid var(--surface-border)", paddingTop: "20px" }}>
                     <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--text-primary)", marginBottom: "16px" }}>
                       Discussion ({selectedInsight.comments})
                     </h4>
@@ -1367,9 +1367,9 @@ const Feed = () => {
                           flex: 1,
                           padding: "10px 16px",
                           borderRadius: "24px",
-                          border: "1px solid rgba(255, 255, 255, 0.1)",
-                          background: "rgba(255, 255, 255, 0.04)",
-                          color: "white",
+                          border: "1px solid var(--surface-border)",
+                          background: "var(--surface-faint)",
+                          color: "var(--text-primary)",
                           outline: "none",
                           fontSize: "0.85rem",
                         }}
@@ -1382,7 +1382,7 @@ const Feed = () => {
                           borderRadius: "24px",
                           border: "none",
                           background: "var(--emerald-500)",
-                          color: "white",
+                          color: "var(--on-primary)",
                           cursor: "pointer",
                           fontWeight: "600",
                           fontSize: "0.85rem",
@@ -1406,21 +1406,21 @@ const Feed = () => {
                             <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
                               <div
                                 style={{
-                                  background: "rgba(255, 255, 255, 0.03)",
+                                  background: "var(--surface-faint)",
                                   padding: "10px 14px",
                                   borderRadius: "14px",
-                                  border: "1px solid rgba(255, 255, 255, 0.05)",
+                                  border: "1px solid var(--surface-border)",
                                 }}
                               >
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                                  <span style={{ fontWeight: "700", fontSize: "0.9rem", color: "white" }}>
+                                  <span style={{ fontWeight: "700", fontSize: "0.9rem", color: "var(--text-primary)" }}>
                                     {comm.authorName}
                                   </span>
                                   <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
                                     {comm.createdAt ? new Date(comm.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}
                                   </span>
                                 </div>
-                                <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0, whiteSpace: "pre-wrap" }}>
+                                <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0, whiteSpace: "pre-wrap" }}>
                                   {comm.text}
                                 </p>
                               </div>
@@ -1462,9 +1462,9 @@ const Feed = () => {
                         width: "100%",
                         padding: "10px 16px",
                         borderRadius: "20px",
-                        background: selectedInsight.liked ? "rgba(16, 185, 129, 0.15)" : "rgba(255, 255, 255, 0.05)",
-                        border: "1px solid rgba(255, 255, 255, 0.08)",
-                        color: selectedInsight.liked ? "var(--primary-green)" : "white",
+                        background: selectedInsight.liked ? "rgba(16, 185, 129, 0.15)" : "var(--surface-faint)",
+                        border: "1px solid var(--surface-border)",
+                        color: selectedInsight.liked ? "var(--primary-green)" : "var(--text-primary)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1483,7 +1483,7 @@ const Feed = () => {
                     <button
                       style={{
                         backgroundColor: "var(--primary-green)",
-                        color: "white",
+                        color: "var(--on-primary)",
                         border: "none",
                         borderRadius: "20px",
                         padding: "10px 16px",
@@ -1503,7 +1503,7 @@ const Feed = () => {
                   </div>
 
                   {/* Info Stats */}
-                  <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.08)", paddingTop: "16px" }}>
+                  <div style={{ borderTop: "1px solid var(--surface-border)", paddingTop: "16px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "8px" }}>
                       <span>Likes</span>
                       <span style={{ fontWeight: "700", color: "var(--text-primary)" }}>{selectedInsight.likes}</span>

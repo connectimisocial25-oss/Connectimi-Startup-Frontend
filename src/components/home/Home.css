@@ -838,8 +838,8 @@
     position: relative;
     width: 100%;
     max-width: 600px;
-    background: rgba(9, 19, 38, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: var(--card-bg);
+    border: 1px solid var(--surface-border);
     border-radius: 24px;
     padding: 32px;
     box-shadow:
@@ -859,7 +859,7 @@
     height: 34px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--surface-faint);
     color: var(--text-secondary);
     display: flex;
     align-items: center;
@@ -869,7 +869,7 @@
 }
 
 .post-modal-close:hover {
-    background: rgba(255, 255, 255, 0.14);
+    background: var(--surface-hover);
     color: var(--text-primary);
 }
 
@@ -894,8 +894,8 @@
     gap: 4px;
     font-size: 12px;
     color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface-faint);
+    border: 1px solid var(--surface-border);
     border-radius: 999px;
     padding: 3px 10px 3px 8px;
     cursor: pointer;
@@ -903,7 +903,7 @@
 }
 
 .post-modal-audience:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-hover);
     color: var(--text-primary);
 }
 
@@ -924,7 +924,7 @@
 }
 
 .post-modal-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.25);
+    color: var(--text-muted);
 }
 
 /* Dropzone */
@@ -1029,7 +1029,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-top: 1px solid var(--surface-border);
     padding-top: 18px;
     margin-top: 4px;
 }
@@ -1082,8 +1082,8 @@
 }
 
 .post-modal-submit.disabled {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.3);
+    background: var(--surface-hover);
+    color: var(--text-muted);
     cursor: not-allowed;
     box-shadow: none;
 }
@@ -1095,8 +1095,8 @@
     position: relative;
     width: 100%;
     max-width: 480px;
-    background: rgba(9, 19, 38, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--card-bg);
+    border: 1px solid var(--surface-border);
     border-radius: 24px;
     padding: 28px;
     box-shadow:
@@ -1132,8 +1132,8 @@
     gap: 14px;
     padding: 14px 16px;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--surface-faint);
+    border: 1px solid var(--surface-border);
     color: var(--text-primary);
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
@@ -1195,8 +1195,8 @@
     gap: 6px;
     padding: 12px 8px;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: var(--surface-faint);
+    border: 1px solid var(--surface-border);
     color: var(--text-secondary);
     font-size: 11px;
     font-weight: 500;
@@ -1205,7 +1205,7 @@
 }
 
 .social-share-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--surface-faint);
     color: var(--text-primary);
     transform: translateY(-2px);
 }
@@ -1273,9 +1273,9 @@
     flex-shrink: 0;
     background: linear-gradient(
         90deg,
-        rgba(255,255,255,0.04) 25%,
-        rgba(255,255,255,0.10) 50%,
-        rgba(255,255,255,0.04) 75%
+        var(--surface-faint) 25%,
+        var(--surface-hover) 50%,
+        var(--surface-faint) 75%
     );
     background-size: 600px 100%;
     animation: feedSkeletonShimmer 1.6s infinite linear;
@@ -1293,9 +1293,9 @@
     border-radius: 8px;
     background: linear-gradient(
         90deg,
-        rgba(255,255,255,0.04) 25%,
-        rgba(255,255,255,0.10) 50%,
-        rgba(255,255,255,0.04) 75%
+        var(--surface-faint) 25%,
+        var(--surface-hover) 50%,
+        var(--surface-faint) 75%
     );
     background-size: 600px 100%;
     animation: feedSkeletonShimmer 1.6s infinite linear;
@@ -1319,9 +1319,9 @@
     border-radius: 20px;
     background: linear-gradient(
         90deg,
-        rgba(255,255,255,0.04) 25%,
-        rgba(255,255,255,0.10) 50%,
-        rgba(255,255,255,0.04) 75%
+        var(--surface-faint) 25%,
+        var(--surface-hover) 50%,
+        var(--surface-faint) 75%
     );
     background-size: 600px 100%;
     animation: feedSkeletonShimmer 1.6s infinite linear;
@@ -1349,7 +1349,7 @@
 
 .post-modal-sidebar {
     padding-left: 20px;
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 1px solid var(--surface-border);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -1367,8 +1367,8 @@
         order: -1;
         padding-left: 0;
         border-left: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid var(--surface-border);
         padding-bottom: 16px;
     }
 }
-
+

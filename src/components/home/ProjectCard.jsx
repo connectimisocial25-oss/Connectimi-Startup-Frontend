@@ -119,7 +119,7 @@ const ProjectCard = React.memo(({
       className="insight-card project-feed-card"
       style={{
         border: "1px solid rgba(16, 185, 129, 0.25)",
-        background: "rgba(15, 23, 42, 0.75)",
+        background: "var(--card-bg)",
         borderRadius: "20px",
         overflow: "hidden",
         position: "relative",
@@ -210,9 +210,9 @@ const ProjectCard = React.memo(({
                   fontSize: "0.75rem",
                   padding: "3px 10px",
                   borderRadius: "14px",
-                  background: "rgba(255, 255, 255, 0.05)",
+                  background: "var(--surface-faint)",
                   color: "var(--text-muted)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  border: "1px solid var(--surface-border)",
                 }}
               >
                 +{remainingTechCount} more
@@ -282,7 +282,7 @@ const ProjectCard = React.memo(({
           <div
             className="comments-section"
             style={{
-              borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+              borderTop: "1px solid var(--surface-border)",
               marginTop: "15px",
               paddingTop: "15px",
             }}
@@ -306,9 +306,9 @@ const ProjectCard = React.memo(({
                   flex: 1,
                   padding: "8px 12px",
                   borderRadius: "20px",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  background: "rgba(255, 255, 255, 0.05)",
-                  color: "white",
+                  border: "1px solid var(--surface-border)",
+                  background: "var(--surface-faint)",
+                  color: "var(--text-primary)",
                   outline: "none",
                   fontSize: "0.85rem",
                 }}
@@ -321,7 +321,7 @@ const ProjectCard = React.memo(({
                   borderRadius: "20px",
                   border: "none",
                   background: "var(--emerald-500)",
-                  color: "white",
+                  color: "var(--on-primary)",
                   cursor: "pointer",
                   fontWeight: "600",
                   opacity: (commentText || "").trim() ? 1 : 0.5,
@@ -372,10 +372,10 @@ const ProjectCard = React.memo(({
                     >
                       <div
                         style={{
-                          background: "rgba(255, 255, 255, 0.03)",
+                          background: "var(--surface-faint)",
                           padding: "10px 14px",
                           borderRadius: "12px",
-                          border: "1px solid rgba(255, 255, 255, 0.05)",
+                          border: "1px solid var(--surface-border)",
                         }}
                       >
                         <div
@@ -390,7 +390,7 @@ const ProjectCard = React.memo(({
                             style={{
                               fontWeight: "700",
                               fontSize: "0.85rem",
-                              color: "white",
+                              color: "var(--text-primary)",
                             }}
                           >
                             {comm.authorName}
@@ -412,7 +412,7 @@ const ProjectCard = React.memo(({
                         <p
                           style={{
                             fontSize: "0.85rem",
-                            color: "rgba(255, 255, 255, 0.8)",
+                            color: "var(--text-secondary)",
                             margin: 0,
                           }}
                         >

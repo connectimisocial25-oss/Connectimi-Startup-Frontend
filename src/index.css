@@ -24,6 +24,7 @@
   --emerald-500: #10b981;
   --emerald-600: #059669;
   --surface-faint: rgba(15, 23, 42, 0.03);
+  --surface-hover: rgba(15, 23, 42, 0.07);
   --surface-border: rgba(15, 23, 42, 0.08);
   color-scheme: light;
 }
@@ -51,6 +52,7 @@
   --emerald-500: #10b981;
   --emerald-600: #059669;
   --surface-faint: rgba(255, 255, 255, 0.03);
+  --surface-hover: rgba(255, 255, 255, 0.08);
   --surface-border: rgba(255, 255, 255, 0.05);
   color-scheme: dark;
 }
