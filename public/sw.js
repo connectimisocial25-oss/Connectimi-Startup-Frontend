@@ -1,6 +1,6 @@
 // ── Connectimi Service Worker ──────────────────────────────────────────────
 // Bump CACHE_VERSION every time you deploy so phones get fresh assets.
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v4";
 const CACHE_NAME = `connectimi-cache-${CACHE_VERSION}`;
 
 // Assets to pre-cache on install (shell)
@@ -8,7 +8,7 @@ const PRECACHE_URLS = [
   "/",
   "/index.html",
   "/manifest.json",
-  "/Connectimi_logo_favicon.png",
+  "/Connectimi_logo.ico",
   "/Connectimi_logo.png",
 ];
 

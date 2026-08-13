@@ -12,22 +12,14 @@ const Connectimi_logo = () => {
         fontFamily: "Segoe UI, Roboto, Arial, sans-serif",
       }}
     >
-      <div
+      <img
+        src="/Connectimi_logo.png"
+        alt="Connectimi Logo"
         style={{
           width: "36px",
           height: "36px",
-          backgroundColor: "var(--primary-green)",
-          WebkitMaskImage: "url(/Connectimi_logo.png)",
-          maskImage: "url(/Connectimi_logo.png)",
-          WebkitMaskSize: "contain",
-          maskSize: "contain",
-          WebkitMaskRepeat: "no-repeat",
-          maskRepeat: "no-repeat",
-          WebkitMaskPosition: "center",
-          maskPosition: "center",
+          objectFit: "contain",
         }}
-        aria-label="Connectimi Logo"
-        role="img"
       />
 
       <p
