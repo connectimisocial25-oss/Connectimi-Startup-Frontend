@@ -21,9 +21,31 @@ createRoot(document.getElementById('root')).render(
 )
 
 if ("serviceWorker" in navigator) {
+  if (navigator.serviceWorker.controller) {
+    let reloading = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (reloading) return;
+      reloading = true;
+      window.location.reload();
+    });
+  }
+
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/sw.js")
-      .then((reg) => console.log("Service Worker registered scope:", reg.scope))
+      .then((reg) => {
+        console.log("Service Worker registered scope:", reg.scope);
+        // The browser only re-checks sw.js on a real navigation. This is an
+        // SPA — client-side routing isn't one — so an open tab or a resumed
+        // PWA can go days without ever noticing a deploy. Poke it when the
+        // tab becomes visible, at most hourly.
+        let lastCheck = Date.now();
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState !== "visible") return;
+          if (Date.now() - lastCheck < 60 * 60 * 1000) return;
+          lastCheck = Date.now();
+          reg.update();
+        });
+      })
       .catch((err) => console.error("Service Worker registration failed:", err));
   });
 }
