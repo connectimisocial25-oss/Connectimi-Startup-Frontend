@@ -353,11 +353,13 @@ The frontend behaves as a Progressive Web App (PWA):
 - **`src/pages/Login.jsx`**: Commented out the "Consultant" toggle button and the `accountType === "consultant"` placeholder condition (email placeholder is now always "Email or Phone").
 - **`src/pages/MyNetwork.jsx`**: Commented out `'experts'` from `ACTIVE_TABS`, removed the "Expert Consultations" sidebar item from the navigation list, and removed the full `activeTab === 'experts'` render block. All consultant-specific UI is preserved in comments for future re-enablement when the Consultant/Organization feature is restored.
 
-### Landing Page & Auth Form Toggle Enhancements
-- **Sign In Form (`src/pages/Login.jsx`)**: Removed the account-type toggle button container completely. The Sign In form now directly displays Email/Phone and Password input fields with no extra buttons.
-- **Sign Up Form (`src/pages/Signup.jsx`)**: Added clear side-by-side buttons for **Personal** and **Organization** account registration. Selecting "Organization" updates the name input placeholder to "Organization name".
-- **Toggle UX Styling (`src/pages/Auth.css`)**: Enhanced `.toggle-btn` and `.auth-toggle` styles. Selected/active buttons render with a solid vibrant emerald gradient, white text, and glowing shadow, while unselected buttons render with muted grey text and transparent background for unambiguous active state feedback.
-- **Hero Top Alignment & Gap Stability (`src/pages/Landing.css`)**: Updated `.hero-section` to use `align-items: flex-start` with fixed `padding-top: 130px`. This keeps `hero-left` at the exact same vertical distance from `landing-header` when toggling between Sign In and Sign Up forms.
-- **Subtitle Spacing (`src/pages/Landing.css`)**: Added `margin-bottom: 24px` to `.auth-header-minimal` so there is a clean gap between "Enter your credentials..." / "Claim your profile..." and the email field / toggle buttons.
+### Project Posts Cover Photo & Multi-Photo Support Fix
+
+- **`cover_image_url` Property Resolution**: Fixed property lookup across `Feed.jsx`, `ProjectCard.jsx`, `ProjectModal.jsx`, and `ProjectDetails.jsx` to parse `cover_image_url` (the primary image string returned by backend Prisma API) alongside legacy object keys (`cover_image.url`, `coverImage.url`). Project cover photos now render reliably on feed cards, modal popups, and detail pages.
+- **Multi-Photo Support (up to 3 photos)**: Added multi-photo normalization for projects with up to 3 photos (cover photo + gallery screenshots). Implemented interactive photo navigation (dot indicators, counter badge, thumbnail switcher) on feed cards and in the `ProjectModal` popup.
+- **Instant Author Header Sync**: Updated `ProjectCard.jsx` and `Feed.jsx` to pass `initialInsight` into `ProjectModal`. Author name, avatar, and headline are populated immediately upon modal mount, preventing fallback text ("Anonymous Developer") while fetching.
+- **Shimmer Skeleton Loading UI**: Implemented `@keyframes skeleton-shimmer` in `ProjectModal.css` and skeleton placeholders (cover banner, status badges, title bar, tech chips, description lines) in `ProjectModal.jsx` to provide a polished loading experience while project details fetch asynchronously.
+- **Preserved Direct Navigation**: The `/projects/:id` route and `ProjectDetails.jsx` page remain fully functional for direct deep links, sharing, and project editing.
+
 
 
