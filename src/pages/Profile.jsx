@@ -10,6 +10,7 @@ import API from "../services/api";
 import { transformProfileToFrontend, parseApiError } from "../utils/adapters";
 import Avatar from "../components/Avatar";
 import ProjectCard from "../components/home/ProjectCard";
+import ProjectModal from "../components/home/ProjectModal";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80";
 const DEFAULT_PROFILE_IMG = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
@@ -41,6 +42,7 @@ const Profile = () => {
     about: "",
     experience: [],
     projects: [],
+    projects_created: [],
     education: [],
     skills: [],
     website: "",
@@ -70,6 +72,7 @@ const Profile = () => {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [profileSummary, setProfileSummary] = useState("");
   const [voiceSpeed, setVoiceSpeed] = useState(1.0);
+  const [selectedProject, setSelectedProject] = useState({ id: null, insight: null });
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [availableVoices, setAvailableVoices] = useState([]);
   const [isSpeechSupported, setIsSpeechSupported] = useState(true);
@@ -305,6 +308,7 @@ const Profile = () => {
           bannerImage: authUser.bannerImage || DEFAULT_BANNER,
           experience: authUser.experience || [],
           projects: authUser.projects || [],
+          projects_created: authUser.projects_created || [],
           education: authUser.education || [],
           skills: authUser.skills || [],
           connections: ownConnCount,
@@ -553,35 +557,67 @@ const Profile = () => {
   );
 
   const renderProjects = () => {
-    const validProjects = profileData.projects.filter(
-      (proj) => proj.projectRef || proj.title
+    // Prefer projects_created (actual Project posts with correct Project.id for API)
+    // Fall back to UserProject entries using project_ref as the correct lookup ID
+    const createdProjects = profileData.projects_created || [];
+    const profileProjects = (profileData.projects || []).filter(
+      (proj) => proj.project_ref || proj.project_name
     );
+
+    // Build a unified list — prefer projects_created, supplement with UserProject entries
+    // that don't already have a matching entry in projects_created
+    const createdIds = new Set(createdProjects.map((p) => p.id));
+    const extraProfileProjects = profileProjects.filter(
+      (up) => !createdIds.has(up.project_ref)
+    );
+
+    const allProjects = [
+      ...createdProjects.map((proj) => ({
+        _id: proj.id,
+        title: proj.title,
+        description: proj.short_description || "",
+        cover_image_url: proj.cover_image_url || null,
+        gallery: proj.gallery || [],
+        tech_stack: proj.tech_stack || [],
+        github_url: proj.github_url || null,
+        live_demo_url: proj.live_demo_url || null,
+        created_at: proj.created_at,
+      })),
+      ...extraProfileProjects.map((up) => ({
+        _id: up.project_ref,          // ← use project_ref, not UserProject.id
+        title: up.project_name,
+        description: up.description || "",
+        cover_image_url: up.linked_project?.cover_image_url || null,
+        gallery: [],
+        tech_stack: [],
+        github_url: null,
+        live_demo_url: up.project_url || null,
+        created_at: up.created_at,
+      })),
+    ];
 
     return (
       <div className="glass-panel gsap-reveal">
         <h3 className="panel-title"><Icon name="folder" /> Projects</h3>
-        {validProjects.length > 0 ? (
+        {allProjects.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", marginTop: "1rem" }}>
-            {validProjects.map((proj, i) => {
-              const fullProject =
-                typeof proj.projectRef === "object" && proj.projectRef !== null
-                  ? proj.projectRef
-                  : {};
-              const targetProjectId = fullProject._id || (typeof proj.projectRef === "string" ? proj.projectRef : null) || proj.id;
+            {allProjects.map((proj, i) => {
+              const targetProjectId = proj._id;
 
               const insightObj = {
                 id: targetProjectId,
                 author: profileData.name || "User",
                 authorHeadline: profileData.headline || "",
-                authorImg: profileData.profileImage || DEFAULT_PROFILE_IMG,
+                authorImg: profileData.profile_picture || profileData.profileImage || DEFAULT_PROFILE_IMG,
                 authorId: profileData.id,
-                title: fullProject.title || proj.title || "Untitled Project",
-                takeaway: fullProject.shortDescription || proj.description || "",
-                image: fullProject.coverImage?.url || null,
-                createdAt: fullProject.createdAt || proj.createdAt,
+                title: proj.title || "Untitled Project",
+                takeaway: proj.description || "",
+                cover_image_url: proj.cover_image_url,
+                image: proj.cover_image_url || null,
+                gallery: proj.gallery || [],
+                createdAt: proj.created_at,
                 type: "project",
                 projectId: targetProjectId,
-                project: fullProject.title ? fullProject : null,
               };
 
               return (
@@ -591,13 +627,18 @@ const Profile = () => {
                   user={authUser}
                   expandedComments={false}
                   commentText=""
-                  onToggleComments={() => targetProjectId && navigate(`/projects/${targetProjectId}`)}
+                  onOpenProjectModal={
+                    targetProjectId
+                      ? (pId, ins) => setSelectedProject({ id: pId, insight: ins })
+                      : undefined
+                  }
+                  onToggleComments={() => {}}
                   onCommentTextChange={() => {}}
                   onCreateComment={() => {}}
                   onDeleteComment={() => {}}
                   onDeletePost={() => {}}
                   onLike={() => {}}
-                  onShare={() => targetProjectId && navigate(`/projects/${targetProjectId}`)}
+                  onShare={() => {}}
                 />
               );
             })}
@@ -1056,6 +1097,14 @@ const Profile = () => {
             setImagePreview("");
             setBannerPreview("");
           }}
+        />
+      )}
+      {selectedProject.id && (
+        <ProjectModal
+          projectId={selectedProject.id}
+          initialInsight={selectedProject.insight}
+          onClose={() => setSelectedProject({ id: null, insight: null })}
+          currentUser={authUser}
         />
       )}
     </div>

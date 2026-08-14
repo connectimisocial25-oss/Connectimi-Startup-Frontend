@@ -529,7 +529,16 @@ const ProjectCard = React.memo(({
       </div>
 
       {/* Author Footer */}
-      <div className="insight-footer-author" style={{ position: "relative" }}>
+      <div
+        className="insight-footer-author"
+        style={{ position: "relative", cursor: insight.authorId ? "pointer" : "default" }}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (insight.authorId) {
+            navigate(`/profile/${insight.authorId}`);
+          }
+        }}
+      >
         <Avatar src={insight.authorImg} size={32} />
         <div style={{ display: "flex", flexDirection: "column" }}>
           <span className="insight-author-name">{insight.author}</span>
@@ -542,7 +551,10 @@ const ProjectCard = React.memo(({
         {insight.authorId === user?.id && (
           <button
             className="post-delete-btn"
-            onClick={() => onDeletePost(insight.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeletePost(insight.id);
+            }}
             style={{
               position: "absolute",
               right: "15px",

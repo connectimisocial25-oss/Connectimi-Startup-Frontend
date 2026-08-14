@@ -139,7 +139,7 @@ export default function ProjectModal({ projectId, initialInsight, onClose, curre
     initialInsight?.authorHeadline ||
     "Software Developer";
 
-  const authorId = rawAuthor?._id || rawAuthor?.id;
+  const authorId = rawAuthor?._id || rawAuthor?.id || initialInsight?.authorId;
   const isOwner = currentUser?.id && authorId === currentUser.id;
 
   const [activeModalPhotoIndex, setActiveModalPhotoIndex] = useState(0);
@@ -172,7 +172,16 @@ export default function ProjectModal({ projectId, initialInsight, onClose, curre
       <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
         {/* Header - Populated instantly from initialInsight or fetched author */}
         <div className="project-modal-header">
-          <div className="project-modal-author-info">
+          <div
+            className="project-modal-author-info"
+            style={{ cursor: authorId ? "pointer" : "default" }}
+            onClick={() => {
+              if (authorId) {
+                onClose();
+                navigate(`/profile/${authorId}`);
+              }
+            }}
+          >
             <Avatar src={authorAvatar} size={36} />
             <div>
               <h4 className="project-modal-author-name">{authorName}</h4>
