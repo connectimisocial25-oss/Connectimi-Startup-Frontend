@@ -360,6 +360,9 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Instant Author Header Sync**: Updated `ProjectCard.jsx` and `Feed.jsx` to pass `initialInsight` into `ProjectModal`. Author name, avatar, and headline are populated immediately upon modal mount, preventing fallback text ("Anonymous Developer") while fetching.
 - **Shimmer Skeleton Loading UI**: Implemented `@keyframes skeleton-shimmer` in `ProjectModal.css` and skeleton placeholders (cover banner, status badges, title bar, tech chips, description lines) in `ProjectModal.jsx` to provide a polished loading experience while project details fetch asynchronously.
 - **Preserved Direct Navigation**: The `/projects/:id` route and `ProjectDetails.jsx` page remain fully functional for direct deep links, sharing, and project editing.
+### Profile Navigation from Feed Posts
 
-
+- **`Feed.jsx` (InsightCard & Post Modal Header)**: Added click navigation to `/profile/${authorId}` on author avatar and name in both `InsightCard` footer and post details popup modal header.
+- **`ProjectCard.jsx` (Author Footer)**: Added `onClick` handler on author avatar and name in `ProjectCard` footer to navigate to `/profile/${authorId}` without triggering the project modal popup.
+- **`ProjectModal.jsx` (Author Header)**: Updated `.project-modal-author-info` header to be clickable, closing the modal and navigating to `/profile/${authorId}`.
 

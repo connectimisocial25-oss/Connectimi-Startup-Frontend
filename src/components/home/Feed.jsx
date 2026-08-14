@@ -22,11 +22,19 @@ const InsightCard = React.memo(({
   onOpenModal,
   onLike,
   onShare,
+  navigate,
 }) => {
   const [localLiked, setLocalLiked] = useState(insight.liked);
   const [localLikesCount, setLocalLikesCount] = useState(insight.likes);
   const likeBtnRef = useRef(null);
   const shareBtnRef = useRef(null);
+
+  const handleAuthorClick = (e) => {
+    e.stopPropagation();
+    if (insight.authorId && navigate) {
+      navigate(`/profile/${insight.authorId}`);
+    }
+  };
 
   useEffect(() => {
     setLocalLiked(insight.liked);
@@ -361,7 +369,11 @@ const InsightCard = React.memo(({
         )}
       </div>
 
-      <div className="insight-footer-author" style={{ position: "relative" }}>
+      <div
+        className="insight-footer-author"
+        style={{ position: "relative", cursor: insight.authorId ? "pointer" : "default" }}
+        onClick={handleAuthorClick}
+      >
         <Avatar src={insight.authorImg} size={32} />
         <div style={{ display: "flex", flexDirection: "column" }}>
           <span className="insight-author-name">{insight.author}</span>
@@ -374,7 +386,10 @@ const InsightCard = React.memo(({
         {insight.authorId === user?.id && (
           <button
             className="post-delete-btn"
-            onClick={() => onDeletePost(insight.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeletePost(insight.id);
+            }}
             style={{
               position: "absolute",
               right: "15px",
@@ -1084,6 +1099,7 @@ const Feed = () => {
                   onOpenModal={openProjectModal}
                   onLike={handleLike}
                   onShare={handleOpenShareModal}
+                  navigate={navigate}
                 />
               )
             )
@@ -1283,7 +1299,15 @@ const Feed = () => {
                 background: "var(--surface-faint)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "12px", cursor: selectedInsight.authorId ? "pointer" : "default" }}
+                onClick={() => {
+                  if (selectedInsight.authorId) {
+                    closeProjectModal();
+                    navigate(`/profile/${selectedInsight.authorId}`);
+                  }
+                }}
+              >
                 <Avatar src={selectedInsight.authorImg} size={42} />
                 <div>
                   <h4 style={{ fontSize: "15px", fontWeight: "700", margin: 0, color: "var(--text-primary)" }}>
