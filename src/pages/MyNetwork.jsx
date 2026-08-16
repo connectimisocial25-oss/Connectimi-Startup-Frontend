@@ -9,59 +9,16 @@ import ComingSoon from '../components/ComingSoon';
 import './MyNetwork.css';
 import Messaging from './Messaging';
 import API from '../services/api';
-import { useChat } from '../context/ChatContext';
 
 // Tabs whose backend is fully implemented — everything else shows ComingSoon
 // 'experts' tab disabled — no separate Consultant model
-const ACTIVE_TABS = ['connections', /* 'experts', */ 'following', 'messaging'];
-
-// Per-tab copy for the ComingSoon placeholder
-const COMING_SOON_CONTENT = {
-    messaging: {
-        icon: 'comment-dots',
-        title: 'Messaging — Coming Soon',
-        text: 'Real-time messaging with your connections and consultants is on the way. Check back soon!',
-    },
-    following: {
-        icon: 'user-circle',
-        title: 'Following & Followers — Coming Soon',
-        text: "We're building a dedicated space to manage who you follow and who follows you. Check back soon!",
-    },
-    groups: {
-        icon: 'users',
-        title: 'Groups — Coming Soon',
-        text: 'Join and create communities around shared interests. This feature is on the way!',
-    },
-    events: {
-        icon: 'calendar-alt',
-        title: 'Events — Coming Soon',
-        text: 'Discover and host professional events with your network. Check back soon!',
-    },
-    newsletter: {
-        icon: 'newspaper',
-        title: 'Newsletter — Coming Soon',
-        text: 'Subscribe to newsletters from creators and consultants in your network. Check back soon!',
-    },
-    hashtags: {
-        icon: 'hashtag',
-        title: 'Hashtags — Coming Soon',
-        text: 'Follow topics and trends relevant to your industry. This feature is on the way!',
-    },
-};
+const ACTIVE_TABS = ['connections', /* 'experts', */ 'following', 'followers', 'messaging'];
 
 const MyNetwork = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { theme } = useTheme();
-    const { conversations, isConnected, fetchConversations } = useChat();
-
-    const unreadMessagesCount = (conversations || []).reduce((acc, c) => acc + (c.unreadCount || 0), 0);
-
-    useEffect(() => {
-        if (isConnected) {
-            fetchConversations();
-        }
-    }, [isConnected, fetchConversations]);
+    // Conversations are fetched once in the Navbar (Messaging now lives in its dropdown)
 
     const initialTab = location.state?.tab || new URLSearchParams(location.search).get('tab') || 'connections';
     const [activeTab, setActiveTab] = useState(initialTab);
@@ -122,7 +79,7 @@ const MyNetwork = () => {
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
     const [followingLoading, setFollowingLoading] = useState(false);
-    const [activeFollowingSubTab, setActiveFollowingSubTab] = useState('following');
+    const activeFollowingSubTab = activeTab === 'followers' ? 'followers' : 'following';
 
     const mapInvitation = (invite) => ({
         id: invite.id || invite._id,
@@ -201,7 +158,7 @@ const MyNetwork = () => {
 
     // Load followers and following when tab is active
     useEffect(() => {
-        if (activeTab === 'following') {
+        if (activeTab === 'following' || activeTab === 'followers') {
             const loadFollowingData = async () => {
                 setFollowingLoading(true);
                 try {
@@ -209,7 +166,7 @@ const MyNetwork = () => {
                         API.get("/network/followers"),
                         API.get("/network/following")
                     ]);
-                    
+
                     const mapFollowerOrFollowing = (item) => ({
                         id: item.id || item._id,
                         name: item.name || item.consultant_name || "Anonymous",
@@ -326,15 +283,12 @@ const MyNetwork = () => {
                     <div className="network-sidebar-card">
                         <div className="sidebar-title">Manage Network</div>
                         {[
-                            { id: 'connections', label: 'Connections', icon: 'users', count: connectionsCount },
+                            { id: 'connections', label: 'Connections', icon: 'user-friends', count: connectionsCount },
                             // Expert Consultations tab disabled — no separate Consultant model
                             // { id: 'experts', label: 'Expert Consultations', icon: 'user-tie' },
-                            { id: 'messaging', label: 'Messaging', icon: 'comment-dots', count: unreadMessagesCount > 0 ? unreadMessagesCount : null },
-                            { id: 'following', label: 'Following & Followers', icon: 'user-circle' },
-                            { id: 'groups', label: 'Groups', icon: 'users', count: 12 },
-                            { id: 'events', label: 'Events', icon: 'calendar-alt', count: 2 },
-                            { id: 'newsletter', label: 'Newsletter', icon: 'newspaper', count: 5 },
-                            { id: 'hashtags', label: 'Hashtags', icon: 'hashtag', count: 24 }
+                            // Messaging moved to the navbar profile dropdown
+                            { id: 'following', label: 'Following', icon: 'user-circle' },
+                            { id: 'followers', label: 'Followers', icon: 'eye' }
                         ].map(item => (
                             <div
                                 key={item.id}
@@ -357,32 +311,15 @@ const MyNetwork = () => {
 
                 <main className="network-main" ref={mainContentRef}>
                     {!ACTIVE_TABS.includes(activeTab) ? (
-                        <ComingSoon {...COMING_SOON_CONTENT[activeTab]} />
+                        <ComingSoon />
                     ) : activeTab === 'messaging' ? (
-                        <Messaging 
-                            embedded={true} 
-                            contactId={new URLSearchParams(location.search).get('contactId')} 
-                            initialPartner={location.state?.partner} 
+                        <Messaging
+                            embedded={true}
+                            contactId={new URLSearchParams(location.search).get('contactId')}
+                            initialPartner={location.state?.partner}
                         />
-                    ) : activeTab === 'following' ? (
+                    ) : (activeTab === 'following' || activeTab === 'followers') ? (
                         <section className="suggestions-section">
-                            <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
-                                <button 
-                                    className={`media-tab ${activeFollowingSubTab === 'following' ? 'active' : ''}`}
-                                    onClick={() => setActiveFollowingSubTab('following')}
-                                    style={{ background: activeFollowingSubTab === 'following' ? 'var(--emerald-500)' : 'rgba(255,255,255,0.05)', color: 'white', padding: '10px 20px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: '600', transition: 'all 0.3s ease' }}
-                                >
-                                    Following ({following.length})
-                                </button>
-                                <button 
-                                    className={`media-tab ${activeFollowingSubTab === 'followers' ? 'active' : ''}`}
-                                    onClick={() => setActiveFollowingSubTab('followers')}
-                                    style={{ background: activeFollowingSubTab === 'followers' ? 'var(--emerald-500)' : 'rgba(255,255,255,0.05)', color: 'white', padding: '10px 20px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: '600', transition: 'all 0.3s ease' }}
-                                >
-                                    Followers ({followers.length})
-                                </button>
-                            </div>
-
                             {followingLoading ? (
                                 <p style={{ color: 'var(--text-muted)', padding: '32px', textAlign: 'center' }}>Loading network details…</p>
                             ) : activeFollowingSubTab === 'following' ? (
@@ -442,8 +379,8 @@ const MyNetwork = () => {
                                                     <div className="suggestion-name">{person.name}</div>
                                                     <div className="suggestion-role">{person.role}</div>
                                                 </div>
-                                                <button 
-                                                    className="connect-btn" 
+                                                <button
+                                                    className="connect-btn"
                                                     onClick={() => handleToggleFollow(person.id, person.accountType)}
                                                     style={{ background: following.some(f => f.id === person.id) ? 'rgba(255, 255, 255, 0.05)' : 'var(--emerald-500)', color: 'white' }}
                                                 >
@@ -515,9 +452,9 @@ const MyNetwork = () => {
                                                     <button className="ignore-btn" style={{ flex: 1, padding: '8px 0', border: '1px solid rgba(255,255,255,0.1)' }} onClick={() => handleRemoveConnection(conn.id)}>
                                                         Disconnect
                                                     </button>
-                                                    <button 
-                                                        className="accept-btn" 
-                                                        style={{ flex: 1, padding: '8px 0', background: 'var(--emerald-500)', color: 'white' }} 
+                                                    <button
+                                                        className="accept-btn"
+                                                        style={{ flex: 1, padding: '8px 0', background: 'var(--emerald-500)', color: 'white' }}
                                                         onClick={() => navigate(`/mynetwork?tab=messaging&contactId=${conn.id}`, { state: { partner: { id: conn.id, name: conn.name, avatar: conn.avatar, role: conn.role } } })}
                                                     >
                                                         Message

@@ -24,7 +24,7 @@
 }
 
 .banner-area {
-    height: 240px;
+    height: 160px;
     position: relative;
     background: linear-gradient(135deg, var(--bg-color) 0%, var(--border-color) 100%);
 }
@@ -37,41 +37,42 @@
 
 .profile-avatar-container {
     position: absolute;
-    bottom: -60px;
+    bottom: -44px;
     left: 40px;
     z-index: 2;
 }
 
 .avatar-squircle {
-    width: 160px;
-    height: 160px;
-    border-radius: 40px;
+    width: 116px;
+    height: 116px;
+    border-radius: 30px;
     /* Modern squircle-ish */
-    border: 6px solid var(--card-bg);
+    border: 5px solid var(--card-bg);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     object-fit: cover;
     background: var(--card-bg);
 }
 
 .profile-main-info {
-    padding: 80px 40px 40px;
+    padding: 56px 40px 24px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 1.5rem;
 }
 
 .info-content h1 {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-weight: 800;
     color: var(--text-primary);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.25rem;
     letter-spacing: -0.02em;
 }
 
 .headline {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--text-secondary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
 }
 
 .meta-info {
@@ -95,9 +96,10 @@
 
 .profile-stats-bar {
     display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--border-color);
 }
 
@@ -122,7 +124,9 @@
 
 .profile-actions {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.6rem;
     align-items: center;
 }
 
@@ -165,6 +169,77 @@
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 2rem;
+    align-items: start;
+}
+
+/* Tabbed sections: only one panel is mounted at a time, so the page is
+   roughly one viewport instead of six stacked panels. */
+.profile-tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-bottom: 1.25rem;
+    padding-bottom: 2px;
+}
+
+.profile-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.profile-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex: 0 0 auto;
+    padding: 0.55rem 1rem;
+    border-radius: 100px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.profile-tab:hover {
+    border-color: var(--primary-emerald);
+    color: var(--primary-emerald);
+}
+
+.profile-tab.active {
+    background: var(--emerald-grad);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.28);
+}
+
+.profile-tab.active svg {
+    color: white;
+}
+
+.tab-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.05rem 0.4rem;
+    border-radius: 100px;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--primary-emerald);
+}
+
+.profile-tab.active .tab-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.side-col {
+    position: sticky;
+    top: 96px;
+}
+
+.main-col .glass-panel:last-child {
+    margin-bottom: 0;
 }
 
 .glass-panel {
@@ -336,9 +411,17 @@
         grid-template-columns: 1fr;
     }
 
+    .side-col {
+        position: static;
+    }
+
     .profile-main-info {
         flex-direction: column;
         gap: 1.5rem;
+    }
+
+    .profile-actions {
+        justify-content: flex-start;
     }
 
     .profile-actions {
@@ -356,23 +439,23 @@
     }
 
     .banner-area {
-        height: 160px;
+        height: 120px;
     }
 
     .profile-avatar-container {
-        bottom: -50px;
+        bottom: -34px;
         left: 20px;
     }
 
     .avatar-squircle {
-        width: 100px;
-        height: 100px;
-        border-radius: 25px;
+        width: 84px;
+        height: 84px;
+        border-radius: 22px;
         border-width: 4px;
     }
 
     .profile-main-info {
-        padding: 60px 20px 20px;
+        padding: 44px 20px 20px;
     }
 
     .info-content h1 {
@@ -415,8 +498,9 @@
 }
 
 @media (max-width: 360px) {
+
+    /* stats bar already wraps; stacking it here just adds scroll back */
     .profile-stats-bar {
-        flex-direction: column;
         gap: 1rem;
     }
 }
@@ -439,8 +523,8 @@
     border-radius: 16px;
     padding: 1.25rem;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.25s,
-                box-shadow 0.25s;
+        border-color 0.25s,
+        box-shadow 0.25s;
 }
 
 .dark .profile-post-card {
@@ -615,7 +699,7 @@
     .profile-post-card {
         padding: 1rem;
     }
-    
+
     .post-author-img {
         width: 38px;
         height: 38px;

@@ -8,6 +8,7 @@ import { useTheme } from '../context/ThemeContext';
 
 import './Navbar.css';
 import { useAuth } from '../context/AuthContext';
+import { useChat } from '../context/ChatContext';
 import API from '../services/api';
 
 const Navbar = () => {
@@ -15,9 +16,18 @@ const Navbar = () => {
     const location = useLocation();
     const { theme, toggleTheme } = useTheme();
     const { user, logout } = useAuth();
+    const { conversations, isConnected, fetchConversations } = useChat();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navBarRef = useRef(null);
     const [unreadCount, setUnreadCount] = useState(0);
+    const unreadMessagesCount = (conversations || []).reduce((acc, c) => acc + (c.unreadCount || 0), 0);
+
+    // Messaging lives in the "Me" dropdown now, so the badge has to be live everywhere
+    useEffect(() => {
+        if (isConnected) {
+            fetchConversations();
+        }
+    }, [isConnected, fetchConversations]);
 
     useEffect(() => {
         const fetchUnreadCount = async () => {
@@ -140,7 +150,7 @@ const Navbar = () => {
                                 size={24}
                                 className="nav-profile-img"
                             />
-                            {unreadCount > 0 && <div className="nav-icon-badge">{unreadCount}</div>}
+                            {unreadCount + unreadMessagesCount > 0 && <div className="nav-icon-badge">{unreadCount + unreadMessagesCount}</div>}
                         </div>
                         <span className="nav-label">Me</span>
                         {isDropdownOpen && (
@@ -148,6 +158,11 @@ const Navbar = () => {
                                 <div className="dropdown-item" onClick={() => { navigate('/profile'); setIsDropdownOpen(false); }}>
                                     <Icon name="user" />
                                     View Profile
+                                </div>
+                                <div className="dropdown-item" onClick={() => { navigate('/mynetwork?tab=messaging'); setIsDropdownOpen(false); }}>
+                                    <Icon name="comment-dots" />
+                                    Messages
+                                    {unreadMessagesCount > 0 && <span className="dropdown-badge">{unreadMessagesCount} New</span>}
                                 </div>
                                 <div className="dropdown-item" onClick={() => { navigate('/notifications'); setIsDropdownOpen(false); }}>
                                     <Icon name="bell" />
@@ -186,6 +201,11 @@ const Navbar = () => {
                                 <div className="dropdown-item" onClick={() => { navigate('/profile'); setIsDropdownOpen(false); }}>
                                     <Icon name="user" />
                                     View Profile
+                                </div>
+                                <div className="dropdown-item" onClick={() => { navigate('/mynetwork?tab=messaging'); setIsDropdownOpen(false); }}>
+                                    <Icon name="comment-dots" />
+                                    Messages
+                                    {unreadMessagesCount > 0 && <span className="dropdown-badge">{unreadMessagesCount} New</span>}
                                 </div>
                                 <div className="dropdown-item" onClick={() => { navigate('/projects/new'); setIsDropdownOpen(false); }}>
                                     <Icon name="project" />

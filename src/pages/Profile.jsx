@@ -10,7 +10,6 @@ import API from "../services/api";
 import { transformProfileToFrontend, parseApiError } from "../utils/adapters";
 import Avatar from "../components/Avatar";
 import ProjectCard from "../components/home/ProjectCard";
-import ProjectModal from "../components/home/ProjectModal";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80";
 const DEFAULT_PROFILE_IMG = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
@@ -42,7 +41,6 @@ const Profile = () => {
     about: "",
     experience: [],
     projects: [],
-    projects_created: [],
     education: [],
     skills: [],
     website: "",
@@ -57,6 +55,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false);
   const [showCV, setShowCV] = useState(false);
+  const [activeTab, setActiveTab] = useState("about");
 
   // Posts Feed State
   const [posts, setPosts] = useState([]);
@@ -72,7 +71,6 @@ const Profile = () => {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [profileSummary, setProfileSummary] = useState("");
   const [voiceSpeed, setVoiceSpeed] = useState(1.0);
-  const [selectedProject, setSelectedProject] = useState({ id: null, insight: null });
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [availableVoices, setAvailableVoices] = useState([]);
   const [isSpeechSupported, setIsSpeechSupported] = useState(true);
@@ -147,13 +145,15 @@ const Profile = () => {
             duration: 0.8,
             stagger: 0.15,
             ease: "power3.out",
-            clearProps: "transform, y"
+            // clearProps must include opacity: .gsap-reveal starts at opacity 0 in CSS,
+            // so panels mounted by a tab switch stay invisible without this.
+            clearProps: "transform, y, opacity"
           }
         );
       }, containerRef);
       return () => ctx.revert();
     }
-  }, [profileLoading, profileError]);
+  }, [profileLoading, profileError, activeTab]);
 
   // Trigger fetchProfileData when userId or authUser changes
   useEffect(() => {
@@ -242,7 +242,7 @@ const Profile = () => {
     try {
       const res = await API.post(`/posts/${postId}/comments`, { text });
       const newComment = res.data.comment;
-      
+
       const hydratedComment = {
         ...newComment,
         id: newComment.id || newComment._id,
@@ -308,7 +308,6 @@ const Profile = () => {
           bannerImage: authUser.bannerImage || DEFAULT_BANNER,
           experience: authUser.experience || [],
           projects: authUser.projects || [],
-          projects_created: authUser.projects_created || [],
           education: authUser.education || [],
           skills: authUser.skills || [],
           connections: ownConnCount,
@@ -538,6 +537,13 @@ const Profile = () => {
   };
 
   // Profile Sections Renderers
+  const renderAbout = () => (
+    <div className="glass-panel gsap-reveal">
+      <h3 className="panel-title"><Icon name="user" /> About</h3>
+      <p className="about-text">{profileData.about || <span className="empty-msg">Nothing here yet</span>}</p>
+    </div>
+  );
+
   const renderExperience = () => (
     <div className="glass-panel gsap-reveal">
       <h3 className="panel-title"><Icon name="building" /> Experience</h3>
@@ -557,67 +563,35 @@ const Profile = () => {
   );
 
   const renderProjects = () => {
-    // Prefer projects_created (actual Project posts with correct Project.id for API)
-    // Fall back to UserProject entries using project_ref as the correct lookup ID
-    const createdProjects = profileData.projects_created || [];
-    const profileProjects = (profileData.projects || []).filter(
-      (proj) => proj.project_ref || proj.project_name
+    const validProjects = profileData.projects.filter(
+      (proj) => proj.projectRef || proj.title
     );
-
-    // Build a unified list — prefer projects_created, supplement with UserProject entries
-    // that don't already have a matching entry in projects_created
-    const createdIds = new Set(createdProjects.map((p) => p.id));
-    const extraProfileProjects = profileProjects.filter(
-      (up) => !createdIds.has(up.project_ref)
-    );
-
-    const allProjects = [
-      ...createdProjects.map((proj) => ({
-        _id: proj.id,
-        title: proj.title,
-        description: proj.short_description || "",
-        cover_image_url: proj.cover_image_url || null,
-        gallery: proj.gallery || [],
-        tech_stack: proj.tech_stack || [],
-        github_url: proj.github_url || null,
-        live_demo_url: proj.live_demo_url || null,
-        created_at: proj.created_at,
-      })),
-      ...extraProfileProjects.map((up) => ({
-        _id: up.project_ref,          // ← use project_ref, not UserProject.id
-        title: up.project_name,
-        description: up.description || "",
-        cover_image_url: up.linked_project?.cover_image_url || null,
-        gallery: [],
-        tech_stack: [],
-        github_url: null,
-        live_demo_url: up.project_url || null,
-        created_at: up.created_at,
-      })),
-    ];
 
     return (
       <div className="glass-panel gsap-reveal">
-        <h3 className="panel-title"><Icon name="folder" /> Projects</h3>
-        {allProjects.length > 0 ? (
+        <h3 className="panel-title"><Icon name="project" /> Projects</h3>
+        {validProjects.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", marginTop: "1rem" }}>
-            {allProjects.map((proj, i) => {
-              const targetProjectId = proj._id;
+            {validProjects.map((proj, i) => {
+              const fullProject =
+                typeof proj.projectRef === "object" && proj.projectRef !== null
+                  ? proj.projectRef
+                  : {};
+              const targetProjectId = fullProject._id || (typeof proj.projectRef === "string" ? proj.projectRef : null) || proj.id;
 
               const insightObj = {
                 id: targetProjectId,
                 author: profileData.name || "User",
                 authorHeadline: profileData.headline || "",
-                authorImg: profileData.profile_picture || profileData.profileImage || DEFAULT_PROFILE_IMG,
+                authorImg: profileData.profileImage || DEFAULT_PROFILE_IMG,
                 authorId: profileData.id,
-                title: proj.title || "Untitled Project",
-                takeaway: proj.description || "",
-                cover_image_url: proj.cover_image_url,
-                image: proj.cover_image_url || null,
-                gallery: proj.gallery || [],
-                createdAt: proj.created_at,
+                title: fullProject.title || proj.title || "Untitled Project",
+                takeaway: fullProject.shortDescription || proj.description || "",
+                image: fullProject.coverImage?.url || null,
+                createdAt: fullProject.createdAt || proj.createdAt,
                 type: "project",
                 projectId: targetProjectId,
+                project: fullProject.title ? fullProject : null,
               };
 
               return (
@@ -627,18 +601,13 @@ const Profile = () => {
                   user={authUser}
                   expandedComments={false}
                   commentText=""
-                  onOpenProjectModal={
-                    targetProjectId
-                      ? (pId, ins) => setSelectedProject({ id: pId, insight: ins })
-                      : undefined
-                  }
-                  onToggleComments={() => {}}
-                  onCommentTextChange={() => {}}
-                  onCreateComment={() => {}}
-                  onDeleteComment={() => {}}
-                  onDeletePost={() => {}}
-                  onLike={() => {}}
-                  onShare={() => {}}
+                  onToggleComments={() => targetProjectId && navigate(`/projects/${targetProjectId}`)}
+                  onCommentTextChange={() => { }}
+                  onCreateComment={() => { }}
+                  onDeleteComment={() => { }}
+                  onDeletePost={() => { }}
+                  onLike={() => { }}
+                  onShare={() => targetProjectId && navigate(`/projects/${targetProjectId}`)}
                 />
               );
             })}
@@ -728,10 +697,10 @@ const Profile = () => {
                       <p className="post-date"><Icon name="clock" size={12} /> {formattedDate}</p>
                     </div>
                     {isOwnProfile && (
-                      <button 
+                      <button
                         type="button"
-                        className="post-delete-btn" 
-                        title="Delete post" 
+                        className="post-delete-btn"
+                        title="Delete post"
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeletePost(postId); }}
                       >
                         <Icon name="trash" size={14} />
@@ -753,7 +722,7 @@ const Profile = () => {
                   </div>
 
                   <div className="post-card-footer">
-                    <button 
+                    <button
                       type="button"
                       className={`post-action-btn like-btn ${liked ? 'active' : ''}`}
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLikePost(postId); }}
@@ -761,7 +730,7 @@ const Profile = () => {
                       <Icon name="thumbs-up" size={14} />
                       <span>{liked ? "Liked" : "Like"} ({post.likes?.length || 0})</span>
                     </button>
-                    <button 
+                    <button
                       type="button"
                       className={`post-action-btn comment-btn ${expandedPostComments[postId] ? 'active' : ''}`}
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setExpandedPostComments(prev => ({ ...prev, [postId]: !prev[postId] })); }}
@@ -775,7 +744,7 @@ const Profile = () => {
                   {/* Comments Section */}
                   {expandedPostComments[postId] && (
                     <div className="comments-section" style={{ borderTop: "1px solid rgba(255, 255, 255, 0.05)", marginTop: "15px", paddingTop: "15px" }}>
-                      <form 
+                      <form
                         onSubmit={(e) => {
                           e.preventDefault();
                           handleCreateComment(postId, newCommentText[postId] || "");
@@ -790,8 +759,8 @@ const Profile = () => {
                           onChange={(e) => setNewCommentText(prev => ({ ...prev, [postId]: e.target.value }))}
                           style={{ flex: 1, padding: "8px 12px", borderRadius: "20px", border: "1px solid rgba(255, 255, 255, 0.1)", background: "rgba(255, 255, 255, 0.05)", color: "white", outline: "none", fontSize: "0.85rem" }}
                         />
-                        <button 
-                          type="submit" 
+                        <button
+                          type="submit"
                           disabled={!(newCommentText[postId] || "").trim()}
                           style={{ padding: "8px 16px", borderRadius: "20px", border: "none", background: "var(--emerald-500)", color: "white", cursor: "pointer", fontWeight: "600", opacity: (newCommentText[postId] || "").trim() ? 1 : 0.5 }}
                         >
@@ -824,7 +793,7 @@ const Profile = () => {
                                     <p style={{ fontSize: "0.85rem", color: "rgba(255, 255, 255, 0.8)", margin: 0 }}>{comm.text}</p>
                                   </div>
                                   {authorId === authUser?.id && (
-                                    <button 
+                                    <button
                                       type="button"
                                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDeleteComment(post._id, commId); }}
                                       style={{ background: "none", border: "none", color: "var(--error)", cursor: "pointer", fontSize: "0.75rem", alignSelf: "flex-start", marginTop: "4px", padding: 0 }}
@@ -887,13 +856,13 @@ const Profile = () => {
     try {
       const res = await API.post(`/network/follow/${profileData.id}/${profileData.accountType}`);
       const isNowFollowing = res.data.following;
-      
+
       setUser(prev => {
         const following = prev.following || [];
         const updatedFollowing = isNowFollowing
           ? [...following, profileData.id]
           : following.filter(id => id !== profileData.id);
-        
+
         const updatedUser = { ...prev, following: updatedFollowing };
         localStorage.setItem("connectimi_user", JSON.stringify(updatedUser));
         return updatedUser;
@@ -903,6 +872,15 @@ const Profile = () => {
       alert(err.response?.data?.error || "Failed to toggle follow state.");
     }
   };
+
+  const TABS = [
+    { id: "about", label: "About", icon: "user", render: renderAbout },
+    { id: "experience", label: "Experience", icon: "building", count: profileData.experience.length, render: renderExperience },
+    { id: "projects", label: "Projects", icon: "project", count: profileData.projects.filter((p) => p.projectRef || p.title).length, render: renderProjects },
+    { id: "education", label: "Education", icon: "graduation-cap", count: profileData.education.length, render: renderEducation },
+    { id: "skills", label: "Skills", icon: "star", count: profileData.skills.length, render: renderSkills },
+    { id: "posts", label: "Posts", icon: "newspaper", count: posts.filter((p) => p.type !== "project").length, render: renderPosts },
+  ];
 
   if (profileLoading) {
     return (
@@ -959,6 +937,10 @@ const Profile = () => {
                   <span className="stat-label">Profile Views</span>
                 </div>
               )}
+              <div className="stat-box">
+                <span className="stat-value">{profileData.postImpressions}</span>
+                <span className="stat-label">Post Impressions</span>
+              </div>
             </div>
           </div>
 
@@ -975,15 +957,15 @@ const Profile = () => {
                   <button className="profile-btn primary" onClick={handleAcceptConnection}>Accept Request</button>
                 )}
                 {connectionStatus === "accepted" && (
-                  <button 
-                      className="profile-btn primary" 
-                      onClick={() => navigate(`/mynetwork?tab=messaging&contactId=${profileData.id}`, { state: { partner: { id: profileData.id, name: profileData.name, avatar: profileData.profileImage, role: profileData.headline } } })}
+                  <button
+                    className="profile-btn primary"
+                    onClick={() => navigate(`/mynetwork?tab=messaging&contactId=${profileData.id}`, { state: { partner: { id: profileData.id, name: profileData.name, avatar: profileData.profileImage, role: profileData.headline } } })}
                   >
-                      Message
+                    Message
                   </button>
                 )}
-                <button 
-                  className={`profile-btn ${isFollowing ? '' : 'primary'}`} 
+                <button
+                  className={`profile-btn ${isFollowing ? '' : 'primary'}`}
                   onClick={handleToggleFollow}
                   style={isFollowing ? { background: 'rgba(255, 255, 255, 0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' } : {}}
                 >
@@ -1022,15 +1004,21 @@ const Profile = () => {
 
       <div className="grid-layout">
         <div className="main-col">
-          <div className="glass-panel gsap-reveal">
-            <h3 className="panel-title">About</h3>
-            <p className="about-text">{profileData.about}</p>
+          <div className="profile-tabs" role="tablist">
+            {TABS.map(({ id, label, icon, count }) => (
+              <button
+                key={id}
+                role="tab"
+                aria-selected={activeTab === id}
+                className={`profile-tab ${activeTab === id ? "active" : ""}`}
+                onClick={() => setActiveTab(id)}
+              >
+                <Icon name={icon} size={14} /> {label}
+                {count > 0 && <span className="tab-count">{count}</span>}
+              </button>
+            ))}
           </div>
-          {renderExperience()}
-          {renderProjects()}
-          {renderEducation()}
-          {renderSkills()}
-          {renderPosts()}
+          {TABS.find((t) => t.id === activeTab)?.render()}
         </div>
 
         <div className="side-col">
@@ -1057,23 +1045,13 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
-          <div className="glass-panel gsap-reveal">
-            <h3 className="panel-title"><Icon name="trending-up" /> Analytics</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Post Impressions</span>
-                <span style={{ fontWeight: '700' }}>{profileData.postImpressions}</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
       {showCV && <CVModal profileData={profileData} onClose={() => setShowCV(false)} />}
 
       {isEditing && (
-      <EditForm
+        <EditForm
           editData={editData}
           setEditData={setEditData}
           handleInputChange={handleInputChange}
@@ -1097,14 +1075,6 @@ const Profile = () => {
             setImagePreview("");
             setBannerPreview("");
           }}
-        />
-      )}
-      {selectedProject.id && (
-        <ProjectModal
-          projectId={selectedProject.id}
-          initialInsight={selectedProject.insight}
-          onClose={() => setSelectedProject({ id: null, insight: null })}
-          currentUser={authUser}
         />
       )}
     </div>
