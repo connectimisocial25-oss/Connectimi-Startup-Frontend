@@ -10,7 +10,7 @@ export function LoginForm({ onToggle, compact = false }) {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [accountType, setAccountType] = useState("personal");
+  const [accountType] = useState("personal");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -144,7 +144,7 @@ export function LoginForm({ onToggle, compact = false }) {
 
       {!compact && (
         <div className="auth-footer">
-          New to Connectimi?
+          New to Connectimi Legal?
           <button onClick={onToggle} className="auth-link-btn">
             Join now
           </button>
@@ -191,7 +191,7 @@ function Login() {
           </div>
           <h1 className="auth-title">Welcome Back</h1>
           <p className="auth-subtitle">
-            Stay updated on your professional world
+            Empowering Law Students & Advocates across the Constitution
           </p>
         </div>
 

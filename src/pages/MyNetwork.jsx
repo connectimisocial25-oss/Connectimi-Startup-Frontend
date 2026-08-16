@@ -88,7 +88,7 @@ const MyNetwork = () => {
         id: invite.id || invite._id,
         userId: invite.requester?.id || invite.requester?._id,
         name: invite.requester?.name || invite.requester?.consultant_name || "Anonymous",
-        role: invite.requester?.headline || invite.requester?.industry || "Connectimi Member",
+        role: invite.requester?.headline || invite.requester?.industry || "Legal Scholar / Advocate",
         userRole: invite.requester?.role || "professional",
         avatar: invite.requester?.profile_picture || invite.requester?.logo || "/images/default_profile_picture.png",
         accountType: invite.requester?.account_type || (invite.requester?.role === "professional" ? "personal" : "consultant"),
@@ -97,7 +97,7 @@ const MyNetwork = () => {
     const mapSuggestion = (sug) => ({
         id: sug.id || sug._id,
         name: sug.name || sug.consultant_name || "Anonymous",
-        role: sug.headline || sug.industry || "Connectimi Member",
+        role: sug.headline || sug.industry || "Legal Scholar / Advocate",
         userRole: sug.role || "professional",
         avatar: sug.profile_picture || sug.logo || "/images/default_profile_picture.png",
         accountType: sug.account_type || (sug.role === "professional" ? "personal" : "consultant"),
@@ -106,7 +106,7 @@ const MyNetwork = () => {
     const mapConnection = (conn) => ({
         id: conn.profile?.id || conn.profile?._id,
         name: conn.profile?.name || conn.profile?.consultant_name || "Anonymous",
-        role: conn.profile?.headline || conn.profile?.industry || "Connectimi Member",
+        role: conn.profile?.headline || conn.profile?.industry || "Legal Scholar / Advocate",
         userRole: conn.profile?.role || "professional",
         avatar: conn.profile?.profile_picture || conn.profile?.logo || "/images/default_profile_picture.png",
         accountType: conn.profile?.account_type || (conn.profile?.role === "professional" ? "personal" : "consultant"),

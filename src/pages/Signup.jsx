@@ -62,14 +62,14 @@ export function SignupForm({ onToggle, compact = false }) {
           className={`toggle-btn ${accountType === "personal" ? "active" : ""}`}
           onClick={() => setAccountType("personal")}
         >
-          Personal
+          Law Student / Advocate
         </button>
         <button
           type="button"
           className={`toggle-btn ${accountType === "organization" || accountType === "consultant" ? "active" : ""}`}
           onClick={() => setAccountType("organization")}
         >
-          Organization
+          Law Firm / Institution
         </button>
       </div>
 
@@ -102,7 +102,7 @@ export function SignupForm({ onToggle, compact = false }) {
             <input
               type="text"
               className="auth-input"
-              placeholder="Organization name"
+              placeholder="Organization / Law Firm name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               required
@@ -181,7 +181,7 @@ export function SignupForm({ onToggle, compact = false }) {
 
       {!compact && (
         <div className="auth-footer">
-          Already on Connectimi?
+          Already registered in the Legal Network?
           <button onClick={onToggle} className="auth-link-btn">Sign in</button>
         </div>
       )}
@@ -223,8 +223,8 @@ function Signup() {
               aria-label="Connectimi Logo"
             />
           </div>
-          <h1 className="auth-title">Join Connectimi</h1>
-          <p className="auth-subtitle">Start building meaningful connections today</p>
+          <h1 className="auth-title">Join Connectimi Legal</h1>
+          <p className="auth-subtitle">Connect with law students, advocates, chambers & legal scholars</p>
         </div>
 
         <SignupForm onToggle={() => navigate("/")} />

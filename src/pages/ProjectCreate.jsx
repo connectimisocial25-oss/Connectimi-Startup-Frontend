@@ -20,12 +20,14 @@ const STATUS_OPTIONS = [
 ];
 
 const CATEGORY_OPTIONS = [
-  { value: "web", label: "Web Application" },
-  { value: "mobile", label: "Mobile App" },
-  { value: "ai-ml", label: "AI / Machine Learning" },
-  { value: "devops", label: "DevOps & Cloud" },
-  { value: "open-source", label: "Open Source Tool" },
-  { value: "other", label: "Other" },
+  { value: "constitutional", label: "Constitutional Law & Rights" },
+  { value: "case-analysis", label: "Case Analysis & Commentary" },
+  { value: "moot-court", label: "Moot Court Memorial / Brief" },
+  { value: "policy-draft", label: "Statutory Draft & Policy Paper" },
+  { value: "pil", label: "Public Interest Litigation (PIL)" },
+  { value: "research-paper", label: "Legal Research & Jurisprudence" },
+  { value: "corporate-legal", label: "Corporate & Commercial Law" },
+  { value: "other", label: "Other Legal Works" },
 ];
 
 export default function ProjectCreate() {
@@ -260,9 +262,9 @@ export default function ProjectCreate() {
     <div className="project-create-container">
       <div className="project-create-card">
         <div className="project-create-header">
-          <h1 className="project-create-title">Create Project Showcase</h1>
+          <h1 className="project-create-title">Create Legal & Research Showcase</h1>
           <p className="project-create-subtitle">
-            Highlight your software project to your network on Connectimi.
+            Highlight your constitutional brief, case commentary, or moot research to your network on Connectimi.
           </p>
         </div>
 
@@ -310,12 +312,12 @@ export default function ProjectCreate() {
           <div className="step-form-content">
             <div className="form-group">
               <label className="form-label">
-                Project Title <span className="required-star">*</span>
+                Brief / Case Title <span className="required-star">*</span>
               </label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="e.g. Connectimi Developer Portal"
+                placeholder="e.g. Constitutional Review of Article 21 & Digital Privacy"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={100}
@@ -325,12 +327,12 @@ export default function ProjectCreate() {
 
             <div className="form-group">
               <label className="form-label">
-                Short Description <span className="required-star">*</span>
+                Short Summary <span className="required-star">*</span>
               </label>
               <input
                 type="text"
                 className="form-input"
-                placeholder="Brief summary for feed card (max 300 chars)"
+                placeholder="Brief summary of legal ratio and key propositions (max 300 chars)"
                 value={shortDescription}
                 onChange={(e) => setShortDescription(e.target.value)}
                 maxLength={300}
@@ -342,11 +344,11 @@ export default function ProjectCreate() {
 
             <div className="form-group">
               <label className="form-label">
-                Full Description <span className="required-star">*</span>
+                Full Legal Analysis <span className="required-star">*</span>
               </label>
               <textarea
                 className="form-textarea"
-                placeholder="Detailed overview of what your project does, the problem it solves, architecture, etc."
+                placeholder="Detailed analysis of legal issues, statutory provisions, precedent critique, and arguments..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={6}
@@ -397,7 +399,7 @@ export default function ProjectCreate() {
           <div className="step-form-content">
             <div className="form-group">
               <label className="form-label">
-                Technologies & Tech Stack <span className="required-star">*</span>
+                Statutes, Codes & Legal Frameworks <span className="required-star">*</span>
               </label>
               <div className="tags-input-container">
                 {techStack.map((tech, idx) => (
@@ -415,7 +417,7 @@ export default function ProjectCreate() {
                 <input
                   type="text"
                   className="tag-input-field"
-                  placeholder="Type tech and press Enter or comma..."
+                  placeholder="Type statute (e.g. Article 21, CrPC, Contract Act) & press Enter..."
                   value={techInput}
                   onChange={(e) => setTechInput(e.target.value)}
                   onKeyDown={handleAddTech}

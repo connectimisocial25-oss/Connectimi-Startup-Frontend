@@ -8,19 +8,20 @@ import { parseApiError } from "../utils/adapters";
 import "./Auth.css";
 
 const SUGGESTED_SKILLS = [
-  "Python",
-  "React",
-  "Node.js",
-  "Java",
-  "SQL",
-  "AWS",
-  "UI/UX",
-  "Figma",
-  "Marketing",
-  "Project Management",
-  "Communication",
-  "Public Speaking",
-  "Data Science",
+  "Constitutional Law",
+  "Criminal Law & Procedure",
+  "Civil Litigation & CPC",
+  "Legal Research & Drafting",
+  "Moot Court & Advocacy",
+  "Corporate & Commercial Law",
+  "Human Rights & PIL",
+  "Contract Drafting",
+  "Intellectual Property Rights",
+  "Jurisprudence & Interpretation",
+  "Arbitration & Mediation (ADR)",
+  "Cyber & Privacy Law",
+  "Environmental Law",
+  "Taxation Law",
 ];
 
 function AccountCompletion() {
@@ -241,10 +242,10 @@ function AccountCompletion() {
       <div className="auth-card card-wide" ref={cardRef}>
         <div className="auth-header">
           <h1 className="auth-title">
-            Welcome to Connectimi, {tempData?.firstName}!
+            Welcome to Connectimi Legal, {tempData?.firstName}!
           </h1>
           <p className="auth-subtitle">
-            Let's finish setting up your professional profile.
+            Let's set up your legal scholar & advocate profile.
           </p>
         </div>
 
@@ -347,7 +348,7 @@ function AccountCompletion() {
               <input
                 type="text"
                 className="auth-input"
-                placeholder="e.g., Senior Software Engineer at Company"
+                placeholder="e.g., Constitutional Law Scholar | Advocate | Final Year LL.B Candidate"
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
               />
@@ -357,7 +358,7 @@ function AccountCompletion() {
               <input
                 type="text"
                 className="auth-input"
-                placeholder="City, Country"
+                placeholder="City, High Court / Bar Jurisdiction"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
@@ -367,17 +368,17 @@ function AccountCompletion() {
               <input
                 type="tel"
                 className="auth-input"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+91 98765 43210"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
             <div className="auth-field">
-              <label className="field-label">WEBSITE</label>
+              <label className="field-label">WEBSITE / PORTFOLIO</label>
               <input
                 type="url"
                 className="auth-input"
-                placeholder="https://yourwebsite.com"
+                placeholder="https://yourchambers.com or research profile"
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
               />
@@ -385,10 +386,10 @@ function AccountCompletion() {
           </div>
 
           <div className="auth-field">
-            <label className="field-label">ABOUT</label>
+            <label className="field-label">ABOUT / BIO</label>
             <textarea
               className="auth-input"
-              placeholder="Tell us about yourself..."
+              placeholder="Tell us about your legal journey, practice areas, moot court experience, or constitutional research..."
               value={about}
               onChange={(e) => setAbout(e.target.value)}
               rows={4}
@@ -422,7 +423,7 @@ function AccountCompletion() {
               <div className="item-row">
                 <input
                   type="text"
-                  placeholder="Title"
+                  placeholder="Role (e.g. Legal Intern, Junior Counsel, Associate)"
                   value={newExperience.title}
                   onChange={(e) =>
                     setNewExperience({
@@ -434,7 +435,7 @@ function AccountCompletion() {
                 />
                 <input
                   type="text"
-                  placeholder="Company"
+                  placeholder="Chamber / Law Firm / Court / Institution"
                   value={newExperience.company}
                   onChange={(e) =>
                     setNewExperience({
@@ -613,7 +614,7 @@ function AccountCompletion() {
               <div className="item-row">
                 <input
                   type="text"
-                  placeholder="Institution Name"
+                  placeholder="Law School / University / College"
                   value={newEducation.school}
                   onChange={(e) =>
                     setNewEducation({ ...newEducation, school: e.target.value })
@@ -622,7 +623,7 @@ function AccountCompletion() {
                 />
                 <input
                   type="text"
-                  placeholder="Degree"
+                  placeholder="Degree (e.g. B.A. LL.B., LL.B., LL.M., Ph.D.)"
                   value={newEducation.degree}
                   onChange={(e) =>
                     setNewEducation({ ...newEducation, degree: e.target.value })
@@ -677,7 +678,7 @@ function AccountCompletion() {
               <div className="item-row">
                 <input
                   type="text"
-                  placeholder="Field of Study"
+                  placeholder="Field of Law (e.g. Constitutional Law, Criminal Law)"
                   value={newEducation.field}
                   onChange={(e) =>
                     setNewEducation({ ...newEducation, field: e.target.value })

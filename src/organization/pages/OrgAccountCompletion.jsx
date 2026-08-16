@@ -8,9 +8,9 @@ import { parseApiError } from "../../utils/adapters";
 import "../../pages/Auth.css";
 
 const SUGGESTED_SPECIALTIES = [
-    "Software Development", "Cloud Computing", "AI & Machine Learning",
-    "Digital Marketing", "Financial Services", "Healthcare Technology",
-    "E-commerce", "Education", "Consulting", "Cybersecurity"
+    "Constitutional Litigation", "Corporate & Commercial Law", "Criminal Defense",
+    "Human Rights & Public Policy", "Dispute Resolution & ADR", "Intellectual Property Rights",
+    "Cyber & Digital Rights Law", "Environmental Law", "Legal Aid & Pro Bono", "Legal Research & Advisory"
 ];
 
 const COMPANY_SIZES = [
@@ -184,7 +184,7 @@ function OrgAccountCompletion() {
             <div className="auth-card card-wide" ref={cardRef}>
                 <div className="auth-header">
                     <h1 className="auth-title">Welcome, {tempData?.firstName}!</h1>
-                    <p className="auth-subtitle">Let's set up your organization's presence on Connectimi.</p>
+                    <p className="auth-subtitle">Set up your Law Firm, Chamber, or Legal Institution on Connectimi.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="auth-form-content">
@@ -261,13 +261,13 @@ function OrgAccountCompletion() {
                     {/* Basic Info */}
                     <div className="form-grid-completion">
                         <div className="auth-field">
-                            <label className="field-label">INDUSTRY / TYPE</label>
+                            <label className="field-label">PRACTICE AREA / TYPE</label>
                             <div className="input-with-icon">
                                 <FaBuilding className="input-icon" />
                                 <input
                                     type="text"
                                     className="auth-input input-icon-padding"
-                                    placeholder="e.g., Software Development"
+                                    placeholder="e.g., Constitutional Law Firm / Chamber"
                                     value={industry}
                                     onChange={(e) => setIndustry(e.target.value)}
                                     required

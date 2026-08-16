@@ -82,13 +82,13 @@ const EditForm = ({
       <div className="form-row">
         <input
           type="text"
-          placeholder="Title"
+          placeholder="Role (e.g. Legal Associate, Junior Counsel)"
           value={value.title}
           onChange={(e) => onChange("title", e.target.value)}
         />
         <input
           type="text"
-          placeholder="Company"
+          placeholder="Chamber / Law Firm / Court"
           value={value.company}
           onChange={(e) => onChange("company", e.target.value)}
         />
@@ -170,13 +170,13 @@ const EditForm = ({
       <div className="form-row">
         <input
           type="text"
-          placeholder="School"
+          placeholder="Law School / University"
           value={value.school}
           onChange={(e) => onChange("school", e.target.value)}
         />
         <input
           type="text"
-          placeholder="Degree"
+          placeholder="Degree (e.g. B.A. LL.B., LL.M.)"
           value={value.degree}
           onChange={(e) => onChange("degree", e.target.value)}
         />
@@ -225,7 +225,7 @@ const EditForm = ({
       <div className="form-row-2col">
         <input
           type="text"
-          placeholder="Field of Study"
+          placeholder="Field of Law (e.g. Constitutional Law)"
           value={value.field || ""}
           onChange={(e) => onChange("field", e.target.value)}
         />
@@ -332,7 +332,7 @@ const EditForm = ({
                   type="text"
                   value={editData.headline}
                   onChange={(e) => handleInputChange("headline", e.target.value)}
-                  placeholder="e.g., Senior Software Engineer at Company"
+                  placeholder="e.g., Constitutional Law Scholar | Advocate | LL.B Candidate"
                 />
               </div>
 
@@ -343,7 +343,7 @@ const EditForm = ({
                   type="text"
                   value={editData.location}
                   onChange={(e) => handleInputChange("location", e.target.value)}
-                  placeholder="City, Country"
+                  placeholder="City, High Court Jurisdiction"
                 />
               </div>
 
@@ -365,7 +365,7 @@ const EditForm = ({
                   type="tel"
                   value={editData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+91 98765 43210"
                 />
               </div>
 
@@ -376,23 +376,23 @@ const EditForm = ({
                   type="url"
                   value={editData.website}
                   onChange={(e) => handleInputChange("website", e.target.value)}
-                  placeholder="https://yourwebsite.com"
+                  placeholder="https://yourchambers.com or research profile"
                 />
               </div>
 
               <div className="form-group full-width">
-                <label htmlFor="edit-about">About</label>
+                <label htmlFor="edit-about">About / Bio</label>
                 <textarea
                   id="edit-about"
                   value={editData.about}
                   onChange={(e) => handleInputChange("about", e.target.value)}
-                  placeholder="Tell us about yourself..."
+                  placeholder="Tell us about your legal journey, practice areas, moot court experience, or constitutional research..."
                   rows={4}
                 />
               </div>
 
               <p className="section-hint full-width">
-                Projects are showcased and managed via the <strong>Showcase Project</strong> button on your profile page.
+                Briefs & Research showcases are managed via the <strong>Showcase Project / Brief</strong> button on your profile page.
               </p>
             </div>
           </AccordionSection>
@@ -469,7 +469,7 @@ const EditForm = ({
             <div className="skill-input-container">
               <input
                 type="text"
-                placeholder="Add a new skill"
+                placeholder="Add legal skill / practice area"
                 value={editData.newSkill}
                 onChange={(e) => handleInputChange("newSkill", e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addSkill()}

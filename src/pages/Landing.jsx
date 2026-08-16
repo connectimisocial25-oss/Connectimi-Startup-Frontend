@@ -22,46 +22,46 @@ import { useTheme } from '../context/ThemeContext';
 
 // A stand-in profile for the hero animation. Deliberately a person, not a chart.
 const SCAN_LINES = [
-    { key: 'Name', val: 'Ananya R.', kind: 'identity' },
-    { key: 'Degree', val: 'B.Tech Electronics · 2027', kind: 'credential' },
-    { key: 'Campus', val: 'Nagpur · Tier-3 college', kind: 'cut', tag: 'Cut' },
-    { key: 'CGPA', val: '6.9', kind: 'credential' },
-    { key: 'Built', val: '4 projects, all shipped and live', kind: 'work', tag: 'Read' },
-    { key: 'Stack', val: 'React · Node · Socket.io · Postgres', kind: 'work', tag: 'Read' },
-    { key: 'Wrote', val: 'What broke on each one, and the fix', kind: 'work', tag: 'Read' },
+    { key: 'Advocate', val: 'Aarav Sharma', kind: 'identity' },
+    { key: 'Degree', val: 'B.A. LL.B (Hons.) · 2026', kind: 'credential' },
+    { key: 'College', val: 'Regional Law College · Non-NLU', kind: 'cut', tag: 'Cut' },
+    { key: 'Rank', val: 'First Class · Bar Council Enrolled', kind: 'credential' },
+    { key: 'Showcase', val: '3 Constitutional Briefs & PIL Drafts', kind: 'work', tag: 'Read' },
+    { key: 'Domain', val: 'Art. 21 · Criminal Writs · High Court PIL · ADR', kind: 'work', tag: 'Read' },
+    { key: 'Analysis', val: 'Judicial precedent critique & statutory ratio', kind: 'work', tag: 'Read' },
 ];
 
-// The gates a campus placement process actually applies. `id` maps to a checkbox.
+// The gates traditional chambers and law firms often apply. `id` maps to a checkbox.
 const GATES = [
-    { id: 'cgpa', rule: 'CGPA 7.5 and above', you: 'My CGPA is 7.5 or higher' },
-    { id: 'clear', rule: 'No active backlogs', you: 'No active backlogs' },
-    { id: 'branch', rule: 'Computer Science and IT branches only', you: "I'm in CSE or IT" },
-    { id: 'tier', rule: 'Tier-1 campuses only', you: 'My campus gets those visits' },
-    { id: 'intern', rule: 'Prior internship required', you: "I've interned before" },
+    { id: 'tier', rule: 'Tier-1 National Law University (NLU) only', you: 'I attend a top-tier NLU' },
+    { id: 'rank', rule: 'Top 5% batch rank requirement', you: 'I am in the top 5% of my law class' },
+    { id: 'legacy', rule: 'Chamber references / Family legacy', you: 'I have senior advocate connections' },
+    { id: 'moot', rule: 'National Moot Court Winner trophy', you: 'I have won national/international moots' },
+    { id: 'intern', rule: 'Tier-1 corporate law firm internship', you: "I've interned at Tier-1 law firms" },
 ];
 
 // The five steps of the real showcase wizard, in order — src/pages/ProjectCreate.jsx
 const WIZARD = [
-    { name: 'Basic info', icon: FiFileText, fields: 'Project title, a one-line description, and the full write-up.' },
-    { name: 'Links', icon: FiLink2, fields: 'Your GitHub repository and the live demo. The repo URL is checked.' },
+    { name: 'Case & Brief Info', icon: FiFileText, fields: 'Title of your legal brief, case commentary, or constitutional analysis.' },
+    { name: 'Citations & Sources', icon: FiLink2, fields: 'Links to judgment citations, legal research, or repository drafts.' },
     {
-        name: 'Details', icon: FiLayers,
-        fields: 'Everything you built it with, plus where it stands today.',
-        enums: ['in-progress', 'completed', 'planned', 'archived', 'web', 'mobile', 'ai-ml', 'devops', 'open-source'],
+        name: 'Domain & Statutes', icon: FiLayers,
+        fields: 'Legal domain, relevant constitutional articles, and statutory provisions.',
+        enums: ['constitutional', 'criminal-law', 'civil-litigation', 'pil', 'moot-court', 'corporate-law', 'cyber-law', 'human-rights'],
     },
-    { name: 'Images', icon: FiImage, fields: 'Up to three. The first one becomes the cover.' },
-    { name: 'Additional', icon: FiAward, fields: 'Key features, the technical problems you hit, and what you took away from it.' },
+    { name: 'Documents & Briefs', icon: FiImage, fields: 'Up to three exhibits, draft snapshots, or cover graphics.' },
+    { name: 'Key Arguments', icon: FiAward, fields: 'Core legal propositions, ratio decidendi, and constitutional learnings.' },
 ];
 
 const SHIPPED = [
-    { t: 'Project showcase', d: 'The five-step wizard, repo and demo links, image gallery, and a public page per project.' },
-    { t: 'Feed', d: 'Text and image posts, projects, likes, comments.' },
-    { t: 'Connections', d: 'Requests, accept and decline, follow and followers, people suggestions.' },
-    { t: 'Messages', d: 'Real-time. Typing indicators, online status, unread counts.' },
-    { t: 'Notifications', d: 'Likes, comments, connection requests, accepts, messages.' },
-    { t: 'Profile', d: 'Experience, education, skills, and a CV you can print straight from the page.' },
-    { t: 'Install as an app', d: 'Add it to your home screen. It runs without a browser bar.' },
-    { t: 'Organization accounts', d: 'A separate portal with its own course catalog and campaigns.' },
+    { t: 'Legal & Case Showcase', d: 'The five-step wizard, judgment links, document previews, and a public page per brief.' },
+    { t: 'Legal Discourse Feed', d: 'Constitutional arguments, case analysis, discussions, and peer commentary.' },
+    { t: 'Legal Fraternity Network', d: 'Connect with fellow law students, advocates, chambers, and jurists.' },
+    { t: 'Real-Time Messaging', d: 'Legal consultation, case discussions, typing indicators, and unread counts.' },
+    { t: 'Live Notifications', d: 'Citations, peer commentary, connection requests, and discussion updates.' },
+    { t: 'Advocate Profile & CV', d: 'Practice areas, bar admissions, moot achievements, and printable CV.' },
+    { t: 'Install as an App', d: 'Access legal briefs and discussions straight from your device home screen.' },
+    { t: 'Chambers & Law Firms', d: 'A separate portal with campaigns, research catalogs, and firm branding.' },
 ];
 
 const NOT_YET = [
@@ -251,16 +251,16 @@ const Landing = () => {
             {/* ---------------------------------------------------------- HERO */}
             <section className="ln-shell ln-hero">
                 <div ref={heroRef}>
-                    <span className="ln-badge">For students nobody drives to</span>
+                    <span className="ln-badge">For aspiring advocates & guardians of the Constitution</span>
 
                     <h1 className="ln-h1">
-                        A resume gets six seconds. Most of them go to{' '}
+                        Legal brilliance is proven by argument & analysis. Not{' '}
                         <span className="ln-struck">where you studied</span>.
                     </h1>
 
                     <p className="ln-hero-sub">
-                        Connectimi is where you put the work instead — the repository, the live
-                        demo, and an honest account of what broke along the way.
+                        Connectimi is where law students and advocates publish their work — constitutional
+                        briefs, landmark case analyses, moot court memorials, and legal research.
                     </p>
 
                     <div className="ln-hero-actions">
@@ -275,7 +275,7 @@ const Landing = () => {
                     <div className="ln-card ln-scan" data-pass={pass}>
                         <div className="ln-scan-head">
                             <span className="ln-scan-mode">
-                                {pass === 'scan' ? 'Screening pass' : 'Read in full'}
+                                {pass === 'scan' ? 'Pedigree screening' : 'Read in full'}
                             </span>
                             <span className="ln-scan-timer">
                                 {pass === 'scan' ? '6 sec' : 'No limit'}
@@ -295,12 +295,12 @@ const Landing = () => {
 
                         <p className="ln-scan-foot">
                             {pass === 'scan'
-                                ? 'Screened out on line three. The four lines under it were never reached.'
-                                : 'Nothing was screened out. The last three lines are the ones that matter.'}
+                                ? 'Screened out on line three. The four lines of constitutional analysis were never reached.'
+                                : 'Nothing was screened out. Your legal research and constitutional arguments take center stage.'}
                         </p>
                     </div>
 
-                    <p className="ln-hero-note">Ananya is made up. The gap is not.</p>
+                    <p className="ln-hero-note">Aarav is an example. The pedigree bias in the legal profession is real.</p>
                 </div>
 
                 {/* ------------------------------------------------- AUTH PANEL */}
@@ -380,9 +380,9 @@ const Landing = () => {
                 </div>
 
                 <p className="ln-verdict">
-                    Connectimi applies none of them. There is no CGPA field on this platform, no
-                    campus tier, and no branch gate — because we never built one. What it holds
-                    is the work you publish, and anyone can open it.
+                    Connectimi removes the pedigree filter. There is no college-tier barrier on this platform,
+                    no legacy gate — because we believe your legal research, constitutional analysis, and
+                    advocacy speak for themselves.
                 </p>
             </section>
 
@@ -481,11 +481,10 @@ const Landing = () => {
             <section className="ln-shell ln-section reveal-on-scroll">
                 <div className="ln-card ln-close">
                     <div className="ln-close-glow" />
-                    <h2 className="ln-h2">Put up one project. See who opens it.</h2>
+                    <h2 className="ln-h2">Publish your first legal brief. Let the fraternity read it.</h2>
                     <p>
-                        An account costs nothing and takes a minute. The first project takes
-                        longer, because writing down what broke is the hard part — and it is the
-                        part worth reading.
+                        An account is free and takes a minute. Publishing a constitutional analysis or
+                        case commentary builds your legal reputation before your first court appearance.
                     </p>
                     <button className="ln-btn ln-btn-lg" onClick={() => goToAuth(true)}>
                         Create a free account

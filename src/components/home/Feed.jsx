@@ -975,7 +975,7 @@ const Feed = () => {
             size={48}
           />
           <div className="share-input-wrapper" onClick={openPostModal} style={{ cursor: "pointer" }}>
-            <span className="share-placeholder">Build Something meaningful....</span>
+            <span className="share-placeholder">Share legal insights, case law updates, constitutional analysis...</span>
             <div className="share-actions-inline">
               <button
                 className="btn-miing"
@@ -1008,7 +1008,7 @@ const Feed = () => {
             className="btn-icon-text"
             onClick={() => navigate("/projects/new")}
           >
-            <Icon name="project" style={{ color: "#3b82f6" }} /> Project
+            <Icon name="project" style={{ color: "#3b82f6" }} /> Legal Brief
           </button>
           <button
             type="button"
@@ -1168,7 +1168,7 @@ const Feed = () => {
             <textarea
               ref={postTextareaRef}
               className="post-modal-textarea"
-              placeholder="What do you want to talk about?"
+              placeholder="What constitutional or legal insights do you want to share today?"
               value={newPostContent}
               onChange={(e) => {
                 setNewPostContent(e.target.value);

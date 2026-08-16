@@ -427,9 +427,10 @@ rather than invented. If you change the app's design system, change it here too.
 - **`src/components/Navbar.css`**: Added `position: relative` to `.mobile-nav-item` plus a `.mobile-nav-item .nav-icon-badge` offset so badges anchor over the icon in the mobile bottom nav.
 - **Routes untouched**: `/work`, `/courses`, and `/courses/:courseId` remain registered in `App.jsx`. `Work.jsx` and `Courses.jsx` (both "Coming Soon" placeholders) and `CourseRoadmap.jsx` are now reachable by direct URL only.
 
-### Profile Navigation from Feed Posts
+### Legal & Constitutional Platform Motto Pivot
 
-- **`Feed.jsx` (InsightCard & Post Modal Header)**: Added click navigation to `/profile/${authorId}` on author avatar and name in both `InsightCard` footer and post details popup modal header.
-- **`ProjectCard.jsx` (Author Footer)**: Added `onClick` handler on author avatar and name in `ProjectCard` footer to navigate to `/profile/${authorId}` without triggering the project modal popup.
-- **`ProjectModal.jsx` (Author Header)**: Updated `.project-modal-author-info` header to be clickable, closing the modal and navigating to `/profile/${authorId}`.
+- **Domain Pivot**: Rebranded platform taglines, copywriting, and profile options to cater specifically to **law students, legal scholars, advocates, lawyers, and constitutional jurists**.
+- **Auth & Onboarding Updates**: Updated `Login.jsx`, `Signup.jsx`, `AccountCompletion.jsx`, and `OrgAccountCompletion.jsx` with legal taglines, "Law Student / Advocate" vs "Law Firm / Institution" toggles, and legal skill sets (Constitutional Law, Criminal Jurisprudence & CrPC, Civil Litigation & CPC, Legal Research & Drafting, Moot Court & Advocacy, Human Rights & PIL, Arbitration & Mediation).
+- **Public Landing Page**: Updated `Landing.jsx` hero badge, headline, subtitle, scan lines animation (`B.A. LL.B`, `Constitutional Briefs`), filter gates (tier-1 NLU/pedigree bias), and wizard steps for legal showcases.
+- **Showcase & Feed Placeholders**: Updated `ProjectCreate.jsx` with legal categories (Constitutional Law, Case Commentary, Moot Court Memorial, Policy Draft, PIL, Legal Research) and statutory tags. Updated `Feed.jsx` with legal discourse placeholders.
 
