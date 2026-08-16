@@ -4,435 +4,508 @@ import './Landing.css';
 import Connectimi_logo from '../components/Connectimi_logo';
 import { LoginForm } from './Login';
 import { SignupForm } from './Signup';
-import { FiDownload } from 'react-icons/fi';
-import { 
-    FiTerminal, 
-    FiMessageSquare, 
-    FiUsers, 
-    FiUserCheck, 
-    FiBriefcase, 
-    FiShare2, 
-    FiAward, 
-    FiX, 
-    FiCheck 
+import {
+    FiDownload, FiSun, FiMoon, FiFileText, FiLink2,
+    FiLayers, FiImage, FiAward,
 } from 'react-icons/fi';
 import DownloadAppModal from '../components/DownloadAppModal';
+import { useTheme } from '../context/ThemeContext';
+
+/* ---------------------------------------------------------------------------
+   Content lives up here so the copy is editable without reading JSX.
+
+   Rule this page is written under: every claim below is something the codebase
+   can actually back up. An earlier version advertised skill badges, a gig board
+   and peer cohorts — none of which exist in this repo — plus three invented
+   statistics. If you add a claim here, make sure the product does it first.
+   ------------------------------------------------------------------------- */
+
+// A stand-in profile for the hero animation. Deliberately a person, not a chart.
+const SCAN_LINES = [
+    { key: 'Name', val: 'Ananya R.', kind: 'identity' },
+    { key: 'Degree', val: 'B.Tech Electronics · 2027', kind: 'credential' },
+    { key: 'Campus', val: 'Nagpur · Tier-3 college', kind: 'cut', tag: 'Cut' },
+    { key: 'CGPA', val: '6.9', kind: 'credential' },
+    { key: 'Built', val: '4 projects, all shipped and live', kind: 'work', tag: 'Read' },
+    { key: 'Stack', val: 'React · Node · Socket.io · Postgres', kind: 'work', tag: 'Read' },
+    { key: 'Wrote', val: 'What broke on each one, and the fix', kind: 'work', tag: 'Read' },
+];
+
+// The gates a campus placement process actually applies. `id` maps to a checkbox.
+const GATES = [
+    { id: 'cgpa', rule: 'CGPA 7.5 and above', you: 'My CGPA is 7.5 or higher' },
+    { id: 'clear', rule: 'No active backlogs', you: 'No active backlogs' },
+    { id: 'branch', rule: 'Computer Science and IT branches only', you: "I'm in CSE or IT" },
+    { id: 'tier', rule: 'Tier-1 campuses only', you: 'My campus gets those visits' },
+    { id: 'intern', rule: 'Prior internship required', you: "I've interned before" },
+];
+
+// The five steps of the real showcase wizard, in order — src/pages/ProjectCreate.jsx
+const WIZARD = [
+    { name: 'Basic info', icon: FiFileText, fields: 'Project title, a one-line description, and the full write-up.' },
+    { name: 'Links', icon: FiLink2, fields: 'Your GitHub repository and the live demo. The repo URL is checked.' },
+    {
+        name: 'Details', icon: FiLayers,
+        fields: 'Everything you built it with, plus where it stands today.',
+        enums: ['in-progress', 'completed', 'planned', 'archived', 'web', 'mobile', 'ai-ml', 'devops', 'open-source'],
+    },
+    { name: 'Images', icon: FiImage, fields: 'Up to three. The first one becomes the cover.' },
+    { name: 'Additional', icon: FiAward, fields: 'Key features, the technical problems you hit, and what you took away from it.' },
+];
+
+const SHIPPED = [
+    { t: 'Project showcase', d: 'The five-step wizard, repo and demo links, image gallery, and a public page per project.' },
+    { t: 'Feed', d: 'Text and image posts, projects, likes, comments.' },
+    { t: 'Connections', d: 'Requests, accept and decline, follow and followers, people suggestions.' },
+    { t: 'Messages', d: 'Real-time. Typing indicators, online status, unread counts.' },
+    { t: 'Notifications', d: 'Likes, comments, connection requests, accepts, messages.' },
+    { t: 'Profile', d: 'Experience, education, skills, and a CV you can print straight from the page.' },
+    { t: 'Install as an app', d: 'Add it to your home screen. It runs without a browser bar.' },
+    { t: 'Organization accounts', d: 'A separate portal with its own course catalog and campaigns.' },
+];
+
+const NOT_YET = [
+    { t: 'Jobs and internships', d: 'The board is written. It is not switched on, so we are not going to pretend it is.' },
+    { t: 'Courses for students', d: 'The roadmap view works. The catalog page in front of it does not yet.' },
+    { t: 'Search', d: 'The box in the app header does nothing right now.' },
+];
+
+/* Voice check: these are real people. Edit their lines to sound like them —
+   placeholder wording from us is worse than plain wording from them. */
+const TEAM = [
+    { name: 'Animesh', role: 'CTO', img: '/images/Animesh.jpeg', said: 'I own the architecture. If your conversation drops halfway through, that one is mine.' },
+    { name: 'Suroj', role: 'Developer', img: '/images/Suroj.jpeg', said: 'I build the parts you actually touch — the feed and the chat, the things that have to feel instant.' },
+    { name: 'Sanniv', role: 'Developer', img: '/images/Sanniv.jpeg', said: 'Full stack. Most of the project showcase is mine, including the wizard you are about to fill in.' },
+    { name: 'Arnab', role: 'Developer', img: '/images/Arnab.png', said: 'Backend and performance. I care about the queries nobody ever sees.' },
+];
 
 const Landing = () => {
     const [isLogin, setIsLogin] = useState(true);
-    const [isInstalled, setIsInstalled] = useState(false);
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const leftPanelRef = useRef(null);
-    const rightPanelRef = useRef(null);
-    const formRef = useRef(null);
+    // Both of these are synchronous browser reads, so they seed state directly
+    // rather than being set from an effect on the first render.
+    const [isInstalled, setIsInstalled] = useState(() =>
+        Boolean(
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone ||
+            localStorage.getItem('connectimi_app_installed') === 'true'
+        )
+    );
+    const [deferredPrompt, setDeferredPrompt] = useState(() => window.__deferredPrompt || null);
 
+    // Which way the hero card is being read: 'scan' = recruiter, 'read' = here.
+    // Anyone who asked for reduced motion starts on the second pass and stays.
+    const [pass, setPass] = useState(() =>
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'read' : 'scan'
+    );
+    const [met, setMet] = useState({ clear: true });
+
+    const headerRef = useRef(null);
+    const heroRef = useRef(null);
+    const authRef = useRef(null);
+    const scanBodyRef = useRef(null);
+    const sweepRef = useRef(null);
+
+    const { theme, toggleTheme } = useTheme() || {};
+    const cutCount = GATES.filter((g) => !met[g.id]).length;
+
+    /* --- PWA install state (unchanged behaviour, still driven by main.jsx) -- */
     useEffect(() => {
-        // 1. Check standalone / installation state
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        const isLocalInstalled = localStorage.getItem('connectimi_app_installed') === 'true';
-        
-        if (isStandalone || isLocalInstalled) {
-            setIsInstalled(true);
-        }
-
-        // 2. Pick up prompt from main.jsx if available
-        if (window.__deferredPrompt) {
-            setDeferredPrompt(window.__deferredPrompt);
-        }
-
-        const handleBeforeInstallPrompt = (e) => {
+        const onBeforeInstall = (e) => {
             e.preventDefault();
             window.__deferredPrompt = e;
             setDeferredPrompt(e);
         };
-        
-        const handlePromptReady = () => {
-            if (window.__deferredPrompt) {
-                setDeferredPrompt(window.__deferredPrompt);
-            }
+        const onPromptReady = () => {
+            if (window.__deferredPrompt) setDeferredPrompt(window.__deferredPrompt);
         };
-
-        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-        window.addEventListener('pwa-prompt-ready', handlePromptReady);
-
-        const handleAppInstalled = () => {
+        const onInstalled = () => {
             setIsInstalled(true);
             setDeferredPrompt(null);
             window.__deferredPrompt = null;
             localStorage.setItem('connectimi_app_installed', 'true');
         };
 
-        window.addEventListener('appinstalled', handleAppInstalled);
+        window.addEventListener('beforeinstallprompt', onBeforeInstall);
+        window.addEventListener('pwa-prompt-ready', onPromptReady);
+        window.addEventListener('appinstalled', onInstalled);
 
-        // GSAP Hero Entry Animation
-        const tl = gsap.timeline();
-        if (leftPanelRef.current) {
-            tl.fromTo(leftPanelRef.current,
-                { y: 40, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out' }
-            );
-        }
-        if (rightPanelRef.current) {
-            tl.fromTo(rightPanelRef.current,
-                { y: 40, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out' },
-                "-=0.6"
-            );
-        }
-
-        // IntersectionObserver for subtle scroll reveal
-        const reveals = document.querySelectorAll('.reveal-on-scroll');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -40px 0px'
-        });
-
-        reveals.forEach(el => observer.observe(el));
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) entry.target.classList.add('is-visible');
+                });
+            },
+            { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+        );
+        document.querySelectorAll('.reveal-on-scroll').forEach((el) => observer.observe(el));
 
         return () => {
-            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-            window.removeEventListener('pwa-prompt-ready', handlePromptReady);
-            window.removeEventListener('appinstalled', handleAppInstalled);
+            window.removeEventListener('beforeinstallprompt', onBeforeInstall);
+            window.removeEventListener('pwa-prompt-ready', onPromptReady);
+            window.removeEventListener('appinstalled', onInstalled);
             observer.disconnect();
         };
     }, []);
 
+    /* --- entrance, matching the rest of the app ----------------------------
+       Navbar.jsx and every page view use the same signature: y offset in,
+       0.8s, power3.out, 0.1–0.15 stagger. Skipped entirely under reduced
+       motion so nothing is left stranded at opacity 0.
+       --------------------------------------------------------------------- */
     useEffect(() => {
-        if (formRef.current) {
-            gsap.fromTo(formRef.current,
-                { y: 15, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }
-            );
-        }
-    }, [isLogin]);
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const handleSuccessfulInstall = () => {
-        setIsInstalled(true);
-        localStorage.setItem('connectimi_app_installed', 'true');
-    };
+        const ctx = gsap.context(() => {
+            if (headerRef.current) {
+                gsap.fromTo(headerRef.current,
+                    { y: -100, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
+            }
+            if (heroRef.current) {
+                gsap.fromTo(heroRef.current.children,
+                    { y: 30, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.1 });
+            }
+        });
+        return () => ctx.revert();
+    }, []);
 
-    const scrollToAuth = (showSignUp = false) => {
-        if (showSignUp) {
-            setIsLogin(false);
-        }
-        if (rightPanelRef.current) {
-            const yOffset = -100;
-            const element = rightPanelRef.current;
-            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-        }
+    /* --- the six-second scan ----------------------------------------------
+       Two passes on a loop. The first is fast and stops at the campus line;
+       the second is slow and reads everything. GSAP only moves the sweep bar
+       and flips `pass` — all the dimming and redaction is CSS, so there is one
+       source of truth for how a pass looks.
+       --------------------------------------------------------------------- */
+    useEffect(() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const sweep = sweepRef.current;
+        const body = scanBodyRef.current;
+        if (!sweep || !body) return;
+
+        const travel = () => body.offsetHeight + 80;
+        const tl = gsap.timeline({ repeat: -1, delay: 1 });
+
+        tl.call(() => setPass('scan'))
+            .set(sweep, { opacity: 1, y: -80 })
+            .to(sweep, { y: travel, duration: 0.7, ease: 'none' })
+            .set(sweep, { opacity: 0 })
+            .to({}, { duration: 2.0 })
+            .call(() => setPass('read'))
+            .set(sweep, { opacity: 1, y: -80 })
+            .to(sweep, { y: travel, duration: 1.6, ease: 'power1.inOut' })
+            .set(sweep, { opacity: 0 })
+            .to({}, { duration: 3.4 });
+
+        return () => tl.kill();
+    }, []);
+
+    const goToAuth = (signUp = false) => {
+        if (signUp) setIsLogin(false);
+        const el = authRef.current;
+        if (!el) return;
+        window.scrollTo({
+            top: el.getBoundingClientRect().top + window.pageYOffset - 100,
+            behavior: 'smooth',
+        });
     };
 
     return (
-        <div className="landing-page-wrapper">
-            {/* Background Ambient Glow Blobs */}
-            <div className="landing-bg-blobs">
-                <div className="blob blob-emerald"></div>
-                <div className="blob blob-blue"></div>
-            </div>
+        <div className="ln-page">
+            <header className="ln-header" ref={headerRef}>
+                <div className="ln-brand">
+                    <Connectimi_logo />
+                </div>
 
-            {/* Sticky Navigation Bar */}
-            <header className="landing-header">
-                <div className="header-container">
-                    <div className="brand-logo flex-center">
-                        <Connectimi_logo />
-                    </div>
-                    <nav className="header-nav">
-                        <a href="#product-features" className="nav-link">Platform</a>
-                        <a href="#tier23-impact" className="nav-link">Tier 2/3 Talent</a>
-                        <a href="#why-join" className="nav-link">Why Connectimi</a>
-                        <a href="#team" className="nav-link">Team</a>
-                    </nav>
-                    <div className="header-cta flex-center">
-                        {!isInstalled && (
-                            <button className="download-pill-btn" onClick={() => setIsModalOpen(true)}>
-                                <FiDownload />
-                                <span>Install App</span>
-                            </button>
-                        )}
-                        <button className="btn-emerald-sm" onClick={() => scrollToAuth(true)}>
-                            Get Started
+                <nav className="ln-nav">
+                    <a href="#filter">The filter</a>
+                    <a href="#index">What we index</a>
+                    <a href="#log">Build log</a>
+                    <a href="#team">Team</a>
+                </nav>
+
+                <div className="ln-header-cta">
+                    <button
+                        className="ln-icon-btn"
+                        onClick={toggleTheme}
+                        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                    >
+                        {theme === 'dark' ? <FiSun /> : <FiMoon />}
+                    </button>
+                    {!isInstalled && (
+                        <button
+                            className="ln-icon-btn"
+                            onClick={() => setIsModalOpen(true)}
+                            aria-label="Install Connectimi as an app"
+                        >
+                            <FiDownload />
                         </button>
-                    </div>
+                    )}
+                    <button className="ln-btn" onClick={() => goToAuth(true)}>
+                        Create account
+                    </button>
                 </div>
             </header>
 
-            <main className="landing-main-content">
-                {/* 1. HERO SECTION (Split View) */}
-                <section className="hero-section">
-                    <div className="hero-left" ref={leftPanelRef}>
-                        <div className="badge-pill">
-                            <span className="badge-pulse"></span>
-                            <span>🚀 OVER 10,000+ STUDENTS JOINED</span>
-                        </div>
-                        <h1 className="hero-title">
-                            Stop Sending Resumes into the HR Black Hole. <br />
-                            <span className="text-gradient">Get Discovered Directly.</span>
-                        </h1>
-                        <p className="hero-subtitle">
-                            Where Ambition Meets Unfair Opportunity. The exclusive platform for Tier 2 &amp; Tier 3 college students to build, connect, and get discovered.
-                        </p>
+            {/* ---------------------------------------------------------- HERO */}
+            <section className="ln-shell ln-hero">
+                <div ref={heroRef}>
+                    <span className="ln-badge">For students nobody drives to</span>
 
-                        <div className="hero-actions">
-                            <button className="shimmer-btn-lg" onClick={() => scrollToAuth(true)}>
-                                Enter the Graph →
-                            </button>
-                            <div className="social-proof-stack">
-                                <div className="avatar-group">
-                                    <div className="avatar-circle av-1"></div>
-                                    <div className="avatar-circle av-2"></div>
-                                    <div className="avatar-circle av-3"></div>
-                                    <div className="avatar-circle av-more">+10k</div>
-                                </div>
-                                <span className="proof-text">Join ambitious builders</span>
-                            </div>
-                        </div>
-                    </div>
+                    <h1 className="ln-h1">
+                        A resume gets six seconds. Most of them go to{' '}
+                        <span className="ln-struck">where you studied</span>.
+                    </h1>
 
-                    <div className="hero-right" ref={rightPanelRef}>
-                        <div className="landing-auth-wrapper">
-                            <div className="auth-card-glass" ref={formRef}>
-                                <div className="auth-tabs">
-                                    <button
-                                        className={`auth-tab ${isLogin ? 'active' : ''}`}
-                                        onClick={() => setIsLogin(true)}
-                                    >
-                                        Sign In
-                                    </button>
-                                    <button
-                                        className={`auth-tab ${!isLogin ? 'active' : ''}`}
-                                        onClick={() => setIsLogin(false)}
-                                    >
-                                        Join Now
-                                    </button>
-                                </div>
+                    <p className="ln-hero-sub">
+                        Connectimi is where you put the work instead — the repository, the live
+                        demo, and an honest account of what broke along the way.
+                    </p>
 
-                                <div className="auth-header-minimal">
-                                    <h2>{isLogin ? 'Welcome Back' : 'Create Free Account'}</h2>
-                                    <p>{isLogin ? 'Enter your credentials to access your world.' : 'Claim your profile and start getting discovered.'}</p>
-                                </div>
-
-                                {isLogin ? (
-                                    <LoginForm compact />
-                                ) : (
-                                    <SignupForm compact />
-                                )}
-
-                                <div className="auth-footer-minimal">
-                                    <p>
-                                        By continuing, you agree to our
-                                        <span className="link-span"> Terms of Service</span> and
-                                        <span className="link-span"> Privacy Policy</span>.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 2. PRODUCT DESCRIPTION */}
-                <section id="product-features" className="section-block reveal-on-scroll">
-                    <div className="section-header text-center">
-                        <h2 className="section-title">
-                            Not Just Another Social Feed. <span className="text-gradient">Your Career Launchpad.</span>
-                        </h2>
-                        <p className="section-subtitle">
-                            We are an ecosystem engineered to highlight actual skills, live repos, and proof of work over college pedigree.
-                        </p>
-                    </div>
-
-                    <div className="grid-3-col">
-                        <div className="glass-card feature-card">
-                            <div className="card-icon-box">
-                                <FiTerminal className="card-icon" />
-                            </div>
-                            <h3>Project Showcase</h3>
-                            <p>Showcase proof of work, not just bullet points. Your live projects speak louder than paper resumes.</p>
-                        </div>
-
-                        <div className="glass-card feature-card featured-glow">
-                            <div className="card-icon-box">
-                                <FiMessageSquare className="card-icon" />
-                            </div>
-                            <h3>Direct Founder Ping</h3>
-                            <p>Skip the middleman HR filter. Connect directly with founders and hiring teams actively looking for talent.</p>
-                        </div>
-
-                        <div className="glass-card feature-card">
-                            <div className="card-icon-box">
-                                <FiUsers className="card-icon" />
-                            </div>
-                            <h3>Peer-to-Peer Cohorts</h3>
-                            <p>Join ambitious builders. Find co-founders, mentors, and project collaborators in specialized cohorts.</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 3. TIER 2 & TIER 3 SPOTLIGHT & IMPACT */}
-                <section id="tier23-impact" className="section-block reveal-on-scroll">
-                    <div className="glass-card hero-impact-card">
-                        <div className="impact-glow-overlay"></div>
-                        <h2 className="impact-headline">
-                            Talent is everywhere. <br />
-                            <span className="text-gradient">On-campus placement visits are not.</span>
-                        </h2>
-                        <p className="impact-subtext">
-                            Top companies miss brilliant minds from non-metro campuses. Connectimi bridges that gap by putting your actual work directly in front of employers.
-                        </p>
-
-                        <div className="impact-stats-grid">
-                            <div className="stat-item">
-                                <span className="stat-number">10k+</span>
-                                <span className="stat-label">ACTIVE STUDENTS</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-number">500+</span>
-                                <span className="stat-label">HIRING STARTUPS</span>
-                            </div>
-                            <div className="stat-item">
-                                <span className="stat-number">2.5k</span>
-                                <span className="stat-label">PROJECTS SHIPPED</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 4. WHY MAKE AN ACCOUNT / UNFAIR ADVANTAGE GRID */}
-                <section id="why-join" className="section-block reveal-on-scroll">
-                    <div className="section-header text-center">
-                        <h2 className="section-title">Your Unfair Advantage</h2>
-                        <p className="section-subtitle">What you unlock the moment you create a free Connectimi account.</p>
-                    </div>
-
-                    <div className="grid-4-col">
-                        <div className="glass-card advantage-card">
-                            <FiUserCheck className="adv-icon" />
-                            <h3>Instant Portfolio</h3>
-                            <p>Auto-generated live developer and creator page ready to share everywhere.</p>
-                        </div>
-                        <div className="glass-card advantage-card">
-                            <FiBriefcase className="adv-icon" />
-                            <h3>Hidden Gig Board</h3>
-                            <p>Access unlisted startup opportunities, freelance gigs, and project bounties.</p>
-                        </div>
-                        <div className="glass-card advantage-card">
-                            <FiShare2 className="adv-icon" />
-                            <h3>Network with 10k+</h3>
-                            <p>Connect with high-intent peers across Tier 1, 2, &amp; 3 institutions in India.</p>
-                        </div>
-                        <div className="glass-card advantage-card">
-                            <FiAward className="adv-icon" />
-                            <h3>Skill Badges</h3>
-                            <p>Earn verified proof of work badges that showcase your tech stack mastery.</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 5. COMPARISON SECTION */}
-                <section className="section-block reveal-on-scroll">
-                    <div className="comparison-grid">
-                        <div className="glass-card comparison-card traditional-card">
-                            <h3 className="comp-title text-muted">Traditional Job Platforms</h3>
-                            <ul className="comp-list">
-                                <li><FiX className="icon-cross" /> HR Ghosting &amp; black hole resumes</li>
-                                <li><FiX className="icon-cross" /> Endless feed noise &amp; humblebrags</li>
-                                <li><FiX className="icon-cross" /> Pedigree &amp; Tier-1 college bias</li>
-                            </ul>
-                        </div>
-
-                        <div className="glass-card comparison-card connectimi-card">
-                            <div className="verified-badge">VERIFIED SOLUTION</div>
-                            <h3 className="comp-title text-emerald">Connectimi</h3>
-                            <ul className="comp-list">
-                                <li><FiCheck className="icon-check" /> Direct Founder &amp; Manager Access</li>
-                                <li><FiCheck className="icon-check" /> 100% Proof-of-Work focused</li>
-                                <li><FiCheck className="icon-check" /> Skill-first matching for Tier 2/3 talent</li>
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 6. MEET THE TEAM */}
-                <section id="team" className="section-block reveal-on-scroll">
-                    <div className="section-header text-center">
-                        <h2 className="section-title">Meet the Team</h2>
-                        <p className="section-subtitle">Built by builders who experienced the Tier 2 &amp; 3 placement gap firsthand.</p>
-                    </div>
-
-                    <div className="grid-4-col">
-                        <div className="glass-card team-card">
-                            <div className="team-avatar-box">
-                                <img src="/images/Animesh.jpeg" alt="Animesh - CTO" className="team-avatar-img" />
-                            </div>
-                            <h3>Animesh</h3>
-                            <span className="team-role">CTO</span>
-                            <p className="team-bio">Leading tech architecture &amp; engineering innovation.</p>
-                        </div>
-
-                        <div className="glass-card team-card">
-                            <div className="team-avatar-box">
-                                <img src="/images/Suroj.jpeg" alt="Suroj - Developer" className="team-avatar-img" />
-                            </div>
-                            <h3>Suroj</h3>
-                            <span className="team-role">Developer</span>
-                            <p className="team-bio">Crafting real-time features &amp; interactive UI experiences.</p>
-                        </div>
-
-                        <div className="glass-card team-card">
-                            <div className="team-avatar-box">
-                                <img src="/images/Sanniv.jpeg" alt="Sanniv - Developer" className="team-avatar-img" />
-                            </div>
-                            <h3>Sanniv</h3>
-                            <span className="team-role">Developer</span>
-                            <p className="team-bio">Full-stack developer building core platform systems.</p>
-                        </div>
-
-                        <div className="glass-card team-card">
-                            <div className="team-avatar-box">
-                                <img src="/images/Arnab.png" alt="Arnab - Developer" className="team-avatar-img" />
-                            </div>
-                            <h3>Arnab</h3>
-                            <span className="team-role">Developer</span>
-                            <p className="team-bio">Engineering backend scalability &amp; performance optimizations.</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 7. FINAL HIGH-CONVERSION CTA */}
-                <section className="section-block final-cta-section reveal-on-scroll">
-                    <div className="glass-card final-cta-card text-center">
-                        <div className="cta-glow"></div>
-                        <h2>Stop Waiting. Start Building.</h2>
-                        <p>Join 10,000+ ambitious students taking control of their careers.</p>
-                        <button className="shimmer-btn-lg" onClick={() => scrollToAuth(true)}>
-                            Claim Your Profile Now
+                    <div className="ln-hero-actions">
+                        <button className="ln-btn ln-btn-lg" onClick={() => goToAuth(true)}>
+                            Create a free account
+                        </button>
+                        <button className="ln-btn ln-btn-lg ln-btn-ghost" onClick={() => goToAuth(false)}>
+                            I already have one
                         </button>
                     </div>
-                </section>
-            </main>
 
-            {/* FOOTER */}
-            <footer className="landing-footer">
-                <div className="footer-container">
-                    <div className="footer-brand">
-                        <span className="footer-logo">Connectimi</span>
+                    <div className="ln-card ln-scan" data-pass={pass}>
+                        <div className="ln-scan-head">
+                            <span className="ln-scan-mode">
+                                {pass === 'scan' ? 'Screening pass' : 'Read in full'}
+                            </span>
+                            <span className="ln-scan-timer">
+                                {pass === 'scan' ? '6 sec' : 'No limit'}
+                            </span>
+                        </div>
+
+                        <div className="ln-scan-body" ref={scanBodyRef}>
+                            <div className="ln-scan-sweep" ref={sweepRef} aria-hidden="true" />
+                            {SCAN_LINES.map((l) => (
+                                <div className="ln-scan-line" data-kind={l.kind} key={l.key}>
+                                    <span className="ln-scan-key">{l.key}</span>
+                                    <span className="ln-scan-val">{l.val}</span>
+                                    {l.tag && <span className="ln-scan-tag">{l.tag}</span>}
+                                </div>
+                            ))}
+                        </div>
+
+                        <p className="ln-scan-foot">
+                            {pass === 'scan'
+                                ? 'Screened out on line three. The four lines under it were never reached.'
+                                : 'Nothing was screened out. The last three lines are the ones that matter.'}
+                        </p>
                     </div>
-                    <div className="footer-links">
-                        <a href="#privacy">Privacy Policy</a>
-                        <a href="#terms">Terms of Service</a>
-                        <a href="#contact">Contact Us</a>
+
+                    <p className="ln-hero-note">Ananya is made up. The gap is not.</p>
+                </div>
+
+                {/* ------------------------------------------------- AUTH PANEL */}
+                <div className="ln-card ln-auth" ref={authRef}>
+                    <div className="ln-auth-head">
+                        <div className="ln-tabs">
+                            <button
+                                className={`ln-tab ${isLogin ? 'is-on' : ''}`}
+                                onClick={() => setIsLogin(true)}
+                            >
+                                Sign in
+                            </button>
+                            <button
+                                className={`ln-tab ${!isLogin ? 'is-on' : ''}`}
+                                onClick={() => setIsLogin(false)}
+                            >
+                                Join
+                            </button>
+                        </div>
+                        <h2>{isLogin ? 'Welcome back' : 'Free, and about a minute'}</h2>
                     </div>
-                    <div className="footer-copy">
-                        © 2026 Connectimi. All rights reserved.
+
+                    {isLogin ? <LoginForm compact /> : <SignupForm compact />}
+
+                    <p className="ln-auth-fine">
+                        Creating an account means you accept the terms of service and the
+                        privacy policy.
+                    </p>
+                </div>
+            </section>
+
+            {/* -------------------------------------------------------- FILTER */}
+            <section id="filter" className="ln-shell ln-section reveal-on-scroll">
+                <div className="ln-section-head">
+                    <span className="ln-badge">The filter</span>
+                    <h2 className="ln-h2">The rejection happens before anyone opens your work.</h2>
+                    <p className="ln-lede">
+                        These are the gates a campus placement process runs first. They are
+                        applied by a spreadsheet, in a second, with no one reading. Tell it about
+                        yourself and watch which ones close.
+                    </p>
+                </div>
+
+                <div className="ln-filter">
+                    <div className="ln-card ln-gates">
+                        {GATES.map((g, i) => (
+                            <div className="ln-gate" data-cut={!met[g.id]} key={g.id}>
+                                <span className="ln-gate-n">{String(i + 1).padStart(2, '0')}</span>
+                                <span className="ln-gate-text">{g.rule}</span>
+                                <span className="ln-gate-mark">
+                                    {met[g.id] ? 'Pass' : 'Filtered'}
+                                </span>
+                            </div>
+                        ))}
                     </div>
+
+                    <div className="ln-card ln-you">
+                        <p className="ln-label">About you</p>
+                        {GATES.map((g) => (
+                            <label className="ln-check" key={g.id}>
+                                <input
+                                    type="checkbox"
+                                    checked={!!met[g.id]}
+                                    onChange={() => setMet((m) => ({ ...m, [g.id]: !m[g.id] }))}
+                                />
+                                <span>{g.you}</span>
+                            </label>
+                        ))}
+
+                        <p className="ln-tally" data-clear={cutCount === 0} aria-live="polite">
+                            <b>{cutCount}</b>
+                            {cutCount === 0
+                                ? 'gates close on you. You are the exception, and you already know it.'
+                                : `of ${GATES.length} gates close before a human sees anything you built.`}
+                        </p>
+                    </div>
+                </div>
+
+                <p className="ln-verdict">
+                    Connectimi applies none of them. There is no CGPA field on this platform, no
+                    campus tier, and no branch gate — because we never built one. What it holds
+                    is the work you publish, and anyone can open it.
+                </p>
+            </section>
+
+            {/* --------------------------------------------------- WHAT WE INDEX */}
+            <section id="index" className="ln-shell ln-section reveal-on-scroll">
+                <div className="ln-section-head">
+                    <span className="ln-badge">What we index</span>
+                    <h2 className="ln-h2">This is the whole form. Nothing else is asked.</h2>
+                    <p className="ln-lede">
+                        Publishing a project takes five steps. Here they are in full, in order,
+                        so you know exactly what you are signing up to write.
+                    </p>
+                </div>
+
+                <div className="ln-steps">
+                    {WIZARD.map((s, i) => {
+                        const Icon = s.icon;
+                        return (
+                            <div className="ln-card ln-card-hover ln-step" key={s.name}>
+                                <span className="ln-step-icon"><Icon /></span>
+                                <div>
+                                    <span className="ln-step-n">Step {String(i + 1).padStart(2, '0')}</span>
+                                    <span className="ln-step-name">{s.name}</span>
+                                </div>
+                                <div className="ln-step-fields">
+                                    {s.fields}
+                                    {s.enums && (
+                                        <div className="ln-enum">
+                                            {s.enums.map((e) => <span key={e}>{e}</span>)}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </section>
+
+            {/* ----------------------------------------------------- BUILD LOG */}
+            <section id="log" className="ln-shell ln-section reveal-on-scroll">
+                <div className="ln-section-head">
+                    <span className="ln-badge">Build log</span>
+                    <h2 className="ln-h2">What works today, and what doesn&apos;t yet.</h2>
+                    <p className="ln-lede">
+                        Most landing pages list the roadmap as though it already shipped. Here is
+                        the real split. The right column is short on purpose — we would rather
+                        you find it here than find it after you sign up.
+                    </p>
+                </div>
+
+                <div className="ln-log">
+                    <div className="ln-card ln-log-col" data-state="live">
+                        <h3>Working now</h3>
+                        {SHIPPED.map((x) => (
+                            <div className="ln-log-item" key={x.t}>
+                                <i />
+                                <span>{x.t}<small>{x.d}</small></span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="ln-card ln-log-col" data-state="soon">
+                        <h3>Not finished</h3>
+                        {NOT_YET.map((x) => (
+                            <div className="ln-log-item" key={x.t}>
+                                <i />
+                                <span>{x.t}<small>{x.d}</small></span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ---------------------------------------------------------- TEAM */}
+            <section id="team" className="ln-shell ln-section reveal-on-scroll">
+                <div className="ln-section-head">
+                    <span className="ln-badge">Who is building it</span>
+                    <h2 className="ln-h2">Four people. You can tell which part is whose.</h2>
+                </div>
+
+                <div className="ln-team">
+                    {TEAM.map((p) => (
+                        <div className="ln-card ln-card-hover ln-person" key={p.name}>
+                            <img src={p.img} alt="" loading="lazy" />
+                            <div>
+                                <div className="ln-person-name">{p.name}</div>
+                                <div className="ln-person-role">{p.role}</div>
+                                <p className="ln-person-said">{p.said}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* --------------------------------------------------------- CLOSE */}
+            <section className="ln-shell ln-section reveal-on-scroll">
+                <div className="ln-card ln-close">
+                    <div className="ln-close-glow" />
+                    <h2 className="ln-h2">Put up one project. See who opens it.</h2>
+                    <p>
+                        An account costs nothing and takes a minute. The first project takes
+                        longer, because writing down what broke is the hard part — and it is the
+                        part worth reading.
+                    </p>
+                    <button className="ln-btn ln-btn-lg" onClick={() => goToAuth(true)}>
+                        Create a free account
+                    </button>
+                </div>
+            </section>
+
+            <footer className="ln-footer">
+                <div className="ln-footer-in">
+                    {/* the same component the header uses, so the wordmark and its
+                        font stay identical to the navbar without being restyled here */}
+                    <div className="ln-brand">
+                        <Connectimi_logo />
+                    </div>
+                    <div className="ln-footer-links">
+                        <a href="#privacy">Privacy</a>
+                        <a href="#terms">Terms</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                    <span>© 2026 Connectimi</span>
                 </div>
             </footer>
 
@@ -440,7 +513,10 @@ const Landing = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 deferredPrompt={deferredPrompt}
-                onSuccessfulInstall={handleSuccessfulInstall}
+                onSuccessfulInstall={() => {
+                    setIsInstalled(true);
+                    localStorage.setItem('connectimi_app_installed', 'true');
+                }}
             />
         </div>
     );

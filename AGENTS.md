@@ -47,7 +47,7 @@ connectimi-web-frontend/
 │   │   ├── Courses.jsx         # Course discovery catalog page (Coming Soon placeholder)
 │   │   ├── ForgotPassword.jsx  # Password recovery email trigger
 │   │   ├── Home.jsx            # Main dashboard / feed container
-│   │   ├── Landing.jsx         # Public animated high-conversion landing page with slim modern glass header, team section (Animesh, Suroj, Sanniv, Arnab), Tier 2/3 pitch, product features & FOMO grid
+│   │   ├── Landing.jsx         # Public landing page. Uses the app's glassmorphic design system (see "Landing page" section below)
 │   │   ├── Login.jsx           # Sign-in page
 │   │   ├── Messaging.jsx       # Real-time messages page
 │   │   ├── MyNetwork.jsx       # Network dashboard (connections, invitations, followers)
@@ -232,6 +232,65 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Cache Versioning:** Update `CACHE_VERSION` in `public/sw.js` during deployment tasks to ensure clients pull fresh, updated assets.
 - **Manifest (`public/manifest.json`):** Defines icons, colors, scope, and display configurations.
 - **Install Prompt:** `src/main.jsx` captures the `beforeinstallprompt` event and stores it on `window.__deferredPrompt` early. The landing page (`Landing.jsx`) listens for PWA prompt events to present a custom install experience.
+
+---
+
+## Landing page (`src/pages/Landing.jsx` + `Landing.css`)
+
+The public landing page at `/` uses the **same glassmorphic language as the rest
+of the app**. Every value in `Landing.css` was taken from an existing stylesheet
+rather than invented. If you change the app's design system, change it here too.
+
+**The canonical recipes this page follows** (measured across the codebase):
+
+| Piece | Recipe |
+|---|---|
+| Card | `var(--glass-bg)` + `var(--backdrop-blur)` + `1px solid var(--glass-border)` + radius `24px` + padding `24px` + `var(--glass-shadow)` |
+| Card hover | `translateY(-2px)`, `border-color: rgba(16,185,129,.3)`, `var(--premium-shadow)` |
+| Primary button | `var(--emerald-grad)`, radius `14px`, `0 4px 14px rgba(16,185,129,.3)`; hover `translateY(-2px)` + `0 8px 25px …(.4)` |
+| Header | `80px`, `var(--nav-bg)`, `blur(20px)`, `border-bottom: 1px solid var(--border-color)` — a sibling of `Navbar.css` |
+| Easing | `cubic-bezier(0.4, 0, 0.2, 1)` — `0.3s` interactive, `0.4s` chrome and cards |
+| Radius ladder | 32 hero-card / 28 modal / 24 card / 20 sub-card / 16 field / 14 button / 8 chip |
+| Shell | `max-width: 1200px; padding: 0 24px`, page `padding-top: 100px` to clear the fixed header |
+| Breakpoints | `1024 / 768 / 480`, desktop-first `max-width` only |
+| GSAP entry | `duration: 0.8, ease: 'power3.out'`, stagger `0.1–0.15` |
+
+**Conventions to preserve when editing it:**
+
+- **Every class is prefixed `ln-`.** `.section-title`, `.toggle-btn`,
+  `.form-row`, `.spinner` and `.close-btn` are all already defined in more than
+  one stylesheet in this repo, unscoped and global, so bundle order silently
+  decides the winner. Do not introduce an unprefixed class name here.
+- **Variables only — this file contains zero `.dark` rules.** That matches the
+  six newest stylesheets (Home, Work, Courses, CourseRoadmap, ProjectDetails,
+  ProjectCreate, ComingSoon). Only the three oldest (MyNetwork, Messaging,
+  Notifications) hardcode `rgba(255,255,255,0.7)` and then need `.dark` twins to
+  patch it back — do not copy that pattern.
+- **Never use `var(--primary-emerald)`.** It is not in `index.css`; it is
+  declared inside `Profile.css` and only resolves because that file happens to
+  be bundled. Use `var(--primary-green)`.
+- **`.reveal-on-scroll` / `is-visible` are intentionally unprefixed** — they are
+  queried by string in `Landing.jsx`. Rename in both places or not at all.
+- **Auth form overrides are three classes deep** (`.ln-page .ln-auth .auth-input`).
+  `Auth.css` loads *after* `Landing.css` via `Login.jsx`, so a two-class
+  selector loses the tie to `.dark .auth-input`.
+- **Sections carry `scroll-margin-top: 100px`** because the header is fixed;
+  without it the header nav anchors land with the heading hidden underneath.
+- **Copy rule:** every claim on this page must be backed by shipped code. An
+  earlier version advertised skill badges, a gig board and peer cohorts, none of
+  which exist in this repo, plus three invented statistics. The "Build log"
+  section deliberately lists what is *not* finished (jobs board, student
+  courses, search) — keep it accurate as those ship.
+
+**Known issues elsewhere that this page works around, not fixes:**
+
+- `Auth.css` never sets `font-family` on `.auth-input` or `.auth-submit-btn`, so
+  every form control in the app renders in the UA default (Arial) instead of
+  Satoshi. `Landing.css` patches this for its own auth panel only. The global
+  fix is one rule in `index.css`:
+  `input, textarea, select, button { font-family: inherit; }`
+- The Fontshare request in `index.html` loads Satoshi 300/400/500/700/900, but
+  the app uses weights 600 (~40 declarations) and 800 (~17) — both synthesize.
 
 ---
 
