@@ -206,7 +206,7 @@ export default function ProjectDetails() {
                     rel="noopener noreferrer"
                     className="link-button github"
                   >
-                    <Icon name="github" size={16} /> GitHub Repo
+                    <Icon name="github" size={16} /> Legal Brief / Repo
                   </a>
                 )}
                 {projectData.liveDemoUrl && (
@@ -216,7 +216,7 @@ export default function ProjectDetails() {
                     rel="noopener noreferrer"
                     className="link-button live"
                   >
-                    <Icon name="link" size={16} /> Live Demo
+                    <Icon name="link" size={16} /> Reference / Judgment
                   </a>
                 )}
                 {isOwner && (
@@ -257,7 +257,7 @@ export default function ProjectDetails() {
           {projectData.techStack && projectData.techStack.length > 0 && (
             <div className="section-block">
               <h3 className="section-title">
-                <Icon name="code" size={18} /> Technologies & Stack
+                <Icon name="code" size={18} /> Statutes, Codes & Legal Frameworks
               </h3>
               <div className="tech-chips-grid">
                 {projectData.techStack.map((tech, idx) => (
@@ -272,7 +272,7 @@ export default function ProjectDetails() {
           {/* Full Description */}
           <div className="section-block">
             <h3 className="section-title">
-              <Icon name="document" size={18} /> Project Overview
+              <Icon name="document" size={18} /> Legal Analysis & Overview
             </h3>
             <p className="section-text-plain">{projectData.description}</p>
           </div>
@@ -281,7 +281,7 @@ export default function ProjectDetails() {
           {projectData.features && projectData.features.length > 0 && (
             <div className="section-block">
               <h3 className="section-title">
-                <Icon name="star" size={18} /> Key Features
+                <Icon name="star" size={18} /> Key Arguments & Propositions
               </h3>
               <ul className="features-list">
                 {projectData.features.map((feat, idx) => (
@@ -298,7 +298,7 @@ export default function ProjectDetails() {
           {projectData.gallery && projectData.gallery.length > 0 && (
             <div className="section-block">
               <h3 className="section-title">
-                <Icon name="image" size={18} /> Project Screenshots
+                <Icon name="image" size={18} /> Exhibits & Brief Documents
               </h3>
               <div className="gallery-grid">
                 {projectData.gallery.map((img, idx) => (
@@ -314,7 +314,7 @@ export default function ProjectDetails() {
           {projectData.challenges && (
             <div className="section-block">
               <h3 className="section-title">
-                <Icon name="alert" size={18} /> Technical Challenges
+                <Icon name="alert" size={18} /> Legal & Procedural Complexities
               </h3>
               <p className="section-text-plain">{projectData.challenges}</p>
             </div>
@@ -323,7 +323,7 @@ export default function ProjectDetails() {
           {projectData.learnings && (
             <div className="section-block">
               <h3 className="section-title">
-                <Icon name="bulb" size={18} /> Key Learnings & Insights
+                <Icon name="bulb" size={18} /> Precedent Takeaways & Ratio Decidendi
               </h3>
               <p className="section-text-plain">{projectData.learnings}</p>
             </div>

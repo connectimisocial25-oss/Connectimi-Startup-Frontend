@@ -546,7 +546,7 @@ const Profile = () => {
 
   const renderExperience = () => (
     <div className="glass-panel gsap-reveal">
-      <h3 className="panel-title"><Icon name="building" /> Experience</h3>
+      <h3 className="panel-title"><Icon name="building" /> Legal Practice & Chambers</h3>
       {profileData.experience.length > 0 ? (
         profileData.experience.map((exp, i) => (
           <div key={i} className="exp-item">
@@ -557,7 +557,7 @@ const Profile = () => {
           </div>
         ))
       ) : (
-        <p className="empty-msg">No experience listed</p>
+        <p className="empty-msg">No legal practice or chamber experience listed</p>
       )}
     </div>
   );
@@ -569,7 +569,7 @@ const Profile = () => {
 
     return (
       <div className="glass-panel gsap-reveal">
-        <h3 className="panel-title"><Icon name="project" /> Projects</h3>
+        <h3 className="panel-title"><Icon name="project" /> Legal Briefs & Works</h3>
         {validProjects.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", marginTop: "1rem" }}>
             {validProjects.map((proj, i) => {
@@ -585,7 +585,7 @@ const Profile = () => {
                 authorHeadline: profileData.headline || "",
                 authorImg: profileData.profileImage || DEFAULT_PROFILE_IMG,
                 authorId: profileData.id,
-                title: fullProject.title || proj.title || "Untitled Project",
+                title: fullProject.title || proj.title || "Untitled Legal Brief",
                 takeaway: fullProject.shortDescription || proj.description || "",
                 image: fullProject.coverImage?.url || null,
                 createdAt: fullProject.createdAt || proj.createdAt,
@@ -613,7 +613,7 @@ const Profile = () => {
             })}
           </div>
         ) : (
-          <p className="empty-msg">No projects listed</p>
+          <p className="empty-msg">No legal briefs or research showcases published yet</p>
         )}
       </div>
     );
@@ -621,7 +621,7 @@ const Profile = () => {
 
   const renderEducation = () => (
     <div className="glass-panel gsap-reveal">
-      <h3 className="panel-title"><Icon name="graduation-cap" /> Education</h3>
+      <h3 className="panel-title"><Icon name="graduation-cap" /> Legal Education</h3>
       {profileData.education.length > 0 ? (
         profileData.education.map((edu, i) => (
           <div key={i} className="exp-item">
@@ -632,14 +632,14 @@ const Profile = () => {
           </div>
         ))
       ) : (
-        <p className="empty-msg">No education listed</p>
+        <p className="empty-msg">No law school or legal education listed</p>
       )}
     </div>
   );
 
   const renderSkills = () => (
     <div className="glass-panel gsap-reveal">
-      <h3 className="panel-title"><Icon name="star" /> Skills</h3>
+      <h3 className="panel-title"><Icon name="star" /> Practice Areas & Legal Skills</h3>
       <div className="skills-flex">
         {profileData.skills.map((skill, i) => (
           <span key={i} className="skill-chip">{skill}</span>
@@ -876,7 +876,7 @@ const Profile = () => {
   const TABS = [
     { id: "about", label: "About", icon: "user", render: renderAbout },
     { id: "experience", label: "Experience", icon: "building", count: profileData.experience.length, render: renderExperience },
-    { id: "projects", label: "Projects", icon: "project", count: profileData.projects.filter((p) => p.projectRef || p.title).length, render: renderProjects },
+    { id: "projects", label: "Legal Briefs", icon: "project", count: profileData.projects.filter((p) => p.projectRef || p.title).length, render: renderProjects },
     { id: "education", label: "Education", icon: "graduation-cap", count: profileData.education.length, render: renderEducation },
     { id: "skills", label: "Skills", icon: "star", count: profileData.skills.length, render: renderSkills },
     { id: "posts", label: "Posts", icon: "newspaper", count: posts.filter((p) => p.type !== "project").length, render: renderPosts },
@@ -975,7 +975,7 @@ const Profile = () => {
               </>
             )}
             <button className="profile-btn" onClick={() => setShowCV(true)}>
-              <Icon name="file-alt" /> CV Profile
+              <Icon name="file-alt" /> Legal CV
             </button>
             <button className="profile-btn" onClick={() => profileSummary ? speakText(profileSummary) : generateProfileSummary()} disabled={isSummarizing}>
               <Icon name="play" /> AI Podcast
@@ -983,7 +983,7 @@ const Profile = () => {
             {isOwnProfile && (
               <>
                 <button className="profile-btn primary" onClick={() => navigate("/projects/new")}>
-                  <Icon name="project" /> Showcase Project
+                  <Icon name="project" /> Showcase Legal Work
                 </button>
                 <button className="profile-btn" onClick={() => {
                   setEditData({
@@ -1025,7 +1025,7 @@ const Profile = () => {
           <div className="glass-panel ai-card gsap-reveal">
             <h3 className="panel-title"><Icon name="robot" /> Profile Podcast</h3>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-              Listen to an AI-generated summary of this professional profile.
+              Listen to an AI-generated summary of this legal advocate / scholar profile.
             </p>
 
             <div className="podcast-ui" style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.1)' }}>

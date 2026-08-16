@@ -13,7 +13,7 @@ const CVModal = ({ profileData, onClose }) => {
     <div className="cv-modal-overlay" onClick={onClose}>
       <div className="cv-modal-content" onClick={e => e.stopPropagation()}>
         <div className="cv-modal-header">
-          <h2>CV Profile Preview</h2>
+          <h2>Legal CV & Credentials Preview</h2>
           <div className="cv-actions">
             <button className="btn-print" onClick={handlePrint}>
               <Icon name="print" /> Print / Save as PDF
@@ -58,7 +58,7 @@ const CVModal = ({ profileData, onClose }) => {
             {/* About Section */}
             {profileData.about && (
               <div className="cv-section">
-                <div className="cv-section-title">Professional Summary</div>
+                <div className="cv-section-title">Legal & Professional Summary</div>
                 <p className="cv-item-description">{profileData.about}</p>
               </div>
             )}
@@ -66,7 +66,7 @@ const CVModal = ({ profileData, onClose }) => {
             {/* Experience Section */}
             {profileData.experience && profileData.experience.length > 0 && (
               <div className="cv-section">
-                <div className="cv-section-title">Experience</div>
+                <div className="cv-section-title">Legal Practice & Chamber Experience</div>
                 {profileData.experience.map((exp, index) => (
                   <div key={index} className="cv-experience-item">
                     <div className="cv-item-header">
@@ -83,7 +83,7 @@ const CVModal = ({ profileData, onClose }) => {
             {/* Education Section */}
             {profileData.education && profileData.education.length > 0 && (
               <div className="cv-section">
-                <div className="cv-section-title">Education</div>
+                <div className="cv-section-title">Legal Education & Credentials</div>
                 {profileData.education.map((edu, index) => (
                   <div key={index} className="cv-education-item">
                     <div className="cv-item-header">
@@ -100,7 +100,7 @@ const CVModal = ({ profileData, onClose }) => {
             {/* Skills Section */}
             {profileData.skills && profileData.skills.length > 0 && (
               <div className="cv-section">
-                <div className="cv-section-title">Skills</div>
+                <div className="cv-section-title">Practice Areas & Legal Skills</div>
                 <div className="cv-skills-grid">
                   {profileData.skills.map((skill, index) => (
                     <span key={index} className="cv-skill-chip">{skill}</span>

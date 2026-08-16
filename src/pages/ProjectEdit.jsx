@@ -21,12 +21,14 @@ const STATUS_OPTIONS = [
 ];
 
 const CATEGORY_OPTIONS = [
-  { value: "web", label: "Web Application" },
-  { value: "mobile", label: "Mobile App" },
-  { value: "ai-ml", label: "AI / Machine Learning" },
-  { value: "devops", label: "DevOps & Cloud" },
-  { value: "open-source", label: "Open Source Tool" },
-  { value: "other", label: "Other" },
+  { value: "constitutional", label: "Constitutional Law & Rights" },
+  { value: "case-analysis", label: "Case Analysis & Commentary" },
+  { value: "moot-court", label: "Moot Court Memorial / Brief" },
+  { value: "policy-draft", label: "Statutory Draft & Policy Paper" },
+  { value: "pil", label: "Public Interest Litigation (PIL)" },
+  { value: "research-paper", label: "Legal Research & Jurisprudence" },
+  { value: "corporate-legal", label: "Corporate & Commercial Law" },
+  { value: "other", label: "Other Legal Works" },
 ];
 
 export default function ProjectEdit() {
@@ -248,9 +250,9 @@ export default function ProjectEdit() {
     <div className="project-create-container">
       <div className="project-create-card">
         <div className="project-create-header">
-          <h1 className="project-create-title">Edit Project Showcase</h1>
+          <h1 className="project-create-title">Edit Legal Showcase</h1>
           <p className="project-create-subtitle">
-            Update your project information and tech details.
+            Update your legal brief, case commentary, or constitutional research details.
           </p>
         </div>
 
@@ -298,7 +300,7 @@ export default function ProjectEdit() {
           <div className="step-form-content">
             <div className="form-group">
               <label className="form-label">
-                Project Title <span className="required-star">*</span>
+                Brief / Case Title <span className="required-star">*</span>
               </label>
               <input
                 type="text"
@@ -312,7 +314,7 @@ export default function ProjectEdit() {
 
             <div className="form-group">
               <label className="form-label">
-                Short Description <span className="required-star">*</span>
+                Short Summary <span className="required-star">*</span>
               </label>
               <input
                 type="text"
@@ -328,7 +330,7 @@ export default function ProjectEdit() {
 
             <div className="form-group">
               <label className="form-label">
-                Full Description <span className="required-star">*</span>
+                Full Legal Analysis <span className="required-star">*</span>
               </label>
               <textarea
                 className="form-textarea"
@@ -382,7 +384,7 @@ export default function ProjectEdit() {
           <div className="step-form-content">
             <div className="form-group">
               <label className="form-label">
-                Technologies & Tech Stack <span className="required-star">*</span>
+                Statutes, Codes & Legal Frameworks <span className="required-star">*</span>
               </label>
               <div className="tags-input-container">
                 {techStack.map((tech, idx) => (
@@ -400,7 +402,7 @@ export default function ProjectEdit() {
                 <input
                   type="text"
                   className="tag-input-field"
-                  placeholder="Type tech and press Enter or comma..."
+                  placeholder="Type statute (e.g. Article 21, CrPC, Contract Act) & press Enter..."
                   value={techInput}
                   onChange={(e) => setTechInput(e.target.value)}
                   onKeyDown={handleAddTech}
