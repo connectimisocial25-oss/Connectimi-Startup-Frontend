@@ -190,7 +190,8 @@ Styling uses a hybrid of **Tailwind CSS v4** and **Vanilla CSS**.
   - `PublicRoute`: Restricts landing, login, signup, forgot password, and email verification routes to unauthenticated users. Logged-in users are automatically redirected to their correct landing/home page depending on profile completion status.
   - `ProtectedRoute`: Restricts routes to authenticated users with completed profiles. Unauthenticated users are redirected to `/`. Users with incomplete profiles are redirected to their respective completion page. Also supports role-based checks (e.g., separating `personal` vs `consultant` routes).
   - `CompletionRoute`: Restricts onboarding/completion routes to authenticated users with _incomplete_ profiles of the correct role. Completed users are redirected to their dashboard; unauthenticated users are redirected to `/`.
-- **Personal Routes:** Located under `/home`, `/profile`, `/work`, `/mynetwork`, `/notifications`, `/courses`. Wrapped in `ProtectedRoute` (allowedRoles: `["personal"]`).
+- **Personal Routes:** Located under `/home`, `/profile`, `/work`, `/mynetwork`, `/notifications`, `/courses`. Wrapped in `ProtectedRoute` (allowedRoles: `["personal"]`). Note: `/work` and `/courses` are no longer linked from the Navbar — direct URL only.
+- **Main nav items:** Home, Connections, Messaging (`/mynetwork?tab=messaging`), Notifications, Me.
 - **Organization Routes:** Nested under `/organization/` (e.g., `/organization/feed`, `/organization/profile`). Wrapped in `ProtectedRoute` (allowedRoles: `["consultant"]`).
 - **Conditional Layout:** The main `Navbar` is conditionally hidden on public landing pages (`/`), auth screens (`/login`, `/signup`, `/forgot-password`, `/verify-email`), onboarding flows (`/account-completion`, `/org-account-completion`), and any route prefixed with `/organization`.
 - **Organization Portal Isolation:** Org portal pages are nested under `src/organization/pages/` and render inside the `OrganizationLayout.jsx` wrapper.
@@ -360,6 +361,13 @@ The frontend behaves as a Progressive Web App (PWA):
 - **Instant Author Header Sync**: Updated `ProjectCard.jsx` and `Feed.jsx` to pass `initialInsight` into `ProjectModal`. Author name, avatar, and headline are populated immediately upon modal mount, preventing fallback text ("Anonymous Developer") while fetching.
 - **Shimmer Skeleton Loading UI**: Implemented `@keyframes skeleton-shimmer` in `ProjectModal.css` and skeleton placeholders (cover banner, status badges, title bar, tech chips, description lines) in `ProjectModal.jsx` to provide a polished loading experience while project details fetch asynchronously.
 - **Preserved Direct Navigation**: The `/projects/:id` route and `ProjectDetails.jsx` page remain fully functional for direct deep links, sharing, and project editing.
+### Navbar: Work/Courses Removed, Messaging & Notifications Promoted
+
+- **`src/components/Navbar.jsx`**: Removed the "Work" and "Courses" items from both the desktop nav and the mobile bottom nav. Promoted "Messaging" (`/mynetwork?tab=messaging`) and "Notifications" (`/notifications`) from the "Me" dropdown to top-level nav items in both, each carrying its own `.nav-icon-badge` unread count. The "Me" dropdown now holds only View Profile / Share Project (mobile) / theme toggle / Sign Out, and the combined badge on the "Me" avatar was dropped since both counts are now visible directly.
+- **`isActive` rework**: Messaging and Connections share the `/mynetwork` pathname, so active state now splits on `?tab=messaging` via `URLSearchParams`. The dead `/course` (singular) branch was removed — it had no route and fell through to the catch-all logout.
+- **`src/components/Navbar.css`**: Added `position: relative` to `.mobile-nav-item` plus a `.mobile-nav-item .nav-icon-badge` offset so badges anchor over the icon in the mobile bottom nav.
+- **Routes untouched**: `/work`, `/courses`, and `/courses/:courseId` remain registered in `App.jsx`. `Work.jsx` and `Courses.jsx` (both "Coming Soon" placeholders) and `CourseRoadmap.jsx` are now reachable by direct URL only.
+
 ### Profile Navigation from Feed Posts
 
 - **`Feed.jsx` (InsightCard & Post Modal Header)**: Added click navigation to `/profile/${authorId}` on author avatar and name in both `InsightCard` footer and post details popup modal header.

@@ -40,10 +40,13 @@ const MyNetwork = () => {
 
     useEffect(() => {
         const tl = gsap.timeline();
-        tl.fromTo(sidebarRef.current,
-            { x: -30, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
-        );
+        // sidebar is not rendered on the messaging tab
+        if (sidebarRef.current) {
+            tl.fromTo(sidebarRef.current,
+                { x: -30, opacity: 0 },
+                { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }
+            );
+        }
         tl.fromTo(mainContentRef.current,
             { y: 30, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
@@ -279,6 +282,7 @@ const MyNetwork = () => {
     return (
         <div className="network-container">
             <div className="network-content">
+                {activeTab !== 'messaging' && (
                 <aside className="network-sidebar" ref={sidebarRef}>
                     <div className="network-sidebar-card">
                         <div className="sidebar-title">Manage Network</div>
@@ -308,6 +312,7 @@ const MyNetwork = () => {
                         ))}
                     </div>
                 </aside>
+                )}
 
                 <main className="network-main" ref={mainContentRef}>
                     {!ACTIVE_TABS.includes(activeTab) ? (

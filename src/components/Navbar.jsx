@@ -52,14 +52,14 @@ const Navbar = () => {
     const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
     const navRef = React.useRef(null);
 
-    const isActive = (path) => {
-        if (path === '/courses') {
-            return location.pathname.startsWith('/courses') || location.pathname === '/course';
-        }
+    // Messaging is a tab of /mynetwork, so the two share a pathname and split on ?tab
+    const isMessaging = location.pathname === '/mynetwork'
+        && new URLSearchParams(location.search).get('tab') === 'messaging';
 
-        if (path === '/me') {
-            return ['/profile', '/notifications'].includes(location.pathname);
-        }
+    const isActive = (path) => {
+        if (path === '/messaging') return isMessaging;
+        if (path === '/mynetwork') return location.pathname === '/mynetwork' && !isMessaging;
+        if (path === '/me') return location.pathname === '/profile';
         return location.pathname === path;
     };
 
@@ -97,7 +97,7 @@ const Navbar = () => {
             window.removeEventListener('resize', updateIndicator);
             clearTimeout(timeoutId);
         };
-    }, [location.pathname]);
+    }, [location.pathname, location.search]);
 
     return (
         <>
@@ -128,18 +128,21 @@ const Navbar = () => {
                         <span className="nav-label">Connections</span>
                     </div>
 
-                    <div className={`nav-item ${isActive('/work') ? 'active' : ''}`} onClick={() => navigate('/work')}>
-                        <div className="nav-icon"><Icon name="briefcase" /></div>
-                        <span className="nav-label">Work</span>
-                    </div>
-
-                    <div className={`nav-item ${isActive('/courses') ? 'active' : ''}`} onClick={() => navigate('/courses')}>
+                    <div className={`nav-item ${isActive('/messaging') ? 'active' : ''}`} onClick={() => navigate('/mynetwork?tab=messaging')}>
                         <div className="nav-icon">
-                            <Icon name="course" />
+                            <Icon name="comment-dots" />
+                            {unreadMessagesCount > 0 && <div className="nav-icon-badge">{unreadMessagesCount}</div>}
                         </div>
-                        <span className="nav-label">Courses</span>
+                        <span className="nav-label">Messaging</span>
                     </div>
 
+                    <div className={`nav-item ${isActive('/notifications') ? 'active' : ''}`} onClick={() => navigate('/notifications')}>
+                        <div className="nav-icon">
+                            <Icon name="bell" />
+                            {unreadCount > 0 && <div className="nav-icon-badge">{unreadCount}</div>}
+                        </div>
+                        <span className="nav-label">Notifications</span>
+                    </div>
 
                     <div className={`nav-item me-dropdown ${isActive('/me') ? 'active' : ''}`} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                         <div className="nav-icon">
@@ -150,7 +153,6 @@ const Navbar = () => {
                                 size={24}
                                 className="nav-profile-img"
                             />
-                            {unreadCount + unreadMessagesCount > 0 && <div className="nav-icon-badge">{unreadCount + unreadMessagesCount}</div>}
                         </div>
                         <span className="nav-label">Me</span>
                         {isDropdownOpen && (
@@ -158,16 +160,6 @@ const Navbar = () => {
                                 <div className="dropdown-item" onClick={() => { navigate('/profile'); setIsDropdownOpen(false); }}>
                                     <Icon name="user" />
                                     View Profile
-                                </div>
-                                <div className="dropdown-item" onClick={() => { navigate('/mynetwork?tab=messaging'); setIsDropdownOpen(false); }}>
-                                    <Icon name="comment-dots" />
-                                    Messages
-                                    {unreadMessagesCount > 0 && <span className="dropdown-badge">{unreadMessagesCount} New</span>}
-                                </div>
-                                <div className="dropdown-item" onClick={() => { navigate('/notifications'); setIsDropdownOpen(false); }}>
-                                    <Icon name="bell" />
-                                    Notifications
-                                    {unreadCount > 0 && <span className="dropdown-badge">{unreadCount} New</span>}
                                 </div>
                                 <div className="dropdown-item" onClick={toggleTheme}>
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
@@ -202,19 +194,9 @@ const Navbar = () => {
                                     <Icon name="user" />
                                     View Profile
                                 </div>
-                                <div className="dropdown-item" onClick={() => { navigate('/mynetwork?tab=messaging'); setIsDropdownOpen(false); }}>
-                                    <Icon name="comment-dots" />
-                                    Messages
-                                    {unreadMessagesCount > 0 && <span className="dropdown-badge">{unreadMessagesCount} New</span>}
-                                </div>
                                 <div className="dropdown-item" onClick={() => { navigate('/projects/new'); setIsDropdownOpen(false); }}>
                                     <Icon name="project" />
                                     Share Project
-                                </div>
-                                <div className="dropdown-item" onClick={() => { navigate('/notifications'); setIsDropdownOpen(false); }}>
-                                    <Icon name="bell" />
-                                    Notifications
-                                    {unreadCount > 0 && <span className="dropdown-badge">{unreadCount} New</span>}
                                 </div>
                                 <div className="dropdown-item" onClick={toggleTheme}>
                                     <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
@@ -239,13 +221,15 @@ const Navbar = () => {
                     <Icon name="user-friends" size={24} />
                     <span>Network</span>
                 </div>
-                <div className={`mobile-nav-item ${isActive('/work') ? 'active' : ''}`} onClick={() => navigate('/work')}>
-                    <Icon name="briefcase" size={24} />
-                    <span>Work</span>
+                <div className={`mobile-nav-item ${isActive('/messaging') ? 'active' : ''}`} onClick={() => navigate('/mynetwork?tab=messaging')}>
+                    <Icon name="comment-dots" size={24} />
+                    {unreadMessagesCount > 0 && <div className="nav-icon-badge">{unreadMessagesCount}</div>}
+                    <span>Messaging</span>
                 </div>
-                <div className={`mobile-nav-item ${isActive('/courses') ? 'active' : ''}`} onClick={() => navigate('/courses')}>
-                    <Icon name="course" size={24} />
-                    <span>Courses</span>
+                <div className={`mobile-nav-item ${isActive('/notifications') ? 'active' : ''}`} onClick={() => navigate('/notifications')}>
+                    <Icon name="bell" size={24} />
+                    {unreadCount > 0 && <div className="nav-icon-badge">{unreadCount}</div>}
+                    <span>Alerts</span>
                 </div>
             </div>
         </>
