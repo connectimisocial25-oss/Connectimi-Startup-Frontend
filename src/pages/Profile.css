@@ -11,6 +11,7 @@
     margin: 80px auto 0;
     min-height: 100vh;
     color: var(--text-primary);
+    overflow-x: hidden;
 }
 
 .profile-header-card {
@@ -170,6 +171,11 @@
     grid-template-columns: 2fr 1fr;
     gap: 2rem;
     align-items: start;
+}
+
+.main-col,
+.side-col {
+    min-width: 0;
 }
 
 /* Tabbed sections: only one panel is mounted at a time, so the page is
@@ -436,6 +442,7 @@
         padding: 0.75rem 0.5rem;
         margin-top: 64px;
         margin-bottom: 80px;
+        overflow-x: hidden;
     }
 
     .profile-header-card {
@@ -505,6 +512,7 @@
     .glass-panel {
         padding: 1.25rem;
         border-radius: 14px;
+        overflow: hidden;
     }
 
     .panel-title {
@@ -536,20 +544,39 @@
         margin-bottom: 1rem !important;
     }
 
+    .ai-card {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+    }
+
     .podcast-ui {
         padding: 1rem !important;
         border-radius: 12px !important;
+        box-sizing: border-box;
     }
 
     .podcast-controls {
         flex-wrap: wrap !important;
         gap: 0.5rem !important;
+        justify-content: center !important;
+    }
+
+    .podcast-controls .profile-btn {
+        flex: 1 1 auto;
+        min-width: 0;
     }
 
     /* Grid layout: single column stack */
     .grid-layout {
         grid-template-columns: 1fr;
         gap: 1.25rem;
+    }
+
+    .main-col,
+    .side-col {
+        min-width: 0;
+        width: 100%;
     }
 
     .side-col {
@@ -560,11 +587,17 @@
     .profile-tabs {
         gap: 0.4rem;
         margin-bottom: 1rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        padding-bottom: 4px;
     }
 
     .profile-tab {
         padding: 0.45rem 0.75rem;
         font-size: 0.8rem;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
 }
 
