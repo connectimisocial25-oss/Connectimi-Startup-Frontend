@@ -254,8 +254,7 @@ const Landing = () => {
                     <span className="ln-badge">For aspiring advocates & guardians of the Constitution</span>
 
                     <h1 className="ln-h1">
-                        Legal brilliance is proven by argument & analysis. Not{' '}
-                        <span className="ln-struck">where you studied</span>.
+                        Professional Social Networking platform for Advocates lawyers and Law Students.
                     </h1>
 
                     <p className="ln-hero-sub">
