@@ -22,6 +22,51 @@ const Navbar = () => {
     const [unreadCount, setUnreadCount] = useState(0);
     const unreadMessagesCount = (conversations || []).reduce((acc, c) => acc + (c.unreadCount || 0), 0);
 
+    // Profile search — fuzzy (pg_trgm) people search against the main API
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const searchDebounceRef = useRef(null);
+    const searchBoxRef = useRef(null);
+
+    useEffect(() => {
+        const term = searchQuery.trim();
+        if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+
+        searchDebounceRef.current = setTimeout(async () => {
+            if (term.length < 2) {
+                setSearchResults([]);
+                return;
+            }
+            try {
+                const res = await API.get('/search/people', { params: { q: term } });
+                setSearchResults(res.data.results || []);
+            } catch (err) {
+                console.error('People search failed:', err.message);
+                setSearchResults([]);
+            }
+        }, 300);
+
+        return () => clearTimeout(searchDebounceRef.current);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
+                setIsSearchOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const goToProfile = (person) => {
+        setSearchQuery('');
+        setSearchResults([]);
+        setIsSearchOpen(false);
+        navigate(`/profile/${person.id}`);
+    };
+
     // Messaging lives in the "Me" dropdown now, so the badge has to be live everywhere
     useEffect(() => {
         if (isConnected) {
@@ -104,13 +149,43 @@ const Navbar = () => {
             <nav className="navbar" ref={navBarRef}>
                 <div className="navbar-left">
                     <Connectimi_logo />
-                    <div className="search-bar">
+                    <div className="search-bar" ref={searchBoxRef}>
                         <Icon name="search" className="search-icon" />
                         <input
                             type="text"
                             placeholder="Search"
                             className="search-input"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onFocus={() => setIsSearchOpen(true)}
                         />
+                        {isSearchOpen && searchQuery.trim().length >= 2 && (
+                            <div className="search-results-dropdown">
+                                {searchResults.length === 0 ? (
+                                    <div className="search-results-empty">No people found</div>
+                                ) : (
+                                    searchResults.map((person) => (
+                                        <div
+                                            key={person.id}
+                                            className="search-result-item"
+                                            onClick={() => goToProfile(person)}
+                                        >
+                                            <Avatar
+                                                src={person.profile_picture}
+                                                role={person.account_type === 'organization' ? 'company' : 'professional'}
+                                                size={36}
+                                            />
+                                            <div className="search-result-details">
+                                                <span className="search-result-name">{person.name}</span>
+                                                {person.headline && (
+                                                    <span className="search-result-headline">{person.headline}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 

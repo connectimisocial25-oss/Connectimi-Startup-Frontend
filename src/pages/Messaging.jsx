@@ -26,6 +26,34 @@ const Messaging = ({ embedded = false, contactId = null, initialPartner = null }
     const messagesEndRef = useRef(null);
     const typingTimeoutRef = useRef(null);
 
+    // Sidebar search — filters existing conversations by name locally, and
+    // (once the local list has nothing left, or for people not yet chatted
+    // with) fuzzy-searches all people via the pg_trgm-backed API to start a new chat.
+    const [searchTerm, setSearchTerm] = useState('');
+    const [peopleResults, setPeopleResults] = useState([]);
+    const searchDebounceRef = useRef(null);
+
+    useEffect(() => {
+        const term = searchTerm.trim();
+        if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+
+        searchDebounceRef.current = setTimeout(async () => {
+            if (term.length < 2) {
+                setPeopleResults([]);
+                return;
+            }
+            try {
+                const res = await API.get('/search/people', { params: { q: term } });
+                setPeopleResults(res.data.results || []);
+            } catch (err) {
+                console.error('People search failed:', err.message);
+                setPeopleResults([]);
+            }
+        }, 300);
+
+        return () => clearTimeout(searchDebounceRef.current);
+    }, [searchTerm]);
+
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
@@ -124,6 +152,18 @@ const Messaging = ({ embedded = false, contactId = null, initialPartner = null }
     const isPartnerTyping = typingUsers[activeContactId];
     const isPartnerOnline = onlineUsers[activeContactId];
 
+    // Client-side filter of already-loaded conversations by contact name
+    const trimmedSearch = searchTerm.trim().toLowerCase();
+    const filteredConversations = trimmedSearch
+        ? localConversations.filter(c => c.name?.toLowerCase().includes(trimmedSearch))
+        : localConversations;
+
+    // People search results, minus anyone already shown in the conversation list
+    const shownIds = new Set(localConversations.map(c => c.id));
+    const newChatResults = trimmedSearch
+        ? peopleResults.filter(p => !shownIds.has(p.id))
+        : [];
+
     return (
         <div className="messaging-container" style={embedded ? { padding: 0, height: '100%' } : {}}>
             <div className="messaging-content" style={embedded ? { maxWidth: 'none', height: '100%' } : {}}>
@@ -137,42 +177,82 @@ const Messaging = ({ embedded = false, contactId = null, initialPartner = null }
                             <span>Messaging</span>
                             <Icon name="edit" className="cursor-pointer" />
                         </div>
+                        <div className="conversations-search">
+                            <Icon name="search" className="conversations-search-icon" />
+                            <input
+                                type="text"
+                                className="conversations-search-input"
+                                placeholder="Search or start a new chat"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
                         <div className="conversations-list">
-                            {localConversations.length === 0 ? (
+                            {filteredConversations.length === 0 && newChatResults.length === 0 ? (
                                 <p style={{ padding: "20px", color: "var(--text-muted)", textAlign: "center" }}>
-                                    No active conversations
+                                    {trimmedSearch ? "No matches found" : "No active conversations"}
                                 </p>
                             ) : (
-                                localConversations.map(conv => (
-                                    <div
-                                        key={conv.id}
-                                        className={`conversation-item ${activeContactId === conv.id ? 'active' : ''}`}
-                                        onClick={() => setActiveContact(conv.id)}
-                                    >
-                                        <div className="avatar-wrapper-relative">
-                                            <Avatar src={conv.avatar} role={conv.role} size={48} />
-                                            {onlineUsers[conv.id] && <span className="online-badge-dot"></span>}
-                                        </div>
-                                        <div className="conversation-details">
-                                            <div className="conversation-top">
-                                                <span className="conversation-name">{conv.name}</span>
-                                                <span className="conversation-date">{conv.date}</span>
+                                <>
+                                    {filteredConversations.map(conv => (
+                                        <div
+                                            key={conv.id}
+                                            className={`conversation-item ${activeContactId === conv.id ? 'active' : ''}`}
+                                            onClick={() => setActiveContact(conv.id)}
+                                        >
+                                            <div className="avatar-wrapper-relative">
+                                                <Avatar src={conv.avatar} role={conv.role} size={48} />
+                                                {onlineUsers[conv.id] && <span className="online-badge-dot"></span>}
                                             </div>
-                                            <div className="conversation-bottom-row">
-                                                <span className="conversation-preview">
-                                                    {typingUsers[conv.id] ? (
-                                                        <span className="typing-text-color">typing...</span>
-                                                    ) : (
-                                                        conv.lastMessage
+                                            <div className="conversation-details">
+                                                <div className="conversation-top">
+                                                    <span className="conversation-name">{conv.name}</span>
+                                                    <span className="conversation-date">{conv.date}</span>
+                                                </div>
+                                                <div className="conversation-bottom-row">
+                                                    <span className="conversation-preview">
+                                                        {typingUsers[conv.id] ? (
+                                                            <span className="typing-text-color">typing...</span>
+                                                        ) : (
+                                                            conv.lastMessage
+                                                        )}
+                                                    </span>
+                                                    {conv.unreadCount > 0 && (
+                                                        <span className="unread-count-badge">{conv.unreadCount}</span>
                                                     )}
-                                                </span>
-                                                {conv.unreadCount > 0 && (
-                                                    <span className="unread-count-badge">{conv.unreadCount}</span>
-                                                )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))
+                                    ))}
+                                    {newChatResults.length > 0 && (
+                                        <>
+                                            <div className="conversations-section-label">Start a new chat</div>
+                                            {newChatResults.map(person => (
+                                                <div
+                                                    key={person.id}
+                                                    className="conversation-item new-chat-item"
+                                                    onClick={() => setActiveContact(person.id)}
+                                                >
+                                                    <Avatar
+                                                        src={person.profile_picture}
+                                                        role={person.account_type === 'organization' ? 'company' : 'professional'}
+                                                        size={48}
+                                                    />
+                                                    <div className="conversation-details">
+                                                        <div className="conversation-top">
+                                                            <span className="conversation-name">{person.name}</span>
+                                                        </div>
+                                                        <div className="conversation-bottom-row">
+                                                            <span className="conversation-preview">
+                                                                {person.headline || "Start a conversation"}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
