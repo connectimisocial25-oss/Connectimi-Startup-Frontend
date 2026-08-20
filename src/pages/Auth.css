@@ -208,6 +208,51 @@
     opacity: 0.8;
 }
 
+.consultant-cta-block {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.consultant-cta-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+
+.consultant-cta-row span {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.consultant-cta-link,
+.consultant-cta-browse-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--emerald-500);
+    text-decoration: none;
+}
+
+.consultant-cta-link:hover,
+.consultant-cta-browse-link:hover {
+    text-decoration: underline;
+}
+
+.consultant-cta-browse-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
 .form-row {
     display: flex;
     gap: 16px;

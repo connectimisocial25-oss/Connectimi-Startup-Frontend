@@ -1,0 +1,140 @@
+.ca-page {
+  min-height: 100vh;
+  background: var(--bg-main);
+  color: var(--text-main);
+  padding: 60px 24px 80px;
+}
+
+.ca-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ca-container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.ca-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.ca-header h1 {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.ca-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ca-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ca-section {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ca-section h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.ca-section label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.ca-section input,
+.ca-section textarea,
+.ca-section select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: var(--surface-faint);
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.ca-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.ca-field {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ca-chip-grid,
+.ca-day-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ca-chip {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: var(--surface-faint);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ca-chip.active {
+  background: var(--emerald-grad);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.ca-error {
+  color: var(--error, #ef4444);
+  font-size: 14px;
+  text-align: center;
+}
+
+.ca-submit-btn {
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: var(--emerald-grad);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.ca-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
         account_type: data.accountType,
       };
 
-      if (data.accountType === "consultant") {
+      if (data.accountType === "organization") {
         payload.consultant_name = data.firstName;
       } else {
         payload.full_name = `${data.firstName || ""} ${data.lastName || ""}`.trim();
@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }) => {
 
   const completeAccount = async (additionalData) => {
     try {
-      const isConsultant = user?.accountType === "consultant" || tempData?.accountType === "consultant";
+      const isConsultant = user?.accountType === "counsel" || tempData?.accountType === "organization";
       const endpoint = isConsultant
         ? "/consultant/profile/complete"
         : "/profile/complete";
@@ -224,7 +224,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateUser = async (updatedData) => {
     try {
-      const isConsultant = user?.accountType === "consultant";
+      const isConsultant = user?.accountType === "counsel";
       const profileEndpoint = isConsultant ? "/consultant/profile/me" : "/profile/me";
       const avatarEndpoint = isConsultant ? "/consultant/profile/me/logo" : "/profile/me/avatar";
       const bannerEndpoint = isConsultant ? "/consultant/profile/me/banner" : "/profile/me/banner";

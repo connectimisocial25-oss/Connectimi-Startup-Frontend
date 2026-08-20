@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import Icon from "../components/Icon";
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -38,13 +39,13 @@ export function LoginForm({ onToggle, compact = false }) {
       // AuthContext.login sets the user + token
       // navigate based on account type & profile completion
       if (loggedInUser && !loggedInUser.accountCompleted) {
-        if (accountType === "consultant") {
+        if (accountType === "organization") {
           navigate("/org-account-completion");
         } else {
           navigate("/account-completion");
         }
       } else {
-        if (accountType === "consultant") {
+        if (accountType === "organization") {
           navigate("/organization");
         } else {
           navigate("/home");
@@ -67,7 +68,7 @@ export function LoginForm({ onToggle, compact = false }) {
             type="email"
             className="auth-input"
             placeholder={
-              /* accountType === "consultant" ? "Work Email" : */ "Email or Phone"
+              /* accountType === "organization" ? "Work Email" : */ "Email or Phone"
             }
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -196,6 +197,18 @@ function Login() {
         </div>
 
         <LoginForm onToggle={() => navigate("/signup")} />
+
+        <div className="consultant-cta-block">
+          <div className="consultant-cta-row">
+            <span>Are you a lawyer? Get paid for consultations.</span>
+            <Link to="/consultant/apply" className="consultant-cta-link">
+              Register as a Consultant <Icon name="arrow-right" size={13} />
+            </Link>
+          </div>
+          <Link to="/consultants" className="consultant-cta-browse-link">
+            Looking to consult a lawyer? Browse consultants <Icon name="arrow-right" size={13} />
+          </Link>
+        </div>
       </div>
     </div>
   );

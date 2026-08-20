@@ -144,7 +144,7 @@ export function transformProfileToFrontend(user) {
   return {
     id: user.id || user._id,
     email: user.email,
-    accountType: (user.account_type === "organization" ? "consultant" : user.account_type) || (user.role === "professional" ? "personal" : "consultant"),
+    accountType: (user.account_type === "organization" ? "counsel" : user.account_type) || (user.role === "professional" ? "personal" : "counsel"),
     accountCompleted: user.account_completed !== undefined ? user.account_completed : !!(user.headline || user.location),
     phone: user.phone || "",
     firstName,

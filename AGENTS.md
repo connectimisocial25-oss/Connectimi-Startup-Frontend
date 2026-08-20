@@ -188,11 +188,12 @@ Styling uses a hybrid of **Tailwind CSS v4** and **Vanilla CSS**.
 - All client-side routes are defined centrally in `src/App.jsx`.
 - **Routing Guards:**
   - `PublicRoute`: Restricts landing, login, signup, forgot password, and email verification routes to unauthenticated users. Logged-in users are automatically redirected to their correct landing/home page depending on profile completion status.
-  - `ProtectedRoute`: Restricts routes to authenticated users with completed profiles. Unauthenticated users are redirected to `/`. Users with incomplete profiles are redirected to their respective completion page. Also supports role-based checks (e.g., separating `personal` vs `consultant` routes).
+  - `ProtectedRoute`: Restricts routes to authenticated users with completed profiles. Unauthenticated users are redirected to `/`. Users with incomplete profiles are redirected to their respective completion page. Also supports role-based checks (e.g., separating `personal` vs `counsel` routes).
   - `CompletionRoute`: Restricts onboarding/completion routes to authenticated users with _incomplete_ profiles of the correct role. Completed users are redirected to their dashboard; unauthenticated users are redirected to `/`.
 - **Personal Routes:** Located under `/home`, `/profile`, `/work`, `/mynetwork`, `/notifications`, `/courses`. Wrapped in `ProtectedRoute` (allowedRoles: `["personal"]`). Note: `/work` and `/courses` are no longer linked from the Navbar — direct URL only.
 - **Main nav items:** Home, Connections, Messaging (`/mynetwork?tab=messaging`), Notifications, Me.
-- **Organization Routes:** Nested under `/organization/` (e.g., `/organization/feed`, `/organization/profile`). Wrapped in `ProtectedRoute` (allowedRoles: `["consultant"]`).
+- **Organization Routes:** Nested under `/organization/` (e.g., `/organization/feed`, `/organization/profile`). Wrapped in `ProtectedRoute` (allowedRoles: `["counsel"]`). Note: the frontend's internal `accountType` label for these accounts is `"counsel"` (backend's `account_type` value is `"organization"` — `src/utils/adapters.js` translates between the two). `"counsel"` was chosen specifically to free up the word "Consultant" for the unrelated Consultant Booking feature below.
+- **Consultant Booking Routes:** `/consultant/apply` and `/consultant/dashboard` (protected, `allowedRoles: ["personal"]` — a lawyer/law student registers and manages paid consultations). `/consultants`, `/consultants/:id`, `/booking-status/:bookingRef` are **public** (no auth, Navbar hidden) — anyone can browse and book a consultation without an account. See the dedicated section below.
 - **Conditional Layout:** The main `Navbar` is conditionally hidden on public landing pages (`/`), auth screens (`/login`, `/signup`, `/forgot-password`, `/verify-email`), onboarding flows (`/account-completion`, `/org-account-completion`), and any route prefixed with `/organization`.
 - **Organization Portal Isolation:** Org portal pages are nested under `src/organization/pages/` and render inside the `OrganizationLayout.jsx` wrapper.
 
@@ -344,6 +345,15 @@ rather than invented. If you change the app's design system, change it here too.
 ---
 
 ## Recent Changes
+
+### Consultant Booking Feature (new) + `"consultant"` → `"counsel"` rename
+
+- **Naming collision resolved:** the existing org/B2B accountType was internally labeled `"consultant"` on the frontend (even though the backend already calls it `"organization"` — only the frontend's internal label lagged). Renamed that internal label to `"counsel"` across `src/utils/adapters.js`, `AuthContext.jsx`, `App.jsx`, `Login.jsx`, `Signup.jsx`, `ForgotPassword.jsx`, `VerifyEmail.jsx`, and `MyNetwork.jsx`, freeing up "Consultant" for the new feature below. Backend field/route names that literally say `consultant` (`consultant_name`, `/consultant/profile/...`) were left untouched — those are real backend API contract, not the internal label.
+- **New feature:** lets a verified personal-account user (lawyer/law student/advocate) become a paid **Consultant** — set a fee, UPI ID, and weekly availability — and lets anyone (no login) browse consultants, book a slot, and pay the consultant directly via UPI. Connectimi takes a commission settled separately (manual, no payment gateway in v1).
+- New pages under `src/pages/consultant/`: `ConsultantApply.jsx`, `ConsultantDashboard.jsx` (Bookings/Availability/Commission tabs), `Consultants.jsx` (public marketplace), `ConsultantProfile.jsx` (public detail + booking + UPI payment flow), `BookingStatus.jsx` (public status lookup).
+- New shared component `src/components/UpiQrPayment.jsx` (uses the `qrcode.react` dependency) — reused by both the guest's booking payment and the consultant's own commission-settlement payment.
+- New API client `src/services/consultantBookingApi.js` — thin axios wrapper around the real backend (`connectimi-web-backend`'s `/api/v1/consultants` and `/api/v1/public` routes, added in the same pass — see that repo's `AGENTS.md`). Unwraps each endpoint's response envelope so page components consume plain data shapes.
+- Login page (`Login.jsx`) and Landing page (`Landing.jsx`, in the hero's right column below the auth card) both got a "Browse consultants" / "Register as a Consultant" promo block.
 
 ### Global API Error Handling & Button Spinners
 

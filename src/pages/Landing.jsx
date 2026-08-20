@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import './Landing.css';
 import Connectimi_logo from '../components/Connectimi_logo';
@@ -80,6 +81,7 @@ const TEAM = [
 ];
 
 const Landing = () => {
+    const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -303,31 +305,54 @@ const Landing = () => {
                 </div>
 
                 {/* ------------------------------------------------- AUTH PANEL */}
-                <div className="ln-card ln-auth" ref={authRef}>
-                    <div className="ln-auth-head">
-                        <div className="ln-tabs">
-                            <button
-                                className={`ln-tab ${isLogin ? 'is-on' : ''}`}
-                                onClick={() => setIsLogin(true)}
-                            >
-                                Sign in
-                            </button>
-                            <button
-                                className={`ln-tab ${!isLogin ? 'is-on' : ''}`}
-                                onClick={() => setIsLogin(false)}
-                            >
-                                Join
-                            </button>
+                <div className="ln-hero-right">
+                    <div className="ln-card ln-auth" ref={authRef}>
+                        <div className="ln-auth-head">
+                            <div className="ln-tabs">
+                                <button
+                                    className={`ln-tab ${isLogin ? 'is-on' : ''}`}
+                                    onClick={() => setIsLogin(true)}
+                                >
+                                    Sign in
+                                </button>
+                                <button
+                                    className={`ln-tab ${!isLogin ? 'is-on' : ''}`}
+                                    onClick={() => setIsLogin(false)}
+                                >
+                                    Join
+                                </button>
+                            </div>
+                            <h2>{isLogin ? 'Welcome back' : 'Free, and about a minute'}</h2>
                         </div>
-                        <h2>{isLogin ? 'Welcome back' : 'Free, and about a minute'}</h2>
+
+                        {isLogin ? <LoginForm compact /> : <SignupForm compact />}
+
+                        <p className="ln-auth-fine">
+                            Creating an account means you accept the terms of service and the
+                            privacy policy.
+                        </p>
                     </div>
 
-                    {isLogin ? <LoginForm compact /> : <SignupForm compact />}
-
-                    <p className="ln-auth-fine">
-                        Creating an account means you accept the terms of service and the
-                        privacy policy.
-                    </p>
+                    {/* ------------------------------------------ CONSULTANT BOOKING */}
+                    <div className="ln-card ln-consultant-promo">
+                        <span className="ln-badge">Paid consultations</span>
+                        <h3>Talk to a verified lawyer directly</h3>
+                        <p>
+                            Browse advocates and law students offering paid consultations, pick a
+                            slot, and pay them directly via UPI — no account needed.
+                        </p>
+                        <button
+                            className="ln-btn ln-btn-lg"
+                            onClick={() => navigate('/consultants')}
+                        >
+                            Browse consultants
+                        </button>
+                        <p className="ln-consultant-promo-fine">
+                            Already a verified advocate or law student here? Sign in above, then
+                            register as a Consultant from your dashboard to start accepting
+                            bookings.
+                        </p>
+                    </div>
                 </div>
             </section>
 

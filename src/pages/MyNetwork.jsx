@@ -91,7 +91,7 @@ const MyNetwork = () => {
         role: invite.requester?.headline || invite.requester?.industry || "Legal Scholar / Advocate",
         userRole: invite.requester?.role || "professional",
         avatar: invite.requester?.profile_picture || invite.requester?.logo || "/images/default_profile_picture.png",
-        accountType: invite.requester?.account_type || (invite.requester?.role === "professional" ? "personal" : "consultant"),
+        accountType: invite.requester?.account_type || (invite.requester?.role === "professional" ? "personal" : "counsel"),
     });
 
     const mapSuggestion = (sug) => ({
@@ -100,7 +100,7 @@ const MyNetwork = () => {
         role: sug.headline || sug.industry || "Legal Scholar / Advocate",
         userRole: sug.role || "professional",
         avatar: sug.profile_picture || sug.logo || "/images/default_profile_picture.png",
-        accountType: sug.account_type || (sug.role === "professional" ? "personal" : "consultant"),
+        accountType: sug.account_type || (sug.role === "professional" ? "personal" : "counsel"),
     });
 
     const mapConnection = (conn) => ({
@@ -109,7 +109,7 @@ const MyNetwork = () => {
         role: conn.profile?.headline || conn.profile?.industry || "Legal Scholar / Advocate",
         userRole: conn.profile?.role || "professional",
         avatar: conn.profile?.profile_picture || conn.profile?.logo || "/images/default_profile_picture.png",
-        accountType: conn.profile?.account_type || (conn.profile?.role === "professional" ? "personal" : "consultant"),
+        accountType: conn.profile?.account_type || (conn.profile?.role === "professional" ? "personal" : "counsel"),
         connectionId: conn.connection_id,
         connectedAt: conn.connected_at
     });
@@ -121,7 +121,7 @@ const MyNetwork = () => {
         avatar: c.logo || c.profile_picture || `/images/default_profile_picture.png?u=${c.id || c._id}`,
         // Use the first active service price for the session fee display
         fee: c.services?.[0]?.price ?? null,
-        accountType: "consultant",
+        accountType: "counsel",
     });
 
     // Load initial connection count on mount
@@ -175,7 +175,7 @@ const MyNetwork = () => {
                         name: item.name || item.consultant_name || "Anonymous",
                         role: item.headline || item.industry || "Connectimi Member",
                         avatar: item.profile_picture || item.logo || "/images/default_profile_picture.png",
-                        accountType: item._type || (item.role === "professional" ? "personal" : "consultant"),
+                        accountType: item._type || (item.role === "professional" ? "personal" : "counsel"),
                         userRole: item.role || "professional"
                     });
 
@@ -264,7 +264,7 @@ const MyNetwork = () => {
                     name: item.name || item.consultant_name || "Anonymous",
                     role: item.headline || item.industry || "Connectimi Member",
                     avatar: item.profile_picture || item.logo || "/images/default_profile_picture.png",
-                    accountType: item._type || (item.role === "professional" ? "personal" : "consultant"),
+                    accountType: item._type || (item.role === "professional" ? "personal" : "counsel"),
                     userRole: item.role || "professional"
                 });
                 setFollowing((followingRes.data.following || []).map(mapFollowerOrFollowing));

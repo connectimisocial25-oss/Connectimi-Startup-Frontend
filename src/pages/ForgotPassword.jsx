@@ -104,11 +104,11 @@ function ForgotPassword() {
                         <div className="auth-toggle" style={{ display: 'flex', marginBottom: '24px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', padding: '4px' }}>
                             <button
                                 type="button"
-                                className={`toggle-btn ${accountType === "consultant" ? "active" : ""}`}
-                                onClick={() => setAccountType("consultant")}
-                                style={{ flex: 1, border: 'none', background: 'none', color: accountType === "consultant" ? 'white' : 'var(--text-muted)', padding: '10px', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', backgroundColor: accountType === "consultant" ? 'var(--emerald-500)' : 'transparent', transition: 'all 0.3s' }}
+                                className={`toggle-btn ${accountType === "organization" ? "active" : ""}`}
+                                onClick={() => setAccountType("organization")}
+                                style={{ flex: 1, border: 'none', background: 'none', color: accountType === "organization" ? 'white' : 'var(--text-muted)', padding: '10px', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', backgroundColor: accountType === "organization" ? 'var(--emerald-500)' : 'transparent', transition: 'all 0.3s' }}
                             >
-                                Consultant
+                                Law Firm / Institution
                             </button>
                             <button
                                 type="button"

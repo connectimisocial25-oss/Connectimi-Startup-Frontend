@@ -515,12 +515,61 @@
    `.dark .auth-input`.
    ========================================================================== */
 
+.ln-hero-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
 .ln-auth {
     padding: 32px;
     border-radius: 32px;
     box-shadow: var(--premium-shadow);
     position: sticky;
     top: 100px;
+}
+
+/* ---------------------------------------------------------------------------
+   CONSULTANT BOOKING PROMO
+   Fills the whitespace below the (shorter, sticky) auth card in the hero's
+   right column. Always visible to logged-out visitors, so it leads with the
+   action that works without an account — browsing consultants — rather than
+   the consultant-registration CTA, which requires signing in first.
+   ------------------------------------------------------------------------- */
+
+.ln-consultant-promo {
+    padding: 28px;
+    border-radius: 28px;
+    box-shadow: var(--premium-shadow);
+}
+
+.ln-consultant-promo h3 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 14px 0 10px;
+    color: var(--text-primary);
+}
+
+.ln-consultant-promo p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.ln-consultant-promo .ln-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.ln-consultant-promo-fine {
+    margin-top: 16px !important;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+    font-size: 12px !important;
+    line-height: 1.6;
+    color: var(--text-secondary);
 }
 
 .ln-auth-head {
@@ -1071,6 +1120,10 @@
         grid-template-columns: minmax(0, 1fr);
         gap: 40px;
         padding-block: 120px 60px;
+    }
+
+    .ln-hero-right {
+        max-width: 520px;
     }
 
     .ln-auth {

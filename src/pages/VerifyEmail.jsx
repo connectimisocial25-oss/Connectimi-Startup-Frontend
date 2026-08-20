@@ -105,7 +105,7 @@ function VerifyEmail() {
     try {
       await verifyEmail(code);
       // Now use the captured value, not tempData (which may be null by now)
-      if (accountType === "consultant") {
+      if (accountType === "organization") {
         navigate("/org-account-completion");
       } else {
         navigate("/account-completion");

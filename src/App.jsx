@@ -32,9 +32,19 @@ import OrgAlerts from "./organization/pages/OrgAlerts";
 import OrgCourses from "./organization/pages/OrgCourses";
 import OrgAds from "./organization/pages/OrgAds";
 
+// Consultant Booking feature
+import ConsultantApply from "./pages/consultant/ConsultantApply";
+import ConsultantDashboard from "./pages/consultant/ConsultantDashboard";
+import Consultants from "./pages/consultant/Consultants";
+import ConsultantProfile from "./pages/consultant/ConsultantProfile";
+import BookingStatus from "./pages/consultant/BookingStatus";
+
 const Layout = ({ children }) => {
   const location = useLocation();
-  const showHeader = !['/', '/forgot-password', '/verify-email', '/account-completion', '/org-account-completion'].includes(location.pathname) && !location.pathname.startsWith('/organization');
+  const showHeader = !['/', '/forgot-password', '/verify-email', '/account-completion', '/org-account-completion'].includes(location.pathname)
+    && !location.pathname.startsWith('/organization')
+    && !location.pathname.startsWith('/consultants')
+    && !location.pathname.startsWith('/booking-status');
 
   return (
     <>
@@ -69,7 +79,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   if (!user.accountCompleted) {
-    if (user.accountType === "consultant") {
+    if (user.accountType === "counsel") {
       return <Navigate to="/org-account-completion" replace />;
     } else {
       return <Navigate to="/account-completion" replace />;
@@ -77,7 +87,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
 
   if (allowedRoles && !allowedRoles.includes(user.accountType)) {
-    return <Navigate to={user.accountType === "consultant" ? "/organization" : "/home"} replace />;
+    return <Navigate to={user.accountType === "counsel" ? "/organization" : "/home"} replace />;
   }
 
   return children;
@@ -101,9 +111,9 @@ const PublicRoute = ({ children }) => {
 
   if (user) {
     if (!user.accountCompleted) {
-      return <Navigate to={user.accountType === "consultant" ? "/org-account-completion" : "/account-completion"} replace />;
+      return <Navigate to={user.accountType === "counsel" ? "/org-account-completion" : "/account-completion"} replace />;
     }
-    return <Navigate to={user.accountType === "consultant" ? "/organization" : PERSONAL_LANDING} replace />;
+    return <Navigate to={user.accountType === "counsel" ? "/organization" : PERSONAL_LANDING} replace />;
   }
 
   return children;
@@ -125,11 +135,11 @@ const CompletionRoute = ({ children, type }) => {
   }
 
   if (user.accountCompleted) {
-    return <Navigate to={user.accountType === "consultant" ? "/organization" : "/home"} replace />;
+    return <Navigate to={user.accountType === "counsel" ? "/organization" : "/home"} replace />;
   }
 
   if (user.accountType !== type) {
-    return <Navigate to={user.accountType === "consultant" ? "/org-account-completion" : "/account-completion"} replace />;
+    return <Navigate to={user.accountType === "counsel" ? "/org-account-completion" : "/account-completion"} replace />;
   }
 
   return children;
@@ -151,7 +161,7 @@ function App() {
 
                 {/* Completion Routes */}
                 <Route path="/account-completion" element={<CompletionRoute type="personal"><AccountCompletion /></CompletionRoute>} />
-                <Route path="/org-account-completion" element={<CompletionRoute type="consultant"><OrgAccountCompletion /></CompletionRoute>} />
+                <Route path="/org-account-completion" element={<CompletionRoute type="counsel"><OrgAccountCompletion /></CompletionRoute>} />
 
                 {/* Protected Personal Routes */}
                 <Route path="/home" element={<ProtectedRoute allowedRoles={["personal"]}><Home /></ProtectedRoute>} />
@@ -165,9 +175,17 @@ function App() {
                 <Route path="/projects/new" element={<ProtectedRoute allowedRoles={["personal"]}><ProjectCreate /></ProtectedRoute>} />
                 <Route path="/projects/:id" element={<ProtectedRoute allowedRoles={["personal"]}><ProjectDetails /></ProtectedRoute>} />
                 <Route path="/projects/:id/edit" element={<ProtectedRoute allowedRoles={["personal"]}><ProjectEdit /></ProtectedRoute>} />
+                <Route path="/consultant/apply" element={<ProtectedRoute allowedRoles={["personal"]}><ConsultantApply /></ProtectedRoute>} />
+                <Route path="/consultant/dashboard" element={<ProtectedRoute allowedRoles={["personal"]}><ConsultantDashboard /></ProtectedRoute>} />
+
+                {/* Public Consultant Booking Routes — no login required */}
+                <Route path="/consultants" element={<Consultants />} />
+                <Route path="/consultants/:id" element={<ConsultantProfile />} />
+                <Route path="/booking-status" element={<BookingStatus />} />
+                <Route path="/booking-status/:bookingRef" element={<BookingStatus />} />
 
                 {/* Organization Routes */}
-                <Route path="/organization" element={<ProtectedRoute allowedRoles={["consultant"]}><OrganizationLayout /></ProtectedRoute>}>
+                <Route path="/organization" element={<ProtectedRoute allowedRoles={["counsel"]}><OrganizationLayout /></ProtectedRoute>}>
                   <Route index element={<Navigate to="/organization/feed" replace />} />
                   <Route path="feed" element={<OrgFeed />} />
                   <Route path="profile" element={<OrgProfile />} />
